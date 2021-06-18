@@ -4,6 +4,7 @@ using System;
 using System.Diagnostics;
 using System.Drawing;
 using System.Drawing.Imaging;
+using System.Numerics;
 using System.Runtime.InteropServices;
 using System.Text;
 using System.Windows.Forms;
@@ -134,8 +135,40 @@ namespace TarkovPriceViewer
                     //Cv2.MinMaxLoc(res, out minval, out maxval, out minloc, out maxloc);
                     //Debug.WriteLine("image diff : " + maxval + ", pos : " + maxloc.X + "-" + maxloc.Y + ", size : " + FindMat.Width + "-" + FindMat.Height);
 
-                    Mat s = ScreenMat.Canny(130, 255, 3, false);
-                    testdrawbox.Image = BitmapConverter.ToBitmap(s);
+                    Mat canny_img = new Mat();
+                    Cv2.CvtColor(ScreenMat, ScreenMat, ColorConversionCodes.BGR2HSV);
+                    Mat[] mv = new Mat[3];
+                    mv = Cv2.Split(ScreenMat);
+                    Cv2.CvtColor(ScreenMat, ScreenMat, ColorConversionCodes.HSV2BGR);
+                    Cv2.InRange(mv[0], new Scalar(90), new Scalar(98), canny_img);
+                    Cv2.BitwiseAnd(ScreenMat, canny_img.CvtColor(ColorConversionCodes.GRAY2BGR), canny_img);
+                    //canny_img = canny_img.Canny(130, 255, 3, false);
+                    testdrawbox.Image = BitmapConverter.ToBitmap(canny_img);
+
+                    /*Mat rac_img = new Mat(canny_img.Rows, canny_img.Cols, MatType.CV_8UC1);
+                    Cv2.CvtColor(canny_img, rac_img, ColorConversionCodes.GRAY2BGR);
+                    OpenCvSharp.Point[][] contours;
+                    HierarchyIndex[] hierarchy;
+                    Cv2.FindContours(canny_img, out contours, out hierarchy, RetrievalModes.List, ContourApproximationModes.ApproxSimple);
+                    Debug.WriteLine("contours : " + contours.Length);
+                    int rec_size = 0;
+                    for (int i = 0; i < contours.Length; i++)
+                    {
+
+                        OpenCvSharp.Point[] poly = Cv2.ApproxPolyDP(contours[i], 1.2, true);
+                        if (poly.Length == 4
+                            && GetDistance(poly[0], poly[1]) >= 43 && GetDistance(poly[1], poly[2]) >= 43 && GetDistance(poly[2], poly[3]) >= 43 && GetDistance(poly[3], poly[0]) >= 43
+                            )
+                        {
+                            rec_size++;
+                            for (int j = 0; j < 4; j++)
+                            {
+                                Cv2.Line(rac_img, poly[j], poly[(j + 1) % poly.Length], rec_size % 2 == 0 ? Scalar.Red : Scalar.Green, 2);
+                            }
+                        }
+                    }
+                    Debug.WriteLine("rec size : " + rec_size);
+                    testdrawbox.Image = BitmapConverter.ToBitmap(rac_img);*/
 
 
                     //int s = 86;
@@ -151,6 +184,13 @@ namespace TarkovPriceViewer
                 Debug.WriteLine("error : " + e.Message);
             }
             return false;
+        }
+
+        public static Double GetDistance(OpenCvSharp.Point p1, OpenCvSharp.Point p2)
+        {
+            Double xdf = p2.X - p1.X;
+            Double ydf = p2.Y - p1.Y;
+            return Math.Sqrt(Math.Pow(xdf, 2) + Math.Pow(ydf, 2));
         }
 
         private void DrawBox(int x, int y, int w, int h)
