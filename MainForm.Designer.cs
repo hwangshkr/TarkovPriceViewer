@@ -36,11 +36,15 @@ namespace TarkovPriceViewer
             this.imagefound = new System.Windows.Forms.PictureBox();
             this.imagesub = new System.Windows.Forms.PictureBox();
             this.imageshould = new System.Windows.Forms.PictureBox();
+            this.texttest = new System.Windows.Forms.PictureBox();
+            this.texttest2 = new System.Windows.Forms.PictureBox();
             this.testimageview.SuspendLayout();
             ((System.ComponentModel.ISupportInitialize)(this.testdrawbox)).BeginInit();
             ((System.ComponentModel.ISupportInitialize)(this.imagefound)).BeginInit();
             ((System.ComponentModel.ISupportInitialize)(this.imagesub)).BeginInit();
             ((System.ComponentModel.ISupportInitialize)(this.imageshould)).BeginInit();
+            ((System.ComponentModel.ISupportInitialize)(this.texttest)).BeginInit();
+            ((System.ComponentModel.ISupportInitialize)(this.texttest2)).BeginInit();
             this.SuspendLayout();
             // 
             // testB
@@ -116,12 +120,32 @@ namespace TarkovPriceViewer
             this.imageshould.TabIndex = 4;
             this.imageshould.TabStop = false;
             // 
+            // texttest
+            // 
+            this.texttest.Location = new System.Drawing.Point(1127, 373);
+            this.texttest.Name = "texttest";
+            this.texttest.Size = new System.Drawing.Size(100, 100);
+            this.texttest.SizeMode = System.Windows.Forms.PictureBoxSizeMode.CenterImage;
+            this.texttest.TabIndex = 4;
+            this.texttest.TabStop = false;
+            // 
+            // texttest2
+            // 
+            this.texttest2.Location = new System.Drawing.Point(1127, 479);
+            this.texttest2.Name = "texttest2";
+            this.texttest2.Size = new System.Drawing.Size(100, 100);
+            this.texttest2.SizeMode = System.Windows.Forms.PictureBoxSizeMode.CenterImage;
+            this.texttest2.TabIndex = 4;
+            this.texttest2.TabStop = false;
+            // 
             // MainForm
             // 
             this.AutoScaleDimensions = new System.Drawing.SizeF(7F, 12F);
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
             this.ClientSize = new System.Drawing.Size(1264, 761);
             this.Controls.Add(this.imageshould);
+            this.Controls.Add(this.texttest2);
+            this.Controls.Add(this.texttest);
             this.Controls.Add(this.imagesub);
             this.Controls.Add(this.imagefound);
             this.Controls.Add(this.next);
@@ -129,11 +153,15 @@ namespace TarkovPriceViewer
             this.Controls.Add(this.testB);
             this.Name = "MainForm";
             this.Text = "Form1";
+            this.FormClosed += new System.Windows.Forms.FormClosedEventHandler(this.MainForm_closed);
+            this.Load += new System.EventHandler(this.MainForm_load);
             this.testimageview.ResumeLayout(false);
             ((System.ComponentModel.ISupportInitialize)(this.testdrawbox)).EndInit();
             ((System.ComponentModel.ISupportInitialize)(this.imagefound)).EndInit();
             ((System.ComponentModel.ISupportInitialize)(this.imagesub)).EndInit();
             ((System.ComponentModel.ISupportInitialize)(this.imageshould)).EndInit();
+            ((System.ComponentModel.ISupportInitialize)(this.texttest)).EndInit();
+            ((System.ComponentModel.ISupportInitialize)(this.texttest2)).EndInit();
             this.ResumeLayout(false);
 
         }
@@ -147,6 +175,8 @@ namespace TarkovPriceViewer
         private System.Windows.Forms.PictureBox imagefound;
         private System.Windows.Forms.PictureBox imagesub;
         private System.Windows.Forms.PictureBox imageshould;
+        private System.Windows.Forms.PictureBox texttest;
+        private System.Windows.Forms.PictureBox texttest2;
     }
 }
 
