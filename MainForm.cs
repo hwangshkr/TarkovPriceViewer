@@ -221,11 +221,10 @@ namespace TarkovPriceViewer
                     Cv2.AdaptiveThreshold(ScreenMat.CvtColor(ColorConversionCodes.BGR2GRAY), canny_img, 255, AdaptiveThresholdTypes.MeanC, ThresholdTypes.BinaryInv, 3, 12);
                     Mat kernel = Cv2.GetStructuringElement(MorphShapes.Rect, new OpenCvSharp.Size(2, 2));
                     Cv2.MorphologyEx(canny_img, canny_img, MorphTypes.Close, kernel);
-                    //Cv2.MorphologyEx(canny_img, canny_img, MorphTypes.Open, kernel);
                     //testdrawbox.Image = BitmapConverter.ToBitmap(canny_img);
 
                     //rac_img = new Mat(canny_img.Rows, canny_img.Cols, MatType.CV_8UC3);
-                    Cv2.CopyTo(ScreenMat, rac_img);
+                    Cv2.CopyTo(canny_img.CvtColor(ColorConversionCodes.GRAY2BGR), rac_img);
                     //Cv2.CvtColor(canny_img, rac_img, ColorConversionCodes.GRAY2BGR);
                     HierarchyIndex[] hierarchy;
                     Cv2.FindContours(canny_img, out contours, out hierarchy, RetrievalModes.List, ContourApproximationModes.ApproxSimple);
@@ -283,11 +282,12 @@ namespace TarkovPriceViewer
             var texts = ocr.Process(b);
             texttest2.Image = b;
             String text = texts.GetText().Trim();
-            if (text.Contains("\n"))
+            /*if (text.Contains("\n"))
             {
                 String[] str = text.Split('\n');
                 text = str[0].Trim();
-            }
+            }*/
+            text = text.Replace("\n", "");
             Debug.WriteLine(" text : " + text);
         }
 
@@ -309,7 +309,23 @@ namespace TarkovPriceViewer
 
         private void next_Click(object sender, EventArgs e)
         {
-            FindMatchImage(new OpenCvSharp.Point(1550, 300));
+            //FindMatchImage(new OpenCvSharp.Point(850, 750));
+            Mat test = ScreenMat.CvtColor(ColorConversionCodes.BGR2GRAY);
+            //Cv2.AdaptiveThreshold(ScreenMat.CvtColor(ColorConversionCodes.BGR2GRAY), canny_img, 255, AdaptiveThresholdTypes.MeanC, ThresholdTypes.BinaryInv, 3, 12);
+            //Mat kernel = Cv2.GetStructuringElement(MorphShapes.Rect, new OpenCvSharp.Size(2, 2));
+            //Cv2.MorphologyEx(canny_img, canny_img, MorphTypes.Close, kernel);
+            Cv2.Threshold(test, test, 120, 255, ThresholdTypes.Binary);// | ThresholdTypes.Otsu
+            Mat test2 = test.CvtColor(ColorConversionCodes.GRAY2BGR);
+            foreach (OpenCvSharp.Point[] contour in contours)
+            {
+                OpenCvSharp.Rect rect = Cv2.BoundingRect(contour);
+                if (rect.Width >= 50 && rect.Height >= 50)
+                {
+                    Cv2.Rectangle(test2, rect, Scalar.Green, 2);
+                    CheckTass(test.SubMat(rect).SubMat(new OpenCvSharp.Rect(0, 0, rect.Width, 14)));
+                }
+            }
+            testdrawbox.Image = BitmapConverter.ToBitmap(test2);
         }
 
         private bool FindMatchImage(OpenCvSharp.Point point)
@@ -338,8 +354,21 @@ namespace TarkovPriceViewer
                 rectlist.Sort((r1, r2) => (r1.Width * r1.Height).CompareTo((r2.Width * r2.Height)));
                 foreach (OpenCvSharp.Rect r in rectlist)
                 {
-                    Mat match = ScreenMat.SubMat(r).Resize(new OpenCvSharp.Size(rc, rc));
-                    //CheckTass(ScreenMat.SubMat(rect));
+                    Mat match = ScreenMat.SubMat(r);
+                    match = match.Resize(new OpenCvSharp.Size(rc, rc));
+                    OpenCvSharp.Rect rect = new OpenCvSharp.Rect(1, 1, match.Width - 7, match.Height - 7);
+                    Mat mask = new Mat(match.Size(), MatType.CV_8UC1);
+                    Cv2.GrabCut(match, mask, rect, new Mat(), new Mat(), 5, GrabCutModes.InitWithRect);
+                    var lut2 = new byte[256];
+                    lut2[0] = 0; lut2[1] = 1; lut2[2] = 0; lut2[3] = 1;
+                    Cv2.LUT(mask, lut2, mask);
+                    var foreground = new Mat(match.Size(), MatType.CV_8UC3, new Scalar(0, 0, 0));
+                    match.CopyTo(foreground, mask);
+                    Cv2.ImShow("a", foreground);
+                    Mat test = ScreenMat.CvtColor(ColorConversionCodes.BGR2GRAY).SubMat(r).SubMat(new OpenCvSharp.Rect(0, 0, r.Width, 14));
+                    Cv2.Threshold(test, test, 0, 120, ThresholdTypes.Binary | ThresholdTypes.Otsu);
+                    Cv2.ImShow("b", test);
+                    CheckTass(test);
                     Mat hist1 = CalculateHist(match);
                     Debug.WriteLine((r.Width * r.Height));
 
