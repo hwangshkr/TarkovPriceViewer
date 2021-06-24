@@ -218,7 +218,8 @@ namespace TarkovPriceViewer
                     //Cv2.InRange(ScreenMat, new Scalar(45, 45, 45), new Scalar(115, 130, 130), canny_img);
                     //Cv2.BitwiseAnd(ScreenMat, canny_img, canny_img);
                     //canny_img = ScreenMat.Canny(0, 255, 3, false);
-                    Cv2.AdaptiveThreshold(ScreenMat.CvtColor(ColorConversionCodes.BGR2GRAY), canny_img, 255, AdaptiveThresholdTypes.MeanC, ThresholdTypes.BinaryInv, 3, 12);
+
+                    /*Cv2.AdaptiveThreshold(ScreenMat.CvtColor(ColorConversionCodes.BGR2GRAY), canny_img, 255, AdaptiveThresholdTypes.MeanC, ThresholdTypes.BinaryInv, 3, 12);
                     Mat kernel = Cv2.GetStructuringElement(MorphShapes.Rect, new OpenCvSharp.Size(2, 2));
                     Cv2.MorphologyEx(canny_img, canny_img, MorphTypes.Close, kernel);
                     //testdrawbox.Image = BitmapConverter.ToBitmap(canny_img);
@@ -229,10 +230,24 @@ namespace TarkovPriceViewer
                     HierarchyIndex[] hierarchy;
                     Cv2.FindContours(canny_img, out contours, out hierarchy, RetrievalModes.List, ContourApproximationModes.ApproxSimple);
                     Debug.WriteLine("contours : " + contours.Length);
-                    testdrawbox.Image = BitmapConverter.ToBitmap(canny_img);
+                    testdrawbox.Image = BitmapConverter.ToBitmap(canny_img);*/
 
                     //int s = 86;62
                     //DrawBox(7, 10, s, s);
+
+                    canny_img = ScreenMat.CvtColor(ColorConversionCodes.BGR2GRAY).Canny(50, 100, 3, false);
+                    Mat kernel = Cv2.GetStructuringElement(MorphShapes.Rect, new OpenCvSharp.Size(2, 2));
+                    Cv2.MorphologyEx(canny_img, canny_img, MorphTypes.Close, kernel, null, 1);
+                    Mat imageOutP = canny_img.EmptyClone();
+                    LineSegmentPoint[] lines = Cv2.HoughLinesP(canny_img, 1, 90 * Math.PI / 180, 5, 5, 10);
+                    foreach (LineSegmentPoint s in lines)
+                    {
+                        imageOutP.Line(s.P1, s.P2, Scalar.White, 1, LineTypes.AntiAlias, 0);
+                    }
+                    testdrawbox.Image = BitmapConverter.ToBitmap(imageOutP);
+                    Cv2.ImShow("a", canny_img);
+
+
                     if (maxval >= 0.8)
                     {
                         //DrawBox(maxloc.X * 640 / ScreenMat.Width, maxloc.Y * 480 / ScreenMat.Height, FindMat.Width * 640 / ScreenMat.Width, FindMat.Height * 480 / ScreenMat.Height);
@@ -322,7 +337,7 @@ namespace TarkovPriceViewer
                 if (rect.Width >= 50 && rect.Height >= 50)
                 {
                     Cv2.Rectangle(test2, rect, Scalar.Green, 2);
-                    CheckTass(test.SubMat(rect).SubMat(new OpenCvSharp.Rect(0, 0, rect.Width, 14)));
+                    //CheckTass(test.SubMat(rect).SubMat(new OpenCvSharp.Rect(0, 0, rect.Width, 14)));
                 }
             }
             testdrawbox.Image = BitmapConverter.ToBitmap(test2);
@@ -428,6 +443,56 @@ namespace TarkovPriceViewer
             Cv2.CalcHist(new Mat[] { img.CvtColor(ColorConversionCodes.BGR2HSV) }, channels, null, hist, 2, histSize, ranges);
             //Cv2.Normalize(hist, hist, 0, 255, NormTypes.MinMax);
             return hist;
+        }
+
+        private void testdrawbox_Click(object sender, EventArgs e)
+        {
+            Mat test = ScreenMat.CvtColor(ColorConversionCodes.BGR2GRAY);
+            Cv2.Threshold(test, test, 120, 255, ThresholdTypes.Binary);// | ThresholdTypes.Otsu
+            Mat test2 = test.CvtColor(ColorConversionCodes.GRAY2BGR);
+
+            PictureBox pic = (PictureBox)sender;
+            System.Drawing.Point mousePos = new System.Drawing.Point(Control.MousePosition.X, Control.MousePosition.Y); //프로그램 내 좌표
+            System.Drawing.Point mousePosPtoClient = pic.PointToClient(mousePos);  //picbox 내 좌표
+            OpenCvSharp.Point point = new OpenCvSharp.Point(mousePosPtoClient.X * test.Width / pic.Width,
+                mousePosPtoClient.Y * test.Height / pic.Height);
+
+            Cv2.Circle(test2, point.X, point.Y, 5, Scalar.Red);
+            List<OpenCvSharp.Rect> rectlist = new List<OpenCvSharp.Rect>();
+            foreach (OpenCvSharp.Point[] contour in contours)
+            {
+                //OpenCvSharp.Point[] poly = Cv2.ApproxPolyDP(contour, 1, true);
+                OpenCvSharp.Rect rect = Cv2.BoundingRect(contour);
+                if (//poly.Length >= 4 &&
+                    rect.Contains(point) &&
+                    rect.Width >= 50 && rect.Height >= 50
+                    )
+                {
+                    rectlist.Add(rect);
+                    Cv2.Rectangle(rac_img, rect, Scalar.Green, 2);
+                }
+            }
+            if (rectlist.Count > 0)
+            {
+                rectlist.Sort((r1, r2) => (r1.Width * r1.Height).CompareTo((r2.Width * r2.Height)));
+                //Cv2.AdaptiveThreshold(ScreenMat.CvtColor(ColorConversionCodes.BGR2GRAY), canny_img, 255, AdaptiveThresholdTypes.MeanC, ThresholdTypes.BinaryInv, 3, 12);
+                //Mat kernel = Cv2.GetStructuringElement(MorphShapes.Rect, new OpenCvSharp.Size(2, 2));
+                //Cv2.MorphologyEx(canny_img, canny_img, MorphTypes.Close, kernel);
+                foreach (OpenCvSharp.Point[] contour in contours)
+                {
+                    OpenCvSharp.Rect rect = Cv2.BoundingRect(contour);
+                    if (rect.Contains(point) && rect.Width >= 50 && rect.Height >= 50)
+                    {
+                        Cv2.Rectangle(test2, rect, Scalar.Green, 2);
+                        CheckTass(test.SubMat(rect).SubMat(new OpenCvSharp.Rect(0, 0, rect.Width, 14)));
+                        break;
+                    }
+                }
+            } else
+            {
+                Debug.WriteLine("rec size : " + rectlist.Count);
+            }
+            testdrawbox.Image = BitmapConverter.ToBitmap(test2);
         }
     }
 }
