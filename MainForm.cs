@@ -235,17 +235,24 @@ namespace TarkovPriceViewer
                     //int s = 86;62
                     //DrawBox(7, 10, s, s);
 
-                    canny_img = ScreenMat.CvtColor(ColorConversionCodes.BGR2GRAY).Canny(50, 100, 3, false);
-                    Mat kernel = Cv2.GetStructuringElement(MorphShapes.Rect, new OpenCvSharp.Size(2, 2));
-                    Cv2.MorphologyEx(canny_img, canny_img, MorphTypes.Close, kernel, null, 1);
+                    /*canny_img = ScreenMat.CvtColor(ColorConversionCodes.BGR2GRAY);//.Canny(50, 50, 3, false);
+                    Mat mask = ScreenMat.CvtColor(ColorConversionCodes.BGR2GRAY);
+                    //Cv2.Threshold(mask, canny_img, 130, 255, ThresholdTypes.Binary);
+                    //Cv2.BitwiseNot(mask, mask);
+                    //Cv2.BitwiseAnd(canny_img, mask, canny_img);
+                    Cv2.AdaptiveThreshold(canny_img, canny_img, 255, AdaptiveThresholdTypes.MeanC, ThresholdTypes.BinaryInv, 3, 12);
+                    Mat kernel = Cv2.GetStructuringElement(MorphShapes.Rect, new OpenCvSharp.Size(7, 7));
+                    //Cv2.MorphologyEx(canny_img, canny_img, MorphTypes.Close, kernel, null, 1);
+                    //Cv2.Canny(canny_img, canny_img, 100, 100, 3, false);
                     Mat imageOutP = canny_img.EmptyClone();
-                    LineSegmentPoint[] lines = Cv2.HoughLinesP(canny_img, 1, 90 * Math.PI / 180, 5, 5, 10);
+                    LineSegmentPoint[] lines = Cv2.HoughLinesP(canny_img, 1, 90 * Math.PI / 180, 0, 50, 10);
                     foreach (LineSegmentPoint s in lines)
                     {
                         imageOutP.Line(s.P1, s.P2, Scalar.White, 1, LineTypes.AntiAlias, 0);
                     }
+                    Cv2.FindContours(imageOutP, out contours, out HierarchyIndex[] hierarchy, RetrievalModes.List, ContourApproximationModes.ApproxSimple);
+                    Debug.WriteLine("contours : " + contours.Length);*/
                     testdrawbox.Image = BitmapConverter.ToBitmap(imageOutP);
-                    Cv2.ImShow("a", canny_img);
 
 
                     if (maxval >= 0.8)
@@ -334,7 +341,9 @@ namespace TarkovPriceViewer
             foreach (OpenCvSharp.Point[] contour in contours)
             {
                 OpenCvSharp.Rect rect = Cv2.BoundingRect(contour);
-                if (rect.Width >= 50 && rect.Height >= 50)
+                if (true
+                    //&& rect.Width >= 50 && rect.Height >= 50
+                    )
                 {
                     Cv2.Rectangle(test2, rect, Scalar.Green, 2);
                     //CheckTass(test.SubMat(rect).SubMat(new OpenCvSharp.Rect(0, 0, rect.Width, 14)));
