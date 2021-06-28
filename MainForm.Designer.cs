@@ -37,12 +37,16 @@ namespace TarkovPriceViewer
             this.texttest = new System.Windows.Forms.PictureBox();
             this.texttest2 = new System.Windows.Forms.PictureBox();
             this.testdrawbox = new System.Windows.Forms.PictureBox();
+            this.iteminfo_panel = new System.Windows.Forms.Panel();
+            this.itemname = new System.Windows.Forms.Label();
+            this.itemprice = new System.Windows.Forms.Label();
             ((System.ComponentModel.ISupportInitialize)(this.imagefound)).BeginInit();
             ((System.ComponentModel.ISupportInitialize)(this.imagesub)).BeginInit();
             ((System.ComponentModel.ISupportInitialize)(this.imageshould)).BeginInit();
             ((System.ComponentModel.ISupportInitialize)(this.texttest)).BeginInit();
             ((System.ComponentModel.ISupportInitialize)(this.texttest2)).BeginInit();
             ((System.ComponentModel.ISupportInitialize)(this.testdrawbox)).BeginInit();
+            this.iteminfo_panel.SuspendLayout();
             this.SuspendLayout();
             // 
             // testB
@@ -122,11 +126,39 @@ namespace TarkovPriceViewer
             this.testdrawbox.TabStop = false;
             this.testdrawbox.Click += new System.EventHandler(this.testdrawbox_Click);
             // 
+            // iteminfo_panel
+            // 
+            this.iteminfo_panel.Controls.Add(this.itemprice);
+            this.iteminfo_panel.Controls.Add(this.itemname);
+            this.iteminfo_panel.Location = new System.Drawing.Point(1107, 549);
+            this.iteminfo_panel.Name = "iteminfo_panel";
+            this.iteminfo_panel.Size = new System.Drawing.Size(135, 76);
+            this.iteminfo_panel.TabIndex = 6;
+            // 
+            // itemname
+            // 
+            this.itemname.AutoSize = true;
+            this.itemname.Location = new System.Drawing.Point(4, 4);
+            this.itemname.Name = "itemname";
+            this.itemname.Size = new System.Drawing.Size(38, 12);
+            this.itemname.TabIndex = 0;
+            this.itemname.Text = "label1";
+            // 
+            // itemprice
+            // 
+            this.itemprice.AutoSize = true;
+            this.itemprice.Location = new System.Drawing.Point(4, 16);
+            this.itemprice.Name = "itemprice";
+            this.itemprice.Size = new System.Drawing.Size(38, 12);
+            this.itemprice.TabIndex = 1;
+            this.itemprice.Text = "label1";
+            // 
             // MainForm
             // 
             this.AutoScaleDimensions = new System.Drawing.SizeF(7F, 12F);
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
             this.ClientSize = new System.Drawing.Size(1264, 761);
+            this.Controls.Add(this.iteminfo_panel);
             this.Controls.Add(this.testdrawbox);
             this.Controls.Add(this.imageshould);
             this.Controls.Add(this.texttest2);
@@ -145,6 +177,8 @@ namespace TarkovPriceViewer
             ((System.ComponentModel.ISupportInitialize)(this.texttest)).EndInit();
             ((System.ComponentModel.ISupportInitialize)(this.texttest2)).EndInit();
             ((System.ComponentModel.ISupportInitialize)(this.testdrawbox)).EndInit();
+            this.iteminfo_panel.ResumeLayout(false);
+            this.iteminfo_panel.PerformLayout();
             this.ResumeLayout(false);
 
         }
@@ -159,6 +193,9 @@ namespace TarkovPriceViewer
         private System.Windows.Forms.PictureBox texttest;
         private System.Windows.Forms.PictureBox texttest2;
         private System.Windows.Forms.PictureBox testdrawbox;
+        private System.Windows.Forms.Panel iteminfo_panel;
+        private System.Windows.Forms.Label itemprice;
+        private System.Windows.Forms.Label itemname;
     }
 }
 
