@@ -470,6 +470,7 @@ namespace TarkovPriceViewer
             const int maxsize = 8;
             OpenCvSharp.Rect rect = new OpenCvSharp.Rect(point.X - minhalf, point.Y - minhalf, minlength, minlength);
             OpenCvSharp.Point racpoint;
+            int count = 0;
             int row = 0;
             int col = 0;
             bool top = false, bottom = false, left = false, right = false;
@@ -503,15 +504,22 @@ namespace TarkovPriceViewer
                         rect.Y -= minlength;
                     }
                 }
-                if (rect.X + rect.Width > ScreenMat.Width)
+                if (rect.X < 0)
                 {
-                    Debug.WriteLine("xw error : " + rect.X + rect.Width);
-                    break;
+                    rect.Width += rect.X;
+                    rect.X = 0;
+                } else if (rect.X + rect.Width > ScreenMat.Width)
+                {
+                    rect.Width += ScreenMat.Width - (rect.X + rect.Width);
                 }
-                if (rect.Y + rect.Height > ScreenMat.Height)
+                if (rect.Y < 0)
                 {
-                    Debug.WriteLine("yh error : " + rect.Y + rect.Height);
-                    break;
+                    rect.Height += rect.Y;
+                    rect.Y = 0;
+                }
+                else if (rect.Y + rect.Height > ScreenMat.Height)
+                {
+                    rect.Height += ScreenMat.Height - (rect.Y + rect.Height);
                 }
                 Debug.WriteLine("bool : " + top + "," + bottom + "," + left + "," + right
                     + "," + row + "," + col + "," + rect.X + "," + rect.Y + "," + rect.Width + "," + rect.Height);
@@ -521,10 +529,10 @@ namespace TarkovPriceViewer
                 Mat rac_img2 = ScreenMat.SubMat(rect);
                 Mat rac_img3 = rac_img2.CvtColor(ColorConversionCodes.BGR2GRAY);
                 Mat imageOutP = new Mat(new OpenCvSharp.Size(rect.Width, rect.Height), MatType.CV_8UC1, Scalar.All(0));
-                Cv2.AdaptiveThreshold(rac_img3, rac_img3, 255, AdaptiveThresholdTypes.MeanC, ThresholdTypes.BinaryInv, 3, 12);
-                Mat rac_img_tass = rac_img3.Clone();
+                Mat rac_img_tass = rac_img3.Threshold(150, 255, ThresholdTypes.BinaryInv | ThresholdTypes.Otsu);
+                rac_img3 = rac_img3.AdaptiveThreshold(255, AdaptiveThresholdTypes.MeanC, ThresholdTypes.BinaryInv, 3, 12);
                 Mat kernel = Cv2.GetStructuringElement(MorphShapes.Rect, new OpenCvSharp.Size(3, 3));
-                Cv2.MorphologyEx(rac_img3, rac_img3, MorphTypes.Close, kernel);
+                //rac_img3 = rac_img3.MorphologyEx(MorphTypes.Close, kernel);
                 List<LineSegmentPoint> pointlist = new List<LineSegmentPoint>();
                 LineSegmentPoint[] lines = Cv2.HoughLinesP(rac_img3, 1, 90 * Math.PI / 180, 0, minlength, 10);
                 int minrow_length = minlength * row;
@@ -565,15 +573,20 @@ namespace TarkovPriceViewer
                         }
                         imageOutP.Line(s.P1, s.P2, Scalar.White, 2, LineTypes.AntiAlias, 0);
                     }
-                    //imageOutP.Line(s.P1, s.P2, Scalar.White, 2, LineTypes.AntiAlias, 0);
+                    //imageOutP.Line(s.P1, s.P2, Scalar.White, 1, LineTypes.AntiAlias, 0);
                 }
+                imageOutP = imageOutP.MorphologyEx(MorphTypes.Erode, kernel);
                 Cv2.FindContours(imageOutP, out contours, out HierarchyIndex[] hierarchy, RetrievalModes.List, ContourApproximationModes.ApproxSimple);
                 Debug.WriteLine("contours : " + contours.Length);
                 foreach (OpenCvSharp.Point[] contour in contours)
                 {
                     OpenCvSharp.Rect rect2 = Cv2.BoundingRect(contour);
-                    if (rect2.Width != rect.Width && rect2.Height != rect.Height && rect2.Contains(racpoint))
+                    if (rect2.Width != rect.Width && rect2.Height != rect.Height
+                        && rect2.Width > 10 && rect2.Height > 10
+                        && rect2.Contains(racpoint))
                     {
+                        Debug.WriteLine("w : " + rect2.Width);
+                        Debug.WriteLine("h : " + rect2.Height);
                         rectlist.Add(rect2);
                     }
                 }
@@ -583,10 +596,11 @@ namespace TarkovPriceViewer
                     rectlist.Sort((r2, r1) => (r1.Width * r1.Height).CompareTo((r2.Width * r2.Height)));
                     foreach (OpenCvSharp.Rect rt in rectlist)
                     {
-                        Debug.WriteLine("w : " + rt.Width);
-                        Debug.WriteLine("h : " + rt.Height);
                         Cv2.Rectangle(rac_img2, rt, Scalar.Green, 2);
-                        CheckTass(rac_img_tass.SubMat(new OpenCvSharp.Rect(rt.X, rt.Y, rt.Width, tesssize)));
+                        CheckTass(rac_img_tass.SubMat(new OpenCvSharp.Rect(rt.X, rt.Y > 1 ? rt.Y - 1 : rt.Y, rt.X + rt.Width > rac_img_tass.Width + 2 ? rt.Width + 2 : rt.Width, tesssize)));
+                        //CheckTass(rac_img_tass.SubMat(new OpenCvSharp.Rect(rt.X, rt.Y, tesssize, rt.Height)));
+                        overlay.ShowInfo("aaaaa", mousePos);
+                        break;
                     }
                     Cv2.ImShow("a", rac_img2);
                     Cv2.ImShow("b", rac_img3);
@@ -595,7 +609,7 @@ namespace TarkovPriceViewer
                 //Cv2.ImShow("b" + rac_img3.Width + "," + rac_img3.Height, rac_img3);
                 //Cv2.ImShow("c" + imageOutP.Width + "," + imageOutP.Height, imageOutP);
                 Cv2.ImShow("c", imageOutP);
-            } while (rectlist.Count == 0 && row < maxsize && col < maxsize);
+            } while (rectlist.Count == 0 && count++ < maxsize);
 
 
             testdrawbox.Image = BitmapConverter.ToBitmap(rac_img);
