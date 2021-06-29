@@ -457,7 +457,25 @@ namespace TarkovPriceViewer
 
         private void testdrawbox_Click(object sender, EventArgs e)
         {
-            PictureBox pic = (PictureBox)sender;
+
+            rac_img = ScreenMat.InRange(new Scalar(90,89,82), new Scalar(90, 89, 82));
+            Cv2.FindContours(rac_img, out contours, out HierarchyIndex[] hierarchy, RetrievalModes.List, ContourApproximationModes.ApproxSimple);
+            Mat imageOutP = new Mat(new OpenCvSharp.Size(ScreenMat.Width, ScreenMat.Height), MatType.CV_8UC3, Scalar.All(0));
+            foreach (OpenCvSharp.Point[] contour in contours)
+            {
+                OpenCvSharp.Rect rect2 = Cv2.BoundingRect(contour);
+                if (rect2.Width > 5 && rect2.Height > 10)
+                {
+                    Debug.WriteLine("w : " + rect2.Width);
+                    Debug.WriteLine("h : " + rect2.Height);
+                    Cv2.Rectangle(imageOutP, rect2, Scalar.Green, 2);
+                    CheckTass(ScreenMat.SubMat(rect2));
+                }
+            }
+            testdrawbox.Image = BitmapConverter.ToBitmap(imageOutP);
+
+
+            /*PictureBox pic = (PictureBox)sender;
             System.Drawing.Point mousePos = new System.Drawing.Point(Control.MousePosition.X, Control.MousePosition.Y); //프로그램 내 좌표
             System.Drawing.Point mousePosPtoClient = pic.PointToClient(mousePos);  //picbox 내 좌표
             OpenCvSharp.Point point = new OpenCvSharp.Point(mousePosPtoClient.X * ScreenMat.Width / pic.Width,
@@ -612,7 +630,7 @@ namespace TarkovPriceViewer
             } while (rectlist.Count == 0 && count++ < maxsize);
 
 
-            testdrawbox.Image = BitmapConverter.ToBitmap(rac_img);
+            testdrawbox.Image = BitmapConverter.ToBitmap(rac_img);*/
 
 
             /*Mat test = ScreenMat.CvtColor(ColorConversionCodes.BGR2GRAY);
