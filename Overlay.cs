@@ -40,11 +40,25 @@ namespace TarkovPriceViewer
 
         public void ShowInfo(String name, Point point)
         {
-            iteminfo_panel.Visible = false;
-            iteminfo_panel.Location = point;
-            itemname.Text = name;
-            iteminfo_panel.Visible = true;
-            Debug.WriteLine("ShowInfo : " + point.ToString());
+            Action show = delegate ()
+            {
+                iteminfo_panel.Visible = false;
+                iteminfo_panel.Location = point;
+                itemname.Text = name;
+                iteminfo_panel.Visible = true;
+                Debug.WriteLine("ShowInfo : " + point.ToString());
+            };
+            Invoke(show);
+        }
+
+        public bool isItemInfoVisible()
+        {
+            return iteminfo_panel.Visible;
+        }
+
+        public void setItemInfoVisible(bool isvisible)
+        {
+            iteminfo_panel.Visible = isvisible;
         }
     }
 }

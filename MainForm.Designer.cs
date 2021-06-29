@@ -53,7 +53,6 @@ namespace TarkovPriceViewer
             this.testB.TabIndex = 0;
             this.testB.Text = "TestButton";
             this.testB.UseVisualStyleBackColor = true;
-            this.testB.Click += new System.EventHandler(this.testB_Click);
             // 
             // next
             // 
@@ -63,7 +62,6 @@ namespace TarkovPriceViewer
             this.next.TabIndex = 3;
             this.next.Text = "next";
             this.next.UseVisualStyleBackColor = true;
-            this.next.Click += new System.EventHandler(this.next_Click);
             // 
             // imagefound
             // 
@@ -120,7 +118,6 @@ namespace TarkovPriceViewer
             this.testdrawbox.SizeMode = System.Windows.Forms.PictureBoxSizeMode.StretchImage;
             this.testdrawbox.TabIndex = 5;
             this.testdrawbox.TabStop = false;
-            this.testdrawbox.Click += new System.EventHandler(this.testdrawbox_Click);
             // 
             // MainForm
             // 
