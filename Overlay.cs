@@ -19,6 +19,7 @@ namespace TarkovPriceViewer
         [DllImport("user32.dll")]
         static extern int SetWindowLong(IntPtr hWnd, int nIndex, int dwNewLong);
         const int GWL_EXSTYLE = -20;
+        const int WS_EX_TOOLWINDOW = 0x00000080;
         const int WS_EX_LAYERED = 0x80000;
         const int WS_EX_TRANSPARENT = 0x20;
 
@@ -27,7 +28,7 @@ namespace TarkovPriceViewer
             InitializeComponent();
             this.TopMost = true;
             var style = GetWindowLong(this.Handle, GWL_EXSTYLE);
-            SetWindowLong(this.Handle, GWL_EXSTYLE, style | WS_EX_LAYERED | WS_EX_TRANSPARENT);
+            SetWindowLong(this.Handle, GWL_EXSTYLE, style | WS_EX_LAYERED | WS_EX_TRANSPARENT | WS_EX_TOOLWINDOW);
             settingFormPos();
             iteminfo_panel.Visible = false;
         }
@@ -38,13 +39,16 @@ namespace TarkovPriceViewer
             this.Size = new Size(Screen.PrimaryScreen.Bounds.Width, Screen.PrimaryScreen.Bounds.Height);
         }
 
-        public void ShowInfo(String name, Point point)
+        public void ShowInfo(MainForm.Item item, Point point)
         {
             Action show = delegate ()
             {
                 iteminfo_panel.Visible = false;
                 iteminfo_panel.Location = point;
-                itemname.Text = name;
+                itemname.Text = new string(item.name);
+                itemprice.Text = item.price + "";
+                itemtrader.Text = item.trader;
+                traderprice.Text = item.trader_price + "";
                 iteminfo_panel.Visible = true;
                 Debug.WriteLine("ShowInfo : " + point.ToString());
             };

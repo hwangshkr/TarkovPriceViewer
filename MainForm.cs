@@ -4,9 +4,7 @@ using System;
 using System.Collections.Generic;
 using System.Diagnostics;
 using System.Drawing;
-using System.Drawing.Imaging;
 using System.IO;
-using System.Numerics;
 using System.Runtime.InteropServices;
 using System.Text;
 using System.Threading;
@@ -20,7 +18,7 @@ namespace TarkovPriceViewer
         [DllImport("user32.dll")]
         public static extern IntPtr FindWindow(string lpClassName, string lpWindowName);
 
-        [System.Runtime.InteropServices.DllImport("user32.dll")]
+        [DllImport("user32.dll")]
         internal static extern bool PrintWindow(IntPtr hWnd, IntPtr hdcBlt, int nFlags);
 
         [DllImport("user32.dll")]
@@ -32,11 +30,19 @@ namespace TarkovPriceViewer
         [DllImport("user32.dll")]
         private static extern IntPtr GetActiveWindow();
 
-        [DllImport("user32.dll")]
-        private static extern int RegisterHotKey(int hwnd, int id, int fsModifiers, int vk);
+        [DllImport("kernel32.dll")]
+        static extern IntPtr LoadLibrary(string lpFileName);
 
         [DllImport("user32.dll")]
-        private static extern int UnregisterHotKey(int hwnd, int id);
+        static extern IntPtr SetWindowsHookEx(int idHook, LowLevelKeyboardProc callback, IntPtr hInstance, uint threadId);
+
+        [DllImport("user32.dll")]
+        static extern bool UnhookWindowsHookEx(IntPtr hInstance);
+
+        [DllImport("user32.dll")]
+        static extern IntPtr CallNextHookEx(IntPtr idHook, int nCode, int wParam, IntPtr lParam);
+
+        private delegate IntPtr LowLevelKeyboardProc(int nCode, IntPtr wParam, IntPtr lParam);
 
         internal struct WINDOWPLACEMENT
         {
@@ -55,19 +61,31 @@ namespace TarkovPriceViewer
             Minimized = 2,
             Maximized = 3,
         }
+        public struct Item
+        {
+            public char[] name;
+            public int price;
+            public String trader;
+            public int trader_price;
+            public String currency;
+        }
 
-        private int nFlags = 0x0;
+        private static IntPtr hhook = IntPtr.Zero;
+        private LowLevelKeyboardProc _proc = hookProc;
+        private const int WH_KEYBOARD_LL = 13;
+        private const int WM_KEYDOWN = 0x100;
         private const String appname = "EscapeFromTarkov";
-        private Bitmap _fullimage = new Bitmap(@"img\test.png");
-        public Bitmap fullimage { get { return _fullimage; } }
-        private Overlay overlay = new Overlay();
-        private Thread backthread = null;
-        private System.Drawing.Point point = new System.Drawing.Point(0, 0);
-        private TesseractEngine ocr = new TesseractEngine("./tessdata", "eng", EngineMode.Default);
+        private static int nFlags = 0x0;
+        private static Bitmap fullimage = new Bitmap(@"img\test.png");
+        private static Overlay overlay = new Overlay();
+        private static Thread backthread = null;
+        private static System.Drawing.Point point = new System.Drawing.Point(0, 0);
+        private static List<Item> itemlist = new List<Item>();
 
         public MainForm()
         {
             InitializeComponent();
+            getItemList();
             overlay.Show();
         }
 
@@ -79,36 +97,66 @@ namespace TarkovPriceViewer
             {
                 nFlags = 0x2;
             }
-            RegisterHotKey((int)this.Handle, 0, 0x0, (int)Keys.F9);
+            SetHook();
+            BeginInvoke(new MethodInvoker(delegate
+            {
+                this.Hide();
+                TrayIcon.Visible = true;
+            }));
         }
 
         private void MainForm_closed(object sender, FormClosedEventArgs e)
         {
-            UnregisterHotKey((int)this.Handle, 0);
+            UnHook();
+            CloseItemInfo();
         }
 
-        protected override void WndProc(ref Message m)
+        public void SetHook()
         {
-            base.WndProc(ref m);
-            if (m.Msg == (int)0x312)
+            IntPtr hInstance = LoadLibrary("User32");
+            hhook = SetWindowsHookEx(WH_KEYBOARD_LL, _proc, hInstance, 0);
+        }
+
+        public static void UnHook()
+        {
+            UnhookWindowsHookEx(hhook);
+        }
+
+        public static IntPtr hookProc(int code, IntPtr wParam, IntPtr lParam)
+        {
+            if (code >= 0 && wParam == (IntPtr)WM_KEYDOWN)
             {
-                if (m.WParam == (IntPtr)0x0)
+                int vkCode = Marshal.ReadInt32(lParam);
+                switch (vkCode)
                 {
-                    var cursor = Control.MousePosition;
-                    point = new System.Drawing.Point(cursor.X, cursor.Y);
-                    overlay.setItemInfoVisible(false);
-                    if (backthread != null)
-                    {
-                        backthread.Abort();
-                    }
-                    backthread = new Thread(BackWork);
-                    backthread.IsBackground = true;
-                    backthread.Start();
+                    case 120:
+                        var cursor = Control.MousePosition;
+                        point = new System.Drawing.Point(cursor.X, cursor.Y);
+                        CloseItemInfo();
+                        backthread = new Thread(BackWork);
+                        backthread.IsBackground = true;
+                        backthread.Start();
+                        break;
+                    case 9:
+                    case 27:
+                    case 121:
+                        CloseItemInfo();
+                        break;
                 }
+            }
+            return CallNextHookEx(hhook, code, (int)wParam, lParam);
+        }
+
+        public static void CloseItemInfo()
+        {
+            overlay.setItemInfoVisible(false);
+            if (backthread != null)
+            {
+                backthread.Abort();
             }
         }
 
-        private void BackWork()
+        private static void BackWork()
         {
             if (CheckisTarkov())
             {
@@ -124,7 +172,7 @@ namespace TarkovPriceViewer
             }
         }
 
-        private bool CheckisTarkov()
+        private static bool CheckisTarkov()
         {
             IntPtr hWnd = GetActiveWindow();
             if (hWnd != IntPtr.Zero)
@@ -140,7 +188,7 @@ namespace TarkovPriceViewer
             return true;
         }
 
-        private void CaptureScreen()
+        private static void CaptureScreen()
         {
             IntPtr findwindow = FindWindow(null, appname);
             if (findwindow != IntPtr.Zero)
@@ -154,7 +202,7 @@ namespace TarkovPriceViewer
                     PrintWindow(findwindow, hdc, nFlags);
                     g.ReleaseHdc(hdc);
                 }
-                _fullimage = bmp;
+                fullimage = bmp;
             }
             else
             {
@@ -162,19 +210,17 @@ namespace TarkovPriceViewer
             }
         }
 
-        private void CheckTass(Mat textmat)
+        private static String CheckTass(Mat textmat)
         {
             Bitmap b = BitmapConverter.ToBitmap(textmat);
+            TesseractEngine ocr = new TesseractEngine("./tessdata", "eng", EngineMode.Default);
             Page texts = ocr.Process(b);
             String text = texts.GetText().Replace("\n", " ").Trim();
             Debug.WriteLine("text : " + text);
-            if (!text.Equals(""))
-            {
-                overlay.ShowInfo(text, point);
-            }
+            return text;
         }
 
-        private void FindItemName()
+        private static void FindItemName()
         {
             Mat ScreenMat = BitmapConverter.ToMat(fullimage).CvtColor(ColorConversionCodes.BGRA2BGR);
             Mat rac_img = ScreenMat.InRange(new Scalar(90, 89, 82), new Scalar(90, 89, 82));
@@ -187,9 +233,126 @@ namespace TarkovPriceViewer
                 if (rect2.Width > 5 && rect2.Height > 10)
                 {
                     Cv2.Rectangle(imageOutP, rect2, Scalar.Green, 2);
-                    CheckTass(ScreenMat.SubMat(rect2));
+                    String text = CheckTass(ScreenMat.SubMat(rect2));
+                    if (!text.Equals(""))
+                    {
+                        Item item = FindItemInfo(text.ToCharArray());
+                        overlay.ShowInfo(item, point);
+                        break;
+                    }
                 }
             }
+        }
+
+        private static void getItemList()
+        {
+            String[] textValue = File.ReadAllLines(@"test.txt");
+            if (textValue.Length > 0)
+            {
+                for (int i = 2; i < textValue.Length; i++)//ignore 1,2 Line
+                {
+                    String[] spl = textValue[i].Split('\t');
+                    Item item = new Item();
+                    item.name = spl[1].Split('(')[0].Trim().ToCharArray();
+                    item.price = Convert.ToInt32(spl[2]);
+                    item.trader = spl[5];
+                    item.trader_price = Convert.ToInt32(spl[6]);
+                    item.currency = spl[7];
+                    itemlist.Add(item);
+                }
+            }
+            Debug.WriteLine("itemlist Count : " + itemlist.Count);
+        }
+
+        private static Item FindItemInfo(char[] itemname)
+        {
+            Item result = new Item();
+            int d = 999;
+            foreach (Item item in itemlist)
+            {
+                int d2 = levenshteinDistance(itemname, item.name);
+                if (d2 < d)
+                {
+                    result = item;
+                    d = d2;
+                    if (d == 0)
+                    {
+                        break;
+                    }
+                }
+            }
+            return result;
+        }
+
+        private static int getMinimum(int val1, int val2, int val3)
+        {
+            int minNumber = val1;
+            if (minNumber > val2) minNumber = val2;
+            if (minNumber > val3) minNumber = val3;
+            return minNumber;
+        }
+
+        private static int levenshteinDistance(char[] s, char[] t)
+        {
+            int m = s.Length;
+            int n = t.Length;
+
+            int[,] d = new int[m + 1, n + 1];
+
+            for (int i = 1; i < m; i++)
+            {
+                d[i, 0] = i;
+            }
+
+            for (int j = 1; j < n; j++)
+            {
+                d[0, j] = j;
+            }
+
+            for (int j = 1; j < n; j++)
+            {
+                for (int i = 1; i < m; i++)
+                {
+                    if (s[i] == t[j])
+                    {
+                        d[i, j] = d[i - 1, j - 1];
+                    }
+                    else
+                    {
+                        d[i, j] = getMinimum(d[i - 1, j], d[i, j - 1], d[i - 1, j - 1]) + 1;
+                    }
+                }
+            }
+            return d[m - 1, n - 1];
+        }
+
+        private void MainForm_FormClosing(object sender, FormClosingEventArgs e)
+        {
+            if (e.CloseReason == CloseReason.UserClosing)
+            {
+                TrayIcon.Visible = true;
+                this.Hide();
+                e.Cancel = true;
+            }
+        }
+
+        private void MainForm_Move(object sender, EventArgs e)
+        {
+            if (this.WindowState == FormWindowState.Minimized)
+            {
+                TrayIcon.Visible = true;
+                this.Hide();
+            }
+        }
+
+        private void TrayExit_Click(object sender, EventArgs e)
+        {
+            this.Close();
+        }
+
+        private void TrayShow_Click(object sender, EventArgs e)
+        {
+            this.Show();
         }
     }
 }

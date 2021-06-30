@@ -29,6 +29,8 @@ namespace TarkovPriceViewer
         /// </summary>
         private void InitializeComponent()
         {
+            this.components = new System.ComponentModel.Container();
+            System.ComponentModel.ComponentResourceManager resources = new System.ComponentModel.ComponentResourceManager(typeof(MainForm));
             this.testB = new System.Windows.Forms.Button();
             this.next = new System.Windows.Forms.Button();
             this.imagefound = new System.Windows.Forms.PictureBox();
@@ -37,12 +39,17 @@ namespace TarkovPriceViewer
             this.texttest = new System.Windows.Forms.PictureBox();
             this.texttest2 = new System.Windows.Forms.PictureBox();
             this.testdrawbox = new System.Windows.Forms.PictureBox();
+            this.TrayIcon = new System.Windows.Forms.NotifyIcon(this.components);
+            this.TrayMenu = new System.Windows.Forms.ContextMenuStrip(this.components);
+            this.trayshow = new System.Windows.Forms.ToolStripMenuItem();
+            this.trayexit = new System.Windows.Forms.ToolStripMenuItem();
             ((System.ComponentModel.ISupportInitialize)(this.imagefound)).BeginInit();
             ((System.ComponentModel.ISupportInitialize)(this.imagesub)).BeginInit();
             ((System.ComponentModel.ISupportInitialize)(this.imageshould)).BeginInit();
             ((System.ComponentModel.ISupportInitialize)(this.texttest)).BeginInit();
             ((System.ComponentModel.ISupportInitialize)(this.texttest2)).BeginInit();
             ((System.ComponentModel.ISupportInitialize)(this.testdrawbox)).BeginInit();
+            this.TrayMenu.SuspendLayout();
             this.SuspendLayout();
             // 
             // testB
@@ -119,6 +126,35 @@ namespace TarkovPriceViewer
             this.testdrawbox.TabIndex = 5;
             this.testdrawbox.TabStop = false;
             // 
+            // TrayIcon
+            // 
+            this.TrayIcon.ContextMenuStrip = this.TrayMenu;
+            this.TrayIcon.Icon = ((System.Drawing.Icon)(resources.GetObject("TrayIcon.Icon")));
+            this.TrayIcon.Text = "TarkovPriceViewer";
+            this.TrayIcon.Visible = true;
+            // 
+            // TrayMenu
+            // 
+            this.TrayMenu.Items.AddRange(new System.Windows.Forms.ToolStripItem[] {
+            this.trayshow,
+            this.trayexit});
+            this.TrayMenu.Name = "TrayMenu";
+            this.TrayMenu.Size = new System.Drawing.Size(105, 48);
+            // 
+            // trayshow
+            // 
+            this.trayshow.Name = "trayshow";
+            this.trayshow.Size = new System.Drawing.Size(104, 22);
+            this.trayshow.Text = "Show";
+            this.trayshow.Click += new System.EventHandler(this.TrayShow_Click);
+            // 
+            // trayexit
+            // 
+            this.trayexit.Name = "trayexit";
+            this.trayexit.Size = new System.Drawing.Size(104, 22);
+            this.trayexit.Text = "Exit";
+            this.trayexit.Click += new System.EventHandler(this.TrayExit_Click);
+            // 
             // MainForm
             // 
             this.AutoScaleDimensions = new System.Drawing.SizeF(7F, 12F);
@@ -132,16 +168,20 @@ namespace TarkovPriceViewer
             this.Controls.Add(this.imagefound);
             this.Controls.Add(this.next);
             this.Controls.Add(this.testB);
+            this.Icon = ((System.Drawing.Icon)(resources.GetObject("$this.Icon")));
             this.Name = "MainForm";
-            this.Text = "Form1";
+            this.Text = "TarkovPriceViewer";
+            this.FormClosing += new System.Windows.Forms.FormClosingEventHandler(this.MainForm_FormClosing);
             this.FormClosed += new System.Windows.Forms.FormClosedEventHandler(this.MainForm_closed);
             this.Load += new System.EventHandler(this.MainForm_load);
+            this.Move += new System.EventHandler(this.MainForm_Move);
             ((System.ComponentModel.ISupportInitialize)(this.imagefound)).EndInit();
             ((System.ComponentModel.ISupportInitialize)(this.imagesub)).EndInit();
             ((System.ComponentModel.ISupportInitialize)(this.imageshould)).EndInit();
             ((System.ComponentModel.ISupportInitialize)(this.texttest)).EndInit();
             ((System.ComponentModel.ISupportInitialize)(this.texttest2)).EndInit();
             ((System.ComponentModel.ISupportInitialize)(this.testdrawbox)).EndInit();
+            this.TrayMenu.ResumeLayout(false);
             this.ResumeLayout(false);
 
         }
@@ -156,6 +196,10 @@ namespace TarkovPriceViewer
         private System.Windows.Forms.PictureBox texttest;
         private System.Windows.Forms.PictureBox texttest2;
         private System.Windows.Forms.PictureBox testdrawbox;
+        private System.Windows.Forms.NotifyIcon TrayIcon;
+        private System.Windows.Forms.ContextMenuStrip TrayMenu;
+        private System.Windows.Forms.ToolStripMenuItem trayshow;
+        private System.Windows.Forms.ToolStripMenuItem trayexit;
     }
 }
 

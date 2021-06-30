@@ -30,9 +30,10 @@ namespace TarkovPriceViewer
         private void InitializeComponent()
         {
             this.iteminfo_panel = new System.Windows.Forms.Panel();
+            this.itemtrader = new System.Windows.Forms.Label();
             this.itemprice = new System.Windows.Forms.Label();
             this.itemname = new System.Windows.Forms.Label();
-            this.itemdealer = new System.Windows.Forms.Label();
+            this.traderprice = new System.Windows.Forms.Label();
             this.iteminfo_panel.SuspendLayout();
             this.SuspendLayout();
             // 
@@ -44,13 +45,25 @@ namespace TarkovPriceViewer
             this.iteminfo_panel.AutoSize = true;
             this.iteminfo_panel.AutoSizeMode = System.Windows.Forms.AutoSizeMode.GrowAndShrink;
             this.iteminfo_panel.BackColor = System.Drawing.Color.White;
-            this.iteminfo_panel.Controls.Add(this.itemdealer);
+            this.iteminfo_panel.Controls.Add(this.traderprice);
+            this.iteminfo_panel.Controls.Add(this.itemtrader);
             this.iteminfo_panel.Controls.Add(this.itemprice);
             this.iteminfo_panel.Controls.Add(this.itemname);
             this.iteminfo_panel.Location = new System.Drawing.Point(12, 12);
             this.iteminfo_panel.Name = "iteminfo_panel";
-            this.iteminfo_panel.Size = new System.Drawing.Size(45, 59);
+            this.iteminfo_panel.Size = new System.Drawing.Size(45, 79);
             this.iteminfo_panel.TabIndex = 7;
+            // 
+            // itemtrader
+            // 
+            this.itemtrader.AutoSize = true;
+            this.itemtrader.BackColor = System.Drawing.Color.Transparent;
+            this.itemtrader.Location = new System.Drawing.Point(4, 44);
+            this.itemtrader.Margin = new System.Windows.Forms.Padding(3);
+            this.itemtrader.Name = "itemtrader";
+            this.itemtrader.Size = new System.Drawing.Size(38, 12);
+            this.itemtrader.TabIndex = 1;
+            this.itemtrader.Text = "label1";
             // 
             // itemprice
             // 
@@ -74,16 +87,16 @@ namespace TarkovPriceViewer
             this.itemname.TabIndex = 0;
             this.itemname.Text = "label1";
             // 
-            // itemdealer
+            // traderprice
             // 
-            this.itemdealer.AutoSize = true;
-            this.itemdealer.BackColor = System.Drawing.Color.Transparent;
-            this.itemdealer.Location = new System.Drawing.Point(4, 44);
-            this.itemdealer.Margin = new System.Windows.Forms.Padding(3);
-            this.itemdealer.Name = "itemdealer";
-            this.itemdealer.Size = new System.Drawing.Size(38, 12);
-            this.itemdealer.TabIndex = 1;
-            this.itemdealer.Text = "label1";
+            this.traderprice.AutoSize = true;
+            this.traderprice.BackColor = System.Drawing.Color.Transparent;
+            this.traderprice.Location = new System.Drawing.Point(4, 64);
+            this.traderprice.Margin = new System.Windows.Forms.Padding(3);
+            this.traderprice.Name = "traderprice";
+            this.traderprice.Size = new System.Drawing.Size(38, 12);
+            this.traderprice.TabIndex = 1;
+            this.traderprice.Text = "label1";
             // 
             // Overlay
             // 
@@ -113,6 +126,7 @@ namespace TarkovPriceViewer
         private System.Windows.Forms.Panel iteminfo_panel;
         private System.Windows.Forms.Label itemprice;
         private System.Windows.Forms.Label itemname;
-        private System.Windows.Forms.Label itemdealer;
+        private System.Windows.Forms.Label itemtrader;
+        private System.Windows.Forms.Label traderprice;
     }
 }
