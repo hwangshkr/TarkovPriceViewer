@@ -63,6 +63,7 @@ namespace TarkovPriceViewer
         private Overlay overlay = new Overlay();
         private Thread backthread = null;
         private System.Drawing.Point point = new System.Drawing.Point(0, 0);
+        private TesseractEngine ocr = new TesseractEngine("./tessdata", "eng", EngineMode.Default);
 
         public MainForm()
         {
@@ -163,9 +164,8 @@ namespace TarkovPriceViewer
 
         private void CheckTass(Mat textmat)
         {
-            var ocr = new TesseractEngine("./tessdata", "eng", EngineMode.LstmOnly);
             Bitmap b = BitmapConverter.ToBitmap(textmat);
-            var texts = ocr.Process(b);
+            Page texts = ocr.Process(b);
             String text = texts.GetText().Replace("\n", " ").Trim();
             Debug.WriteLine("text : " + text);
             if (!text.Equals(""))
