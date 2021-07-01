@@ -364,7 +364,7 @@ namespace TarkovPriceViewer
         {
             StringBuilder result = new StringBuilder();
             HtmlAgilityPack.HtmlDocument doc = new HtmlAgilityPack.HtmlDocument();
-            doc.LoadHtml(wc.DownloadString(wiki + "Spark_plug"));
+            doc.LoadHtml(wc.DownloadString(wiki + name));
             HtmlAgilityPack.HtmlNodeCollection nodes = doc.DocumentNode.SelectNodes("//li");
             if (nodes != null)
             {
