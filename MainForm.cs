@@ -171,11 +171,11 @@ namespace TarkovPriceViewer
 
         public static void CloseItemInfo()
         {
-            overlay.setItemInfoVisible(false);
             if (backthread != null)
             {
                 backthread.Abort();
             }
+            overlay.setItemInfoVisible(false);
         }
 
         private static void BackWork()
