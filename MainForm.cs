@@ -364,13 +364,13 @@ namespace TarkovPriceViewer
         {
             StringBuilder result = new StringBuilder();
             HtmlAgilityPack.HtmlDocument doc = new HtmlAgilityPack.HtmlDocument();
-            doc.LoadHtml(wc.DownloadString(wiki + name));
+            doc.LoadHtml(wc.DownloadString(wiki + "Spark_plug"));
             HtmlAgilityPack.HtmlNodeCollection nodes = doc.DocumentNode.SelectNodes("//li");
             if (nodes != null)
             {
                 foreach (HtmlAgilityPack.HtmlNode node in nodes)
                 {
-                    if (node.InnerText.Contains("for the quest") || node.InnerText.Contains("for the hideout"))
+                    if (node.InnerText.Contains(" to be found "))
                     {
                         result.Append(node.InnerText).Append("\n");
                     }
