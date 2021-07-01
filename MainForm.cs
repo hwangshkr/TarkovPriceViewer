@@ -17,13 +17,13 @@ namespace TarkovPriceViewer
     public partial class MainForm : Form
     {
         [DllImport("user32.dll")]
-        public static extern IntPtr FindWindow(string lpClassName, string lpWindowName);
+        private static extern IntPtr FindWindow(string lpClassName, string lpWindowName);
 
         [DllImport("user32.dll")]
-        internal static extern bool PrintWindow(IntPtr hWnd, IntPtr hdcBlt, int nFlags);
+        private static extern bool PrintWindow(IntPtr hWnd, IntPtr hdcBlt, int nFlags);
 
         [DllImport("user32.dll")]
-        internal static extern bool GetWindowPlacement(int hWnd, ref WINDOWPLACEMENT lpwndpl);
+        private static extern bool GetWindowPlacement(int hWnd, ref WINDOWPLACEMENT lpwndpl);
 
         [DllImport("user32.dll")]
         private static extern int GetWindowText(IntPtr hWnd, StringBuilder lpString, int nMaxCount);
@@ -32,27 +32,27 @@ namespace TarkovPriceViewer
         private static extern IntPtr GetActiveWindow();
 
         [DllImport("kernel32.dll")]
-        static extern IntPtr LoadLibrary(string lpFileName);
+        private static extern IntPtr LoadLibrary(string lpFileName);
 
         [DllImport("user32.dll")]
-        static extern IntPtr SetWindowsHookEx(int idHook, LowLevelKeyboardProc callback, IntPtr hInstance, uint threadId);
+        private static extern IntPtr SetWindowsHookEx(int idHook, LowLevelKeyboardProc callback, IntPtr hInstance, uint threadId);
 
         [DllImport("user32.dll")]
-        static extern bool UnhookWindowsHookEx(IntPtr hInstance);
+        private static extern bool UnhookWindowsHookEx(IntPtr hInstance);
 
         [DllImport("user32.dll")]
-        static extern IntPtr CallNextHookEx(IntPtr idHook, int nCode, int wParam, IntPtr lParam);
+        private static extern IntPtr CallNextHookEx(IntPtr idHook, int nCode, int wParam, IntPtr lParam);
 
         private delegate IntPtr LowLevelKeyboardProc(int nCode, IntPtr wParam, IntPtr lParam);
 
         [DllImport("user32.dll", SetLastError = true)]
-        static extern int GetWindowLong(IntPtr hWnd, int nIndex);
+        private static extern int GetWindowLong(IntPtr hWnd, int nIndex);
         [DllImport("user32.dll")]
-        static extern int SetWindowLong(IntPtr hWnd, int nIndex, int dwNewLong);
-        const int GWL_EXSTYLE = -20;
-        const int WS_EX_LAYERED = 0x80000;
+        private static extern int SetWindowLong(IntPtr hWnd, int nIndex, int dwNewLong);
+        private const int GWL_EXSTYLE = -20;
+        private const int WS_EX_LAYERED = 0x80000;
 
-        internal struct WINDOWPLACEMENT
+        private struct WINDOWPLACEMENT
         {
             public int length;
             public int flags;
@@ -62,7 +62,7 @@ namespace TarkovPriceViewer
             public System.Drawing.Rectangle rcNormalPosition;
         }
 
-        internal enum ShowWindowCommands : int
+        private enum ShowWindowCommands : int
         {
             Hide = 0,
             Normal = 1,
@@ -279,18 +279,36 @@ namespace TarkovPriceViewer
 
         private static void getItemList()
         {
-            String[] textValue = File.ReadAllLines(@"test.txt");
+            String[] textValue;
+            if (File.Exists(@"Resources\itemlist_with_price.txt"))
+            {
+                textValue = File.ReadAllLines(@"Resources\itemlist_with_price.txt");
+            } else
+            {
+                textValue = File.ReadAllLines(@"Resources\itemlist.txt");
+            }
             if (textValue.Length > 0)
             {
-                for (int i = 2; i < textValue.Length; i++)//ignore 1,2 Line
+                int start = 0;
+                if (textValue[start].Contains("update"))
+                {
+                    start = 2;
+                }
+                for (int i = start; i < textValue.Length; i++)//ignore 1,2 Line
                 {
                     String[] spl = textValue[i].Split('\t');
                     Item item = new Item();
-                    item.name = spl[1].Split('(')[0].Trim().ToCharArray();
-                    item.price = Convert.ToInt32(spl[2]);
-                    item.trader = spl[5];
-                    item.trader_price = Convert.ToInt32(spl[6]);
-                    item.currency = spl[7];
+                    if (spl.Length == 1)
+                    {
+                        item.name = spl[0].Split('(')[0].Trim().ToCharArray();
+                    } else
+                    {
+                        item.name = spl[1].Split('(')[0].Trim().ToCharArray();
+                        item.price = Convert.ToInt32(spl[2]);
+                        item.trader = spl[5];
+                        item.trader_price = Convert.ToInt32(spl[6]);
+                        item.currency = spl[7];
+                    }
                     itemlist.Add(item);
                 }
             }

@@ -15,13 +15,15 @@ namespace TarkovPriceViewer
     public partial class Overlay : Form
     {
         [DllImport("user32.dll", SetLastError = true)]
-        static extern int GetWindowLong(IntPtr hWnd, int nIndex);
+        private static extern int GetWindowLong(IntPtr hWnd, int nIndex);
         [DllImport("user32.dll")]
-        static extern int SetWindowLong(IntPtr hWnd, int nIndex, int dwNewLong);
-        const int GWL_EXSTYLE = -20;
-        const int WS_EX_TOOLWINDOW = 0x00000080;
-        const int WS_EX_LAYERED = 0x80000;
-        const int WS_EX_TRANSPARENT = 0x20;
+        private static extern int SetWindowLong(IntPtr hWnd, int nIndex, int dwNewLong);
+        private const int GWL_EXSTYLE = -20;
+        private const int WS_EX_TOOLWINDOW = 0x00000080;
+        private const int WS_EX_LAYERED = 0x80000;
+        private const int WS_EX_TRANSPARENT = 0x20;
+        private const String rouble = "₽";
+        private const String dollar = "$";
 
         public Overlay()
         {
@@ -47,7 +49,7 @@ namespace TarkovPriceViewer
                 itemusage.Visible = false;
                 iteminfo_panel.Location = point;
                 itemname.Text = "Name : " + new string(item.name);
-                itemprice.Text = "Flee Price : " + item.currency + item.price;
+                itemprice.Text = "Flee Price : " + rouble + item.price;
                 itemtrader.Text = "Trader : " + item.trader;
                 traderprice.Text = "Trader Price : " + item.currency + item.trader_price;
                 iteminfo_panel.Visible = true;
