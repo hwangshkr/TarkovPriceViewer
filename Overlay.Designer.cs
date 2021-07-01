@@ -30,11 +30,11 @@ namespace TarkovPriceViewer
         private void InitializeComponent()
         {
             this.iteminfo_panel = new System.Windows.Forms.Panel();
+            this.itemusage = new System.Windows.Forms.Label();
             this.traderprice = new System.Windows.Forms.Label();
             this.itemtrader = new System.Windows.Forms.Label();
             this.itemprice = new System.Windows.Forms.Label();
             this.itemname = new System.Windows.Forms.Label();
-            this.itemusage = new System.Windows.Forms.Label();
             this.iteminfo_panel.SuspendLayout();
             this.SuspendLayout();
             // 
@@ -59,6 +59,20 @@ namespace TarkovPriceViewer
             this.iteminfo_panel.TabIndex = 7;
             this.iteminfo_panel.SizeChanged += new System.EventHandler(this.iteminfo_panel_SizeChanged);
             this.iteminfo_panel.Paint += new System.Windows.Forms.PaintEventHandler(this.iteminfo_panel_Paint);
+            // 
+            // itemusage
+            // 
+            this.itemusage.AutoSize = true;
+            this.itemusage.BackColor = System.Drawing.Color.Transparent;
+            this.itemusage.Font = new System.Drawing.Font("굴림", 9F, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point, ((byte)(129)));
+            this.itemusage.ForeColor = System.Drawing.Color.White;
+            this.itemusage.Location = new System.Drawing.Point(14, 94);
+            this.itemusage.Margin = new System.Windows.Forms.Padding(3);
+            this.itemusage.Name = "itemusage";
+            this.itemusage.Size = new System.Drawing.Size(69, 12);
+            this.itemusage.TabIndex = 1;
+            this.itemusage.Text = "Needs for";
+            this.itemusage.TextAlign = System.Drawing.ContentAlignment.MiddleLeft;
             // 
             // traderprice
             // 
@@ -99,7 +113,7 @@ namespace TarkovPriceViewer
             this.itemprice.Name = "itemprice";
             this.itemprice.Size = new System.Drawing.Size(82, 12);
             this.itemprice.TabIndex = 1;
-            this.itemprice.Text = "Flee Price :";
+            this.itemprice.Text = "Flea Price :";
             this.itemprice.TextAlign = System.Drawing.ContentAlignment.MiddleLeft;
             // 
             // itemname
@@ -115,20 +129,6 @@ namespace TarkovPriceViewer
             this.itemname.TabIndex = 0;
             this.itemname.Text = "Name :";
             this.itemname.TextAlign = System.Drawing.ContentAlignment.MiddleLeft;
-            // 
-            // itemusage
-            // 
-            this.itemusage.AutoSize = true;
-            this.itemusage.BackColor = System.Drawing.Color.Transparent;
-            this.itemusage.Font = new System.Drawing.Font("굴림", 9F, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point, ((byte)(129)));
-            this.itemusage.ForeColor = System.Drawing.Color.White;
-            this.itemusage.Location = new System.Drawing.Point(14, 94);
-            this.itemusage.Margin = new System.Windows.Forms.Padding(3);
-            this.itemusage.Name = "itemusage";
-            this.itemusage.Size = new System.Drawing.Size(69, 12);
-            this.itemusage.TabIndex = 1;
-            this.itemusage.Text = "Needs for";
-            this.itemusage.TextAlign = System.Drawing.ContentAlignment.MiddleLeft;
             // 
             // Overlay
             // 

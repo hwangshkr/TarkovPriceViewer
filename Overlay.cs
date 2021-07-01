@@ -49,7 +49,7 @@ namespace TarkovPriceViewer
                 itemusage.Visible = false;
                 iteminfo_panel.Location = point;
                 itemname.Text = "Name : " + new string(item.name);
-                itemprice.Text = "Flee Price : " + rouble + item.price;
+                itemprice.Text = "Flea Price : " + rouble + item.price;
                 itemtrader.Text = "Trader : " + item.trader;
                 traderprice.Text = "Trader Price : " + item.currency + item.trader_price;
                 iteminfo_panel.Visible = true;
