@@ -5,6 +5,7 @@ using System.Collections.Generic;
 using System.Diagnostics;
 using System.Drawing;
 using System.IO;
+using System.Net;
 using System.Runtime.InteropServices;
 using System.Text;
 using System.Threading;
@@ -44,6 +45,13 @@ namespace TarkovPriceViewer
 
         private delegate IntPtr LowLevelKeyboardProc(int nCode, IntPtr wParam, IntPtr lParam);
 
+        [DllImport("user32.dll", SetLastError = true)]
+        static extern int GetWindowLong(IntPtr hWnd, int nIndex);
+        [DllImport("user32.dll")]
+        static extern int SetWindowLong(IntPtr hWnd, int nIndex, int dwNewLong);
+        const int GWL_EXSTYLE = -20;
+        const int WS_EX_LAYERED = 0x80000;
+
         internal struct WINDOWPLACEMENT
         {
             public int length;
@@ -75,18 +83,20 @@ namespace TarkovPriceViewer
         private const int WH_KEYBOARD_LL = 13;
         private const int WM_KEYDOWN = 0x100;
         private const String appname = "EscapeFromTarkov";
+        private const String wiki = "https://escapefromtarkov.fandom.com/wiki/";
         private static int nFlags = 0x0;
-        private static Bitmap fullimage = new Bitmap(@"img\test.png");
+        private static Bitmap fullimage = null;
         private static Overlay overlay = new Overlay();
         private static Thread backthread = null;
         private static System.Drawing.Point point = new System.Drawing.Point(0, 0);
         private static List<Item> itemlist = new List<Item>();
+        private static WebClient wc = new WebClient();
 
         public MainForm()
         {
             InitializeComponent();
-            getItemList();
-            overlay.Show();
+            var style = GetWindowLong(this.Handle, GWL_EXSTYLE);
+            SetWindowLong(this.Handle, GWL_EXSTYLE, style | WS_EX_LAYERED);
         }
 
         private void MainForm_load(object sender, EventArgs e)
@@ -97,16 +107,28 @@ namespace TarkovPriceViewer
             {
                 nFlags = 0x2;
             }
+            TrayIcon.Visible = true;
+            HideFormWhenStartup();
+            wc.Encoding = Encoding.UTF8;
+            getItemList();
+            overlay.Show();
             SetHook();
+        }
+
+        private void HideFormWhenStartup()
+        {
+            this.Opacity = 0;
+            this.Show();
             BeginInvoke(new MethodInvoker(delegate
             {
                 this.Hide();
-                TrayIcon.Visible = true;
+                this.Opacity = 1;
             }));
         }
 
         private void MainForm_closed(object sender, FormClosedEventArgs e)
         {
+            TrayIcon.Dispose();
             UnHook();
             CloseItemInfo();
         }
@@ -207,13 +229,23 @@ namespace TarkovPriceViewer
             else
             {
                 Debug.WriteLine("error - no window");
+                fullimage = null;
+#if DEBUG
+                try
+                {
+                    fullimage = new Bitmap(@"img\test.png");
+                } catch (Exception e)
+                {
+                    Debug.WriteLine("no test img" + e.Message);
+                }
+#endif
             }
         }
 
-        private static String CheckTass(Mat textmat)
+        private static String getTesseract(Mat textmat)
         {
             Bitmap b = BitmapConverter.ToBitmap(textmat);
-            TesseractEngine ocr = new TesseractEngine("./tessdata", "eng", EngineMode.Default);
+            TesseractEngine ocr = new TesseractEngine(@"./Resources/tessdata", "eng", EngineMode.Default);
             Page texts = ocr.Process(b);
             String text = texts.GetText().Replace("\n", " ").Trim();
             Debug.WriteLine("text : " + text);
@@ -233,11 +265,12 @@ namespace TarkovPriceViewer
                 if (rect2.Width > 5 && rect2.Height > 10)
                 {
                     Cv2.Rectangle(imageOutP, rect2, Scalar.Green, 2);
-                    String text = CheckTass(ScreenMat.SubMat(rect2));
+                    String text = getTesseract(ScreenMat.SubMat(rect2));
                     if (!text.Equals(""))
                     {
                         Item item = FindItemInfo(text.ToCharArray());
                         overlay.ShowInfo(item, point);
+                        getItemUsage(new String(item.name));
                         break;
                     }
                 }
@@ -281,6 +314,7 @@ namespace TarkovPriceViewer
                     }
                 }
             }
+            Debug.WriteLine("text match : " + new String(result.name));
             return result;
         }
 
@@ -326,6 +360,28 @@ namespace TarkovPriceViewer
             return d[m - 1, n - 1];
         }
 
+        private static void getItemUsage(String name)
+        {
+            StringBuilder result = new StringBuilder();
+            HtmlAgilityPack.HtmlDocument doc = new HtmlAgilityPack.HtmlDocument();
+            doc.LoadHtml(wc.DownloadString(wiki + name));
+            HtmlAgilityPack.HtmlNodeCollection nodes = doc.DocumentNode.SelectNodes("//li");
+            if (nodes != null)
+            {
+                foreach (HtmlAgilityPack.HtmlNode node in nodes)
+                {
+                    if (node.InnerText.Contains("for the quest") || node.InnerText.Contains("for the hideout"))
+                    {
+                        result.Append(node.InnerText).Append("\n");
+                    }
+                }
+            }
+            if (!result.ToString().Trim().Equals(""))
+            {
+                overlay.VisibleUsage(result.ToString().Trim());
+            }
+        }
+
         private void MainForm_FormClosing(object sender, FormClosingEventArgs e)
         {
             if (e.CloseReason == CloseReason.UserClosing)
@@ -333,6 +389,9 @@ namespace TarkovPriceViewer
                 TrayIcon.Visible = true;
                 this.Hide();
                 e.Cancel = true;
+            } else
+            {
+                Application.Exit();
             }
         }
 
@@ -347,7 +406,7 @@ namespace TarkovPriceViewer
 
         private void TrayExit_Click(object sender, EventArgs e)
         {
-            this.Close();
+            Application.Exit();
         }
 
         private void TrayShow_Click(object sender, EventArgs e)

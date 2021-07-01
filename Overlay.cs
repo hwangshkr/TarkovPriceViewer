@@ -44,13 +44,13 @@ namespace TarkovPriceViewer
             Action show = delegate ()
             {
                 iteminfo_panel.Visible = false;
+                itemusage.Visible = false;
                 iteminfo_panel.Location = point;
-                itemname.Text = new string(item.name);
-                itemprice.Text = item.price + "";
-                itemtrader.Text = item.trader;
-                traderprice.Text = item.trader_price + "";
+                itemname.Text = "Name : " + new string(item.name);
+                itemprice.Text = "Flee Price : " + item.currency + item.price;
+                itemtrader.Text = "Trader : " + item.trader;
+                traderprice.Text = "Trader Price : " + item.currency + item.trader_price;
                 iteminfo_panel.Visible = true;
-                Debug.WriteLine("ShowInfo : " + point.ToString());
             };
             Invoke(show);
         }
@@ -63,6 +63,26 @@ namespace TarkovPriceViewer
         public void setItemInfoVisible(bool isvisible)
         {
             iteminfo_panel.Visible = isvisible;
+        }
+
+        public void VisibleUsage(String str)
+        {
+            Action show = delegate ()
+            {
+                itemusage.Text = str;
+                itemusage.Visible = true;
+            };
+            Invoke(show);
+        }
+
+        private void iteminfo_panel_Paint(object sender, PaintEventArgs e)
+        {
+            ControlPaint.DrawBorder(e.Graphics, (sender as Panel).ClientRectangle, Color.White, ButtonBorderStyle.Solid);
+        }
+
+        private void iteminfo_panel_SizeChanged(object sender, EventArgs e)
+        {
+            (sender as Panel).Refresh();
         }
     }
 }

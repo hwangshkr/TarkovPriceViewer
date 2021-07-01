@@ -30,10 +30,11 @@ namespace TarkovPriceViewer
         private void InitializeComponent()
         {
             this.iteminfo_panel = new System.Windows.Forms.Panel();
+            this.traderprice = new System.Windows.Forms.Label();
             this.itemtrader = new System.Windows.Forms.Label();
             this.itemprice = new System.Windows.Forms.Label();
             this.itemname = new System.Windows.Forms.Label();
-            this.traderprice = new System.Windows.Forms.Label();
+            this.itemusage = new System.Windows.Forms.Label();
             this.iteminfo_panel.SuspendLayout();
             this.SuspendLayout();
             // 
@@ -44,59 +45,90 @@ namespace TarkovPriceViewer
             | System.Windows.Forms.AnchorStyles.Right)));
             this.iteminfo_panel.AutoSize = true;
             this.iteminfo_panel.AutoSizeMode = System.Windows.Forms.AutoSizeMode.GrowAndShrink;
-            this.iteminfo_panel.BackColor = System.Drawing.Color.White;
+            this.iteminfo_panel.BackColor = System.Drawing.Color.Black;
+            this.iteminfo_panel.Controls.Add(this.itemusage);
             this.iteminfo_panel.Controls.Add(this.traderprice);
             this.iteminfo_panel.Controls.Add(this.itemtrader);
             this.iteminfo_panel.Controls.Add(this.itemprice);
             this.iteminfo_panel.Controls.Add(this.itemname);
+            this.iteminfo_panel.ForeColor = System.Drawing.Color.Black;
             this.iteminfo_panel.Location = new System.Drawing.Point(12, 12);
             this.iteminfo_panel.Name = "iteminfo_panel";
-            this.iteminfo_panel.Size = new System.Drawing.Size(45, 79);
+            this.iteminfo_panel.Padding = new System.Windows.Forms.Padding(10);
+            this.iteminfo_panel.Size = new System.Drawing.Size(124, 119);
             this.iteminfo_panel.TabIndex = 7;
-            // 
-            // itemtrader
-            // 
-            this.itemtrader.AutoSize = true;
-            this.itemtrader.BackColor = System.Drawing.Color.Transparent;
-            this.itemtrader.Location = new System.Drawing.Point(4, 44);
-            this.itemtrader.Margin = new System.Windows.Forms.Padding(3);
-            this.itemtrader.Name = "itemtrader";
-            this.itemtrader.Size = new System.Drawing.Size(38, 12);
-            this.itemtrader.TabIndex = 1;
-            this.itemtrader.Text = "label1";
-            // 
-            // itemprice
-            // 
-            this.itemprice.AutoSize = true;
-            this.itemprice.BackColor = System.Drawing.Color.Transparent;
-            this.itemprice.Location = new System.Drawing.Point(4, 24);
-            this.itemprice.Margin = new System.Windows.Forms.Padding(3);
-            this.itemprice.Name = "itemprice";
-            this.itemprice.Size = new System.Drawing.Size(38, 12);
-            this.itemprice.TabIndex = 1;
-            this.itemprice.Text = "label1";
-            // 
-            // itemname
-            // 
-            this.itemname.AutoSize = true;
-            this.itemname.BackColor = System.Drawing.Color.Transparent;
-            this.itemname.Location = new System.Drawing.Point(4, 4);
-            this.itemname.Margin = new System.Windows.Forms.Padding(3);
-            this.itemname.Name = "itemname";
-            this.itemname.Size = new System.Drawing.Size(38, 12);
-            this.itemname.TabIndex = 0;
-            this.itemname.Text = "label1";
+            this.iteminfo_panel.SizeChanged += new System.EventHandler(this.iteminfo_panel_SizeChanged);
+            this.iteminfo_panel.Paint += new System.Windows.Forms.PaintEventHandler(this.iteminfo_panel_Paint);
             // 
             // traderprice
             // 
             this.traderprice.AutoSize = true;
             this.traderprice.BackColor = System.Drawing.Color.Transparent;
-            this.traderprice.Location = new System.Drawing.Point(4, 64);
+            this.traderprice.Font = new System.Drawing.Font("굴림", 9F, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point, ((byte)(129)));
+            this.traderprice.ForeColor = System.Drawing.Color.White;
+            this.traderprice.Location = new System.Drawing.Point(14, 74);
             this.traderprice.Margin = new System.Windows.Forms.Padding(3);
             this.traderprice.Name = "traderprice";
-            this.traderprice.Size = new System.Drawing.Size(38, 12);
+            this.traderprice.Size = new System.Drawing.Size(97, 12);
             this.traderprice.TabIndex = 1;
-            this.traderprice.Text = "label1";
+            this.traderprice.Text = "Trader Price :";
+            this.traderprice.TextAlign = System.Drawing.ContentAlignment.MiddleLeft;
+            // 
+            // itemtrader
+            // 
+            this.itemtrader.AutoSize = true;
+            this.itemtrader.BackColor = System.Drawing.Color.Transparent;
+            this.itemtrader.Font = new System.Drawing.Font("굴림", 9F, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point, ((byte)(129)));
+            this.itemtrader.ForeColor = System.Drawing.Color.White;
+            this.itemtrader.Location = new System.Drawing.Point(14, 54);
+            this.itemtrader.Margin = new System.Windows.Forms.Padding(3);
+            this.itemtrader.Name = "itemtrader";
+            this.itemtrader.Size = new System.Drawing.Size(58, 12);
+            this.itemtrader.TabIndex = 1;
+            this.itemtrader.Text = "Trader :";
+            this.itemtrader.TextAlign = System.Drawing.ContentAlignment.MiddleLeft;
+            // 
+            // itemprice
+            // 
+            this.itemprice.AutoSize = true;
+            this.itemprice.BackColor = System.Drawing.Color.Transparent;
+            this.itemprice.Font = new System.Drawing.Font("굴림", 9F, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point, ((byte)(129)));
+            this.itemprice.ForeColor = System.Drawing.Color.White;
+            this.itemprice.Location = new System.Drawing.Point(14, 34);
+            this.itemprice.Margin = new System.Windows.Forms.Padding(3);
+            this.itemprice.Name = "itemprice";
+            this.itemprice.Size = new System.Drawing.Size(82, 12);
+            this.itemprice.TabIndex = 1;
+            this.itemprice.Text = "Flee Price :";
+            this.itemprice.TextAlign = System.Drawing.ContentAlignment.MiddleLeft;
+            // 
+            // itemname
+            // 
+            this.itemname.AutoSize = true;
+            this.itemname.BackColor = System.Drawing.Color.Transparent;
+            this.itemname.Font = new System.Drawing.Font("굴림", 9F, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point, ((byte)(129)));
+            this.itemname.ForeColor = System.Drawing.Color.White;
+            this.itemname.Location = new System.Drawing.Point(14, 17);
+            this.itemname.Margin = new System.Windows.Forms.Padding(3);
+            this.itemname.Name = "itemname";
+            this.itemname.Size = new System.Drawing.Size(53, 12);
+            this.itemname.TabIndex = 0;
+            this.itemname.Text = "Name :";
+            this.itemname.TextAlign = System.Drawing.ContentAlignment.MiddleLeft;
+            // 
+            // itemusage
+            // 
+            this.itemusage.AutoSize = true;
+            this.itemusage.BackColor = System.Drawing.Color.Transparent;
+            this.itemusage.Font = new System.Drawing.Font("굴림", 9F, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point, ((byte)(129)));
+            this.itemusage.ForeColor = System.Drawing.Color.White;
+            this.itemusage.Location = new System.Drawing.Point(14, 94);
+            this.itemusage.Margin = new System.Windows.Forms.Padding(3);
+            this.itemusage.Name = "itemusage";
+            this.itemusage.Size = new System.Drawing.Size(69, 12);
+            this.itemusage.TabIndex = 1;
+            this.itemusage.Text = "Needs for";
+            this.itemusage.TextAlign = System.Drawing.ContentAlignment.MiddleLeft;
             // 
             // Overlay
             // 
@@ -128,5 +160,6 @@ namespace TarkovPriceViewer
         private System.Windows.Forms.Label itemname;
         private System.Windows.Forms.Label itemtrader;
         private System.Windows.Forms.Label traderprice;
+        private System.Windows.Forms.Label itemusage;
     }
 }
