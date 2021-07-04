@@ -18,12 +18,12 @@ namespace TarkovPriceViewer
         private static extern int GetWindowLong(IntPtr hWnd, int nIndex);
         [DllImport("user32.dll")]
         private static extern int SetWindowLong(IntPtr hWnd, int nIndex, int dwNewLong);
-        private const int GWL_EXSTYLE = -20;
-        private const int WS_EX_TOOLWINDOW = 0x00000080;
-        private const int WS_EX_LAYERED = 0x80000;
-        private const int WS_EX_TRANSPARENT = 0x20;
-        private const String rouble = "₽";
-        private const String dollar = "$";
+        private static readonly int GWL_EXSTYLE = -20;
+        private static readonly int WS_EX_TOOLWINDOW = 0x00000080;
+        private static readonly int WS_EX_LAYERED = 0x80000;
+        private static readonly int WS_EX_TRANSPARENT = 0x20;
+        private static readonly String rouble = "₽";
+        private static readonly String dollar = "$";
 
         public Overlay()
         {
@@ -71,10 +71,34 @@ namespace TarkovPriceViewer
         {
             Action show = delegate ()
             {
-                itemusage.Text = str;
-                itemusage.Visible = true;
+                if (!str.Equals(""))
+                {
+                    itemusage.Text = str;
+                    itemusage.Visible = true;
+                }
             };
             Invoke(show);
+        }
+
+        private void FixLocation(Panel p)
+        {
+            int totalwidth = p.Location.X + p.Width;
+            int totalheight = p.Location.Y + p.Height;
+            int x = p.Location.X;
+            int y = p.Location.Y;
+            if (totalwidth > this.Width)
+            {
+                x -= totalwidth - this.Width;
+            }
+            if (totalheight > this.Height)
+            {
+                y -= totalheight - this.Height;
+            }
+            if (x != p.Location.X || y != p.Location.Y)
+            {
+                p.Location = new Point(x, y);
+            }
+            p.Refresh();
         }
 
         private void iteminfo_panel_Paint(object sender, PaintEventArgs e)
@@ -84,7 +108,12 @@ namespace TarkovPriceViewer
 
         private void iteminfo_panel_SizeChanged(object sender, EventArgs e)
         {
-            (sender as Panel).Refresh();
+            FixLocation(sender as Panel);
+        }
+
+        private void iteminfo_panel_LocationChanged(object sender, EventArgs e)
+        {
+            FixLocation(sender as Panel);
         }
     }
 }

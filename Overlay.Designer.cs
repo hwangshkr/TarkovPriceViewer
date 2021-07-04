@@ -57,6 +57,7 @@ namespace TarkovPriceViewer
             this.iteminfo_panel.Padding = new System.Windows.Forms.Padding(10);
             this.iteminfo_panel.Size = new System.Drawing.Size(124, 119);
             this.iteminfo_panel.TabIndex = 7;
+            this.iteminfo_panel.LocationChanged += new System.EventHandler(this.iteminfo_panel_LocationChanged);
             this.iteminfo_panel.SizeChanged += new System.EventHandler(this.iteminfo_panel_SizeChanged);
             this.iteminfo_panel.Paint += new System.Windows.Forms.PaintEventHandler(this.iteminfo_panel_Paint);
             // 

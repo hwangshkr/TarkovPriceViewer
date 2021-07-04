@@ -78,19 +78,19 @@ namespace TarkovPriceViewer
             public String currency;
         }
 
+        private static readonly int WH_KEYBOARD_LL = 13;
+        private static readonly int WM_KEYDOWN = 0x100;
+        private static readonly LowLevelKeyboardProc _proc = hookProc;
+        private static readonly Overlay overlay = new Overlay();
+        private static readonly String appname = "EscapeFromTarkov";
+        private static readonly String wiki = "https://escapefromtarkov.fandom.com/wiki/";
+        private static readonly List<Item> itemlist = new List<Item>();
+        private static readonly WebClient wc = new WebClient();
         private static IntPtr hhook = IntPtr.Zero;
-        private LowLevelKeyboardProc _proc = hookProc;
-        private const int WH_KEYBOARD_LL = 13;
-        private const int WM_KEYDOWN = 0x100;
-        private const String appname = "EscapeFromTarkov";
-        private const String wiki = "https://escapefromtarkov.fandom.com/wiki/";
         private static int nFlags = 0x0;
         private static Bitmap fullimage = null;
-        private static Overlay overlay = new Overlay();
         private static Thread backthread = null;
         private static System.Drawing.Point point = new System.Drawing.Point(0, 0);
-        private static List<Item> itemlist = new List<Item>();
-        private static WebClient wc = new WebClient();
 
         public MainForm()
         {
@@ -254,6 +254,7 @@ namespace TarkovPriceViewer
 
         private static void FindItemName()
         {
+            Item item = new Item();
             Mat ScreenMat = BitmapConverter.ToMat(fullimage).CvtColor(ColorConversionCodes.BGRA2BGR);
             Mat rac_img = ScreenMat.InRange(new Scalar(90, 89, 82), new Scalar(90, 89, 82));
             OpenCvSharp.Point[][] contours;
@@ -268,47 +269,33 @@ namespace TarkovPriceViewer
                     String text = getTesseract(ScreenMat.SubMat(rect2));
                     if (!text.Equals(""))
                     {
-                        Item item = FindItemInfo(text.ToCharArray());
-                        overlay.ShowInfo(item, point);
-                        getItemUsage(new String(item.name));
+                        item = FindItemInfo(text.ToCharArray());
                         break;
                     }
                 }
             }
+            overlay.ShowInfo(item, point);
+            getItemUsage(new String(item.name));
         }
 
         private static void getItemList()
         {
-            String[] textValue;
-            if (File.Exists(@"Resources\itemlist_with_price.txt"))
-            {
-                textValue = File.ReadAllLines(@"Resources\itemlist_with_price.txt");
-            } else
+            String[] textValue = null;
+            if (File.Exists(@"Resources\itemlist.txt"))
             {
                 textValue = File.ReadAllLines(@"Resources\itemlist.txt");
             }
-            if (textValue.Length > 0)
+            if (textValue != null && textValue.Length > 0)
             {
-                int start = 0;
-                if (textValue[start].Contains("update"))
-                {
-                    start = 2;
-                }
-                for (int i = start; i < textValue.Length; i++)//ignore 1,2 Line
+                for (int i = 2; i < textValue.Length; i++)//ignore 1,2 Line
                 {
                     String[] spl = textValue[i].Split('\t');
                     Item item = new Item();
-                    if (spl.Length == 1)
-                    {
-                        item.name = spl[0].Split('(')[0].Trim().ToCharArray();
-                    } else
-                    {
-                        item.name = spl[1].Split('(')[0].Trim().ToCharArray();
-                        item.price = Convert.ToInt32(spl[2]);
-                        item.trader = spl[5];
-                        item.trader_price = Convert.ToInt32(spl[6]);
-                        item.currency = spl[7];
-                    }
+                    item.name = spl[1].Split('(')[0].Trim().ToCharArray();
+                    item.price = Convert.ToInt32(spl[2]);
+                    item.trader = spl[5];
+                    item.trader_price = Convert.ToInt32(spl[6]);
+                    item.currency = spl[7];
                     itemlist.Add(item);
                 }
             }
@@ -381,23 +368,32 @@ namespace TarkovPriceViewer
         private static void getItemUsage(String name)
         {
             StringBuilder result = new StringBuilder();
-            HtmlAgilityPack.HtmlDocument doc = new HtmlAgilityPack.HtmlDocument();
-            doc.LoadHtml(wc.DownloadString(wiki + name));
-            HtmlAgilityPack.HtmlNodeCollection nodes = doc.DocumentNode.SelectNodes("//li");
-            if (nodes != null)
+            if (!name.Equals(""))
             {
-                foreach (HtmlAgilityPack.HtmlNode node in nodes)
+                try
                 {
-                    if (node.InnerText.Contains(" to be found "))
+                    HtmlAgilityPack.HtmlDocument doc = new HtmlAgilityPack.HtmlDocument();
+                    doc.LoadHtml(wc.DownloadString(wiki + name));
+                    HtmlAgilityPack.HtmlNodeCollection nodes = doc.DocumentNode.SelectNodes("//li");
+                    if (nodes != null)
                     {
-                        result.Append(node.InnerText).Append("\n");
+                        foreach (HtmlAgilityPack.HtmlNode node in nodes)
+                        {
+                            if (node.InnerText.Contains(" to be found "))
+                            {
+                                result.Append(node.InnerText).Append("\n");
+                            }
+                        }
                     }
+                } catch (Exception e)
+                {
+                    Debug.WriteLine(e.Message);
                 }
-            }
-            if (!result.ToString().Trim().Equals(""))
+            } else
             {
-                overlay.VisibleUsage(result.ToString().Trim());
+                result.Append("Item Name Not Found");
             }
+            overlay.VisibleUsage(result.ToString().Trim());
         }
 
         private void MainForm_FormClosing(object sender, FormClosingEventArgs e)

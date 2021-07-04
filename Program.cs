@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Diagnostics;
 using System.Linq;
 using System.Threading.Tasks;
 using System.Windows.Forms;
@@ -16,6 +17,21 @@ namespace TarkovPriceViewer
         {
             Application.EnableVisualStyles();
             Application.SetCompatibleTextRenderingDefault(false);
+            foreach (Process process in Process.GetProcessesByName(Process.GetCurrentProcess().ProcessName))
+            {
+                if (process.Id == Process.GetCurrentProcess().Id)
+                {
+                    continue;
+                }
+                try
+                {
+                    process.Kill();
+                }
+                catch (Exception ex)
+                {
+                    Debug.WriteLine(ex.Message);
+                }
+            }
             Application.Run(new MainForm());
         }
     }
