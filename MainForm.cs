@@ -17,8 +17,6 @@ namespace TarkovPriceViewer
 {
     public partial class MainForm : Form
     {
-        [DllImport("user32.dll")]
-        private static extern IntPtr FindWindow(string lpClassName, string lpWindowName);
 
         [DllImport("user32.dll")]
         private static extern bool PrintWindow(IntPtr hWnd, IntPtr hdcBlt, int nFlags);
@@ -30,7 +28,7 @@ namespace TarkovPriceViewer
         private static extern int GetWindowText(IntPtr hWnd, StringBuilder lpString, int nMaxCount);
 
         [DllImport("user32.dll")]
-        private static extern IntPtr GetActiveWindow();
+        private static extern IntPtr GetForegroundWindow();
 
         [DllImport("kernel32.dll")]
         private static extern IntPtr LoadLibrary(string lpFileName);
@@ -73,7 +71,6 @@ namespace TarkovPriceViewer
 
         private static readonly int WH_KEYBOARD_LL = 13;
         private static readonly int WM_KEYDOWN = 0x100;
-        private static readonly LowLevelKeyboardProc _proc = hookProc;
         private static readonly Overlay overlay = new Overlay();
         private static readonly String setting_path = @"settings.json";
         private static readonly String appname = "EscapeFromTarkov";
@@ -81,6 +78,7 @@ namespace TarkovPriceViewer
         private static readonly String tarkovmarket = "https://tarkov-market.com/item/";
         private static readonly List<Item> itemlist = new List<Item>();
         private static readonly WebClient wc = new WebClient();
+        private static LowLevelKeyboardProc _proc = null;
         private static Dictionary<String, String> settings;
         private static IntPtr hhook = IntPtr.Zero;
         private static int nFlags = 0x0;
@@ -97,13 +95,11 @@ namespace TarkovPriceViewer
 
         private void MainForm_load(object sender, EventArgs e)
         {
-            LoadSettings();
-            OperatingSystem os = Environment.OSVersion;
-            Version v = os.Version;
-            if (v.Major == 10)
+            if (Environment.OSVersion.Version.Major == 10)
             {
                 nFlags = 0x2;
             }
+            LoadSettings();
             TrayIcon.Visible = true;
             HideFormWhenStartup();
             wc.Encoding = Encoding.UTF8;
@@ -132,16 +128,17 @@ namespace TarkovPriceViewer
 
         public void SetHook()
         {
+            _proc = hookProc;
             IntPtr hInstance = LoadLibrary("User32");
             hhook = SetWindowsHookEx(WH_KEYBOARD_LL, _proc, hInstance, 0);
         }
 
-        public static void UnHook()
+        public void UnHook()
         {
             UnhookWindowsHookEx(hhook);
         }
 
-        public static IntPtr hookProc(int code, IntPtr wParam, IntPtr lParam)
+        public IntPtr hookProc(int code, IntPtr wParam, IntPtr lParam)
         {
             if (code >= 0 && wParam == (IntPtr)WM_KEYDOWN)
             {
@@ -166,17 +163,23 @@ namespace TarkovPriceViewer
             return CallNextHookEx(hhook, code, (int)wParam, lParam);
         }
 
-        private static void LoadSettings()
+        private void LoadSettings()
         {
-            if (!File.Exists(setting_path))
+            try
             {
-                File.Create(setting_path);
+                if (!File.Exists(setting_path))
+                {
+                    File.Create(setting_path);
+                }
+                String text = File.ReadAllText(setting_path);
+                settings = JsonSerializer.Deserialize<Dictionary<String, String>>(text);
+            } catch (Exception e)
+            {
+                Debug.WriteLine(e.Message);
             }
-            String text = File.ReadAllText(setting_path);
-            settings = JsonSerializer.Deserialize<Dictionary<String, String>>(text);
         }
 
-        public static void CloseItemInfo()
+        public void CloseItemInfo()
         {
             if (backthread != null)
             {
@@ -185,50 +188,46 @@ namespace TarkovPriceViewer
             overlay.setItemInfoVisible(false);
         }
 
-        private static void FindItemThread()
+        private void FindItemThread()
         {
-            if (CheckisTarkov())
+            CaptureScreen(CheckisTarkov());
+            if (fullimage != null)
             {
-                CaptureScreen();
-                if (fullimage != null)
-                {
-                    FindItem();
-                }
-                else
-                {
-                    Debug.WriteLine("image null");
-                }
+                FindItem();
+            }
+            else
+            {
+                Debug.WriteLine("image null");
             }
         }
 
-        private static bool CheckisTarkov()
+        private IntPtr CheckisTarkov()
         {
-            IntPtr hWnd = GetActiveWindow();
+            IntPtr hWnd = GetForegroundWindow();
             if (hWnd != IntPtr.Zero)
             {
                 StringBuilder sbWinText = new StringBuilder(260);
                 GetWindowText(hWnd, sbWinText, 260);
                 if (sbWinText.ToString() == appname)
                 {
-                    return true;
+                    return hWnd;
                 }
             }
             Debug.WriteLine("error - no app");
-            return true;
+            return IntPtr.Zero;
         }
 
-        private static void CaptureScreen()
+        private void CaptureScreen(IntPtr hWnd)
         {
-            IntPtr findwindow = FindWindow(null, appname);
-            if (findwindow != IntPtr.Zero)
+            if (hWnd != IntPtr.Zero)
             {
-                Graphics Graphicsdata = Graphics.FromHwnd(findwindow);
+                Graphics Graphicsdata = Graphics.FromHwnd(hWnd);
                 Rectangle rect = Rectangle.Round(Graphicsdata.VisibleClipBounds);
                 Bitmap bmp = new Bitmap(rect.Width, rect.Height);
                 using (Graphics g = Graphics.FromImage(bmp))
                 {
                     IntPtr hdc = g.GetHdc();
-                    PrintWindow(findwindow, hdc, nFlags);
+                    PrintWindow(hWnd, hdc, nFlags);
                     g.ReleaseHdc(hdc);
                 }
                 fullimage = bmp;
@@ -250,7 +249,7 @@ namespace TarkovPriceViewer
             }
         }
 
-        private static String getTesseract(Mat textmat)
+        private String getTesseract(Mat textmat)
         {
             Bitmap b = BitmapConverter.ToBitmap(textmat);
             TesseractEngine ocr = new TesseractEngine(@"./Resources/tessdata", "eng", EngineMode.Default);
@@ -260,33 +259,31 @@ namespace TarkovPriceViewer
             return text;
         }
 
-        private static void FindItem()
+        private void FindItem()
         {
             Item item = new Item();
             Mat ScreenMat = BitmapConverter.ToMat(fullimage).CvtColor(ColorConversionCodes.BGRA2BGR);
             Mat rac_img = ScreenMat.InRange(new Scalar(90, 89, 82), new Scalar(90, 89, 82));
             OpenCvSharp.Point[][] contours;
             rac_img.FindContours(out contours, out HierarchyIndex[] hierarchy, RetrievalModes.List, ContourApproximationModes.ApproxSimple);
-            Mat imageOutP = new Mat(new OpenCvSharp.Size(ScreenMat.Width, ScreenMat.Height), MatType.CV_8UC3, Scalar.All(0));
             foreach (OpenCvSharp.Point[] contour in contours)
             {
                 OpenCvSharp.Rect rect2 = Cv2.BoundingRect(contour);
                 if (rect2.Width > 5 && rect2.Height > 10)
                 {
-                    Cv2.Rectangle(imageOutP, rect2, Scalar.Green, 2);
                     String text = getTesseract(ScreenMat.SubMat(rect2));
                     if (!text.Equals(""))
                     {
                         item = MatchItemName(text.Trim().ToCharArray());
-                        break;
                     }
+                    break;
                 }
             }
             FindItemInfo(item);
             overlay.ShowInfo(item, point);
         }
 
-        private static void getItemList()
+        private void getItemList()
         {
             String[] textValue = null;
             if (File.Exists(@"Resources\itemlist.txt"))
@@ -307,7 +304,7 @@ namespace TarkovPriceViewer
             Debug.WriteLine("itemlist Count : " + itemlist.Count);
         }
 
-        private static Item MatchItemName(char[] itemname)
+        private Item MatchItemName(char[] itemname)
         {
             Item result = new Item();
             int d = 999;
@@ -328,7 +325,7 @@ namespace TarkovPriceViewer
             return result;
         }
 
-        private static int getMinimum(int val1, int val2, int val3)
+        private int getMinimum(int val1, int val2, int val3)
         {
             int minNumber = val1;
             if (minNumber > val2) minNumber = val2;
@@ -336,7 +333,7 @@ namespace TarkovPriceViewer
             return minNumber;
         }
 
-        private static int levenshteinDistance(char[] s, char[] t)
+        private int levenshteinDistance(char[] s, char[] t)
         {
             int m = s.Length;
             int n = t.Length;
@@ -370,9 +367,9 @@ namespace TarkovPriceViewer
             return d[m - 1, n - 1];
         }
 
-        private static void FindItemInfo(Item item)
+        private void FindItemInfo(Item item)
         {
-            if (!item.name_tm.Equals(""))
+            if (item.name_tm != null)
             {
                 try
                 {
