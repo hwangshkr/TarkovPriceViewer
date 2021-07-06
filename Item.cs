@@ -1,17 +1,15 @@
 ﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 
 namespace TarkovPriceViewer
 {
     public class Item
     {
         public char[] name;
-        public int price;
+        public String name_tm;
+        public String price;
         public String trader;
-        public int trader_price;
-        public String currency;
+        public String trader_price;
+        public String Needs;
+        public String last_updated;
     }
 }

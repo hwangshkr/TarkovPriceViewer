@@ -78,6 +78,7 @@ namespace TarkovPriceViewer
         private static readonly String setting_path = @"settings.json";
         private static readonly String appname = "EscapeFromTarkov";
         private static readonly String wiki = "https://escapefromtarkov.fandom.com/wiki/";
+        private static readonly String tarkovmarket = "https://tarkov-market.com/item/";
         private static readonly List<Item> itemlist = new List<Item>();
         private static readonly WebClient wc = new WebClient();
         private static Dictionary<String, String> settings;
@@ -151,7 +152,7 @@ namespace TarkovPriceViewer
                         var cursor = Control.MousePosition;
                         point = new System.Drawing.Point(cursor.X, cursor.Y);
                         CloseItemInfo();
-                        backthread = new Thread(BackWork);
+                        backthread = new Thread(FindItemThread);
                         backthread.IsBackground = true;
                         backthread.Start();
                         break;
@@ -184,14 +185,14 @@ namespace TarkovPriceViewer
             overlay.setItemInfoVisible(false);
         }
 
-        private static void BackWork()
+        private static void FindItemThread()
         {
             if (CheckisTarkov())
             {
                 CaptureScreen();
                 if (fullimage != null)
                 {
-                    FindItemName();
+                    FindItem();
                 }
                 else
                 {
@@ -240,7 +241,8 @@ namespace TarkovPriceViewer
                 try
                 {
                     fullimage = new Bitmap(@"img\test.png");
-                } catch (Exception e)
+                }
+                catch (Exception e)
                 {
                     Debug.WriteLine("no test img" + e.Message);
                 }
@@ -258,7 +260,7 @@ namespace TarkovPriceViewer
             return text;
         }
 
-        private static void FindItemName()
+        private static void FindItem()
         {
             Item item = new Item();
             Mat ScreenMat = BitmapConverter.ToMat(fullimage).CvtColor(ColorConversionCodes.BGRA2BGR);
@@ -275,13 +277,13 @@ namespace TarkovPriceViewer
                     String text = getTesseract(ScreenMat.SubMat(rect2));
                     if (!text.Equals(""))
                     {
-                        item = FindItemInfo(text.ToCharArray());
+                        item = MatchItemName(text.Trim().ToCharArray());
                         break;
                     }
                 }
             }
+            FindItemInfo(item);
             overlay.ShowInfo(item, point);
-            getItemUsage(new String(item.name));
         }
 
         private static void getItemList()
@@ -293,22 +295,19 @@ namespace TarkovPriceViewer
             }
             if (textValue != null && textValue.Length > 0)
             {
-                for (int i = 2; i < textValue.Length; i++)//ignore 1,2 Line
+                for (int i = 0; i < textValue.Length; i++)//ignore 1,2 Line
                 {
                     String[] spl = textValue[i].Split('\t');
                     Item item = new Item();
-                    item.name = spl[1].Split('(')[0].Trim().ToCharArray();
-                    item.price = Convert.ToInt32(spl[2]);
-                    item.trader = spl[5];
-                    item.trader_price = Convert.ToInt32(spl[6]);
-                    item.currency = spl[7];
+                    item.name = spl[0].Trim().ToCharArray();//for compare '_' removed
+                    item.name_tm = spl[1].Trim();//for address '_' not removed
                     itemlist.Add(item);
                 }
             }
             Debug.WriteLine("itemlist Count : " + itemlist.Count);
         }
 
-        private static Item FindItemInfo(char[] itemname)
+        private static Item MatchItemName(char[] itemname)
         {
             Item result = new Item();
             int d = 999;
@@ -371,35 +370,61 @@ namespace TarkovPriceViewer
             return d[m - 1, n - 1];
         }
 
-        private static void getItemUsage(String name)
+        private static void FindItemInfo(Item item)
         {
-            StringBuilder result = new StringBuilder();
-            if (!name.Equals(""))
+            if (!item.name_tm.Equals(""))
             {
                 try
                 {
-                    HtmlAgilityPack.HtmlDocument doc = new HtmlAgilityPack.HtmlDocument();
-                    doc.LoadHtml(wc.DownloadString(wiki + name));
-                    HtmlAgilityPack.HtmlNodeCollection nodes = doc.DocumentNode.SelectNodes("//li");
-                    if (nodes != null)
+                    if (item.last_updated == null)
                     {
-                        foreach (HtmlAgilityPack.HtmlNode node in nodes)
+                        HtmlAgilityPack.HtmlDocument doc = new HtmlAgilityPack.HtmlDocument();
+                        doc.LoadHtml(wc.DownloadString(tarkovmarket + item.name_tm));
+                        HtmlAgilityPack.HtmlNode node_tm = doc.DocumentNode.SelectSingleNode("//div[@class='updated-block']");
+                        if (node_tm != null)
                         {
-                            if (node.InnerText.Contains(" to be found "))
+                            item.last_updated = node_tm.InnerText.Trim();
+                        }
+                        node_tm = doc.DocumentNode.SelectSingleNode("//div[@class='c-price last alt']");
+                        if (node_tm != null)
+                        {
+                            item.price = node_tm.InnerText.Trim();
+                        }
+                        node_tm = doc.DocumentNode.SelectSingleNode("//div[@class='prices-blk']");
+                        if (node_tm != null)
+                        {
+                            HtmlAgilityPack.HtmlNode node2 = node_tm.SelectSingleNode("//div[@class='bold']");
+                            if (node2 != null)
                             {
-                                result.Append(node.InnerText).Append("\n");
+                                item.trader = node2.InnerText.Trim();
+                            }
+                            node2 = node_tm.SelectSingleNode("//div[@class='c-price alt']");
+                            if (node2 != null)
+                            {
+                                item.trader_price = node2.InnerText.Trim();
                             }
                         }
+                        doc.LoadHtml(wc.DownloadString(wiki + item.name_tm));
+                        HtmlAgilityPack.HtmlNodeCollection nodes = doc.DocumentNode.SelectNodes("//li");
+                        if (nodes != null)
+                        {
+                            StringBuilder sb = new StringBuilder();
+                            foreach (HtmlAgilityPack.HtmlNode node in nodes)
+                            {
+                                if (node.InnerText.Contains(" to be found "))
+                                {
+                                    sb.Append(node.InnerText).Append("\n");
+                                }
+                            }
+                            item.Needs = sb.ToString().Trim();
+                        }
                     }
-                } catch (Exception e)
+                }
+                catch (Exception e)
                 {
                     Debug.WriteLine(e.Message);
                 }
-            } else
-            {
-                result.Append("Item Name Not Found");
             }
-            overlay.VisibleUsage(result.ToString().Trim());
         }
 
         private void MainForm_FormClosing(object sender, FormClosingEventArgs e)
@@ -409,7 +434,8 @@ namespace TarkovPriceViewer
                 TrayIcon.Visible = true;
                 this.Hide();
                 e.Cancel = true;
-            } else
+            }
+            else
             {
                 Application.Exit();
             }

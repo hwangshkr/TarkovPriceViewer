@@ -1,13 +1,6 @@
 ﻿using System;
-using System.Collections.Generic;
-using System.ComponentModel;
-using System.Data;
-using System.Diagnostics;
 using System.Drawing;
-using System.Linq;
 using System.Runtime.InteropServices;
-using System.Text;
-using System.Threading.Tasks;
 using System.Windows.Forms;
 
 namespace TarkovPriceViewer
@@ -46,12 +39,20 @@ namespace TarkovPriceViewer
             Action show = delegate ()
             {
                 iteminfo_panel.Visible = false;
-                itemusage.Visible = false;
                 iteminfo_panel.Location = point;
                 itemname.Text = "Name : " + new string(item.name);
-                itemprice.Text = "Flea Price : " + rouble + item.price;
+                itemprice.Text = "Flea Price : " + item.price + " (" + item.last_updated + ")";
                 itemtrader.Text = "Trader : " + item.trader;
-                traderprice.Text = "Trader Price : " + item.currency + item.trader_price;
+                traderprice.Text = "Trader Price : " + item.trader_price;
+                itemusage.Text = item.Needs;
+                if (item.Needs == null)
+                {
+                    itemusage.Visible = false;
+                }
+                else
+                {
+                    itemusage.Visible = true;
+                }
                 iteminfo_panel.Visible = true;
             };
             Invoke(show);
@@ -65,19 +66,6 @@ namespace TarkovPriceViewer
         public void setItemInfoVisible(bool isvisible)
         {
             iteminfo_panel.Visible = isvisible;
-        }
-
-        public void VisibleUsage(String str)
-        {
-            Action show = delegate ()
-            {
-                if (!str.Equals(""))
-                {
-                    itemusage.Text = str;
-                    itemusage.Visible = true;
-                }
-            };
-            Invoke(show);
         }
 
         private void FixLocation(Panel p)
