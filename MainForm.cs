@@ -8,6 +8,7 @@ using System.IO;
 using System.Net;
 using System.Runtime.InteropServices;
 using System.Text;
+using System.Text.Json;
 using System.Threading;
 using System.Windows.Forms;
 using Tesseract;
@@ -69,23 +70,17 @@ namespace TarkovPriceViewer
             Minimized = 2,
             Maximized = 3,
         }
-        public struct Item
-        {
-            public char[] name;
-            public int price;
-            public String trader;
-            public int trader_price;
-            public String currency;
-        }
 
         private static readonly int WH_KEYBOARD_LL = 13;
         private static readonly int WM_KEYDOWN = 0x100;
         private static readonly LowLevelKeyboardProc _proc = hookProc;
         private static readonly Overlay overlay = new Overlay();
+        private static readonly String setting_path = @"settings.json";
         private static readonly String appname = "EscapeFromTarkov";
         private static readonly String wiki = "https://escapefromtarkov.fandom.com/wiki/";
         private static readonly List<Item> itemlist = new List<Item>();
         private static readonly WebClient wc = new WebClient();
+        private static Dictionary<String, String> settings;
         private static IntPtr hhook = IntPtr.Zero;
         private static int nFlags = 0x0;
         private static Bitmap fullimage = null;
@@ -101,6 +96,7 @@ namespace TarkovPriceViewer
 
         private void MainForm_load(object sender, EventArgs e)
         {
+            LoadSettings();
             OperatingSystem os = Environment.OSVersion;
             Version v = os.Version;
             if (v.Major == 10)
@@ -167,6 +163,16 @@ namespace TarkovPriceViewer
                 }
             }
             return CallNextHookEx(hhook, code, (int)wParam, lParam);
+        }
+
+        private static void LoadSettings()
+        {
+            if (!File.Exists(setting_path))
+            {
+                File.Create(setting_path);
+            }
+            String text = File.ReadAllText(setting_path);
+            settings = JsonSerializer.Deserialize<Dictionary<String, String>>(text);
         }
 
         public static void CloseItemInfo()

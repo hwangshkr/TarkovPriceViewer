@@ -41,7 +41,7 @@ namespace TarkovPriceViewer
             this.Size = new Size(Screen.PrimaryScreen.Bounds.Width, Screen.PrimaryScreen.Bounds.Height);
         }
 
-        public void ShowInfo(MainForm.Item item, Point point)
+        public void ShowInfo(Item item, Point point)
         {
             Action show = delegate ()
             {
