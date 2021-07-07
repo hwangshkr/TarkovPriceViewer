@@ -249,12 +249,29 @@ namespace TarkovPriceViewer
             }
         }
 
+        private void ShowImage(String name, Mat mat)
+        {
+            Action show = delegate ()
+            {
+                Cv2.ImShow(name, mat);
+            };
+            Invoke(show);
+        }
+
         private String getTesseract(Mat textmat)
         {
-            Bitmap b = BitmapConverter.ToBitmap(textmat);
-            TesseractEngine ocr = new TesseractEngine(@"./Resources/tessdata", "eng", EngineMode.Default);
-            Page texts = ocr.Process(b);
-            String text = texts.GetText().Replace("\n", " ").Trim();
+            String text = "";
+            try
+            {
+                Bitmap b = BitmapConverter.ToBitmap(textmat);
+                TesseractEngine ocr = new TesseractEngine(@"./Resources/tessdata", "eng", EngineMode.Default);//should use once
+                Page texts = ocr.Process(b);
+                text = texts.GetText().Replace("\n", " ").Trim();
+            }
+            catch (Exception e)
+            {
+                Debug.WriteLine("tesseract error " + e.Message);
+            }
             Debug.WriteLine("text : " + text);
             return text;
         }
@@ -271,6 +288,7 @@ namespace TarkovPriceViewer
                 OpenCvSharp.Rect rect2 = Cv2.BoundingRect(contour);
                 if (rect2.Width > 5 && rect2.Height > 10)
                 {
+                    ScreenMat.Rectangle(rect2, Scalar.Black, 2);
                     String text = getTesseract(ScreenMat.SubMat(rect2));
                     if (!text.Equals(""))
                     {
