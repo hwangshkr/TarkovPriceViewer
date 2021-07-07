@@ -69,13 +69,14 @@ namespace TarkovPriceViewer
         private static readonly int WH_KEYBOARD_LL = 13;
         private static readonly int WM_KEYDOWN = 0x100;
         private static readonly WebClient wc = new WebClient();
+        private static readonly HtmlAgilityPack.HtmlDocument doc = new HtmlAgilityPack.HtmlDocument();
         private static LowLevelKeyboardProc _proc = null;
         private static IntPtr hhook = IntPtr.Zero;
         private static int nFlags = 0x0;
-        private static Bitmap fullimage = null;
         private static Thread backthread = null;
         private static System.Drawing.Point point = new System.Drawing.Point(0, 0);
         private static Overlay overlay = new Overlay();
+        private static long presstime = 0;
 
         public MainForm()
         {
@@ -136,12 +137,20 @@ namespace TarkovPriceViewer
                 switch (vkCode)
                 {
                     case 120:
-                        var cursor = Control.MousePosition;
-                        point = new System.Drawing.Point(cursor.X, cursor.Y);
-                        CloseItemInfo();
-                        backthread = new Thread(FindItemThread);
-                        backthread.IsBackground = true;
-                        backthread.Start();
+                        long CurrentTime = DateTime.Now.Ticks;
+                        if (CurrentTime - presstime > 10000000)
+                        {
+                            point = Control.MousePosition;
+                            CloseItemInfo();
+                            backthread = new Thread(FindItemThread);
+                            backthread.IsBackground = true;
+                            backthread.Start();
+                        }
+                        else
+                        {
+                            Debug.WriteLine("key pressed in 1 second.");
+                        }
+                        presstime = CurrentTime;
                         break;
                     case 9:
                     case 27:
@@ -164,20 +173,23 @@ namespace TarkovPriceViewer
             if (backthread != null)
             {
                 backthread.Abort();
+                backthread.Join();
             }
             overlay.setItemInfoVisible(false);
         }
 
         private void FindItemThread()
         {
-            CaptureScreen(CheckisTarkov());
-            if (fullimage != null)
+            using (Bitmap fullimage = CaptureScreen(CheckisTarkov()))
             {
-                FindItem();
-            }
-            else
-            {
-                Debug.WriteLine("image null");
+                if (fullimage != null)
+                {
+                    FindItem(fullimage);
+                }
+                else
+                {
+                    Debug.WriteLine("image null");
+                }
             }
         }
 
@@ -197,35 +209,39 @@ namespace TarkovPriceViewer
             return IntPtr.Zero;
         }
 
-        private void CaptureScreen(IntPtr hWnd)
+        private Bitmap CaptureScreen(IntPtr hWnd)
         {
             if (hWnd != IntPtr.Zero)
             {
-                Graphics Graphicsdata = Graphics.FromHwnd(hWnd);
-                Rectangle rect = Rectangle.Round(Graphicsdata.VisibleClipBounds);
-                Bitmap bmp = new Bitmap(rect.Width, rect.Height);
-                using (Graphics g = Graphics.FromImage(bmp))
+                using (Graphics Graphicsdata = Graphics.FromHwnd(hWnd))
                 {
-                    IntPtr hdc = g.GetHdc();
-                    PrintWindow(hWnd, hdc, nFlags);
-                    g.ReleaseHdc(hdc);
+                    Rectangle rect = Rectangle.Round(Graphicsdata.VisibleClipBounds);
+                    using (Bitmap bmp = new Bitmap(rect.Width, rect.Height))
+                    {
+                        using (Graphics g = Graphics.FromImage(bmp))
+                        {
+                            IntPtr hdc = g.GetHdc();
+                            PrintWindow(hWnd, hdc, nFlags);
+                            g.ReleaseHdc(hdc);
+                        }
+                        return bmp;
+                    }
                 }
-                fullimage = bmp;
             }
             else
             {
-                Debug.WriteLine("error - no window");
-                fullimage = null;
 #if DEBUG
                 try
                 {
-                    fullimage = new Bitmap(@"img\test.png");
+                    return new Bitmap(@"img\test.png");
                 }
                 catch (Exception e)
                 {
                     Debug.WriteLine("no test img" + e.Message);
                 }
 #endif
+                Debug.WriteLine("error - no window");
+                return null;
             }
         }
 
@@ -243,11 +259,12 @@ namespace TarkovPriceViewer
             String text = "";
             try
             {
-                Bitmap b = BitmapConverter.ToBitmap(textmat);
-                TesseractEngine ocr = new TesseractEngine(@"./Resources/tessdata", "eng", EngineMode.Default);//should use once
-                Page texts = ocr.Process(b);
-                text = texts.GetText().Replace("\n", " ").Trim();
-                Debug.WriteLine("text : " + text);
+                using (TesseractEngine ocr = new TesseractEngine(@"./Resources/tessdata", "eng", EngineMode.Default))//should use once
+                using (Page texts = ocr.Process(BitmapConverter.ToBitmap(textmat)))
+                {
+                    text = texts.GetText().Replace("\n", " ").Trim();
+                    Debug.WriteLine("text : " + text);
+                }
             }
             catch (Exception e)
             {
@@ -256,29 +273,31 @@ namespace TarkovPriceViewer
             return text;
         }
 
-        private void FindItem()
+        private void FindItem(Bitmap fullimage)
         {
             Item item = new Item();
-            Mat ScreenMat = BitmapConverter.ToMat(fullimage).CvtColor(ColorConversionCodes.BGRA2BGR);
-            Mat rac_img = ScreenMat.InRange(new Scalar(90, 89, 82), new Scalar(90, 89, 82));
-            OpenCvSharp.Point[][] contours;
-            rac_img.FindContours(out contours, out HierarchyIndex[] hierarchy, RetrievalModes.List, ContourApproximationModes.ApproxSimple);
-            foreach (OpenCvSharp.Point[] contour in contours)
+            using (Mat ScreenMat = BitmapConverter.ToMat(fullimage).CvtColor(ColorConversionCodes.BGRA2BGR))
+            using (Mat rac_img = ScreenMat.InRange(new Scalar(90, 89, 82), new Scalar(90, 89, 82)))
             {
-                OpenCvSharp.Rect rect2 = Cv2.BoundingRect(contour);
-                if (rect2.Width > 5 && rect2.Height > 10)
+                OpenCvSharp.Point[][] contours;
+                rac_img.FindContours(out contours, out HierarchyIndex[] hierarchy, RetrievalModes.List, ContourApproximationModes.ApproxSimple);
+                foreach (OpenCvSharp.Point[] contour in contours)
                 {
-                    ScreenMat.Rectangle(rect2, Scalar.Black, 2);
-                    String text = getTesseract(ScreenMat.SubMat(rect2));
-                    if (!text.Equals(""))
+                    OpenCvSharp.Rect rect2 = Cv2.BoundingRect(contour);
+                    if (rect2.Width > 5 && rect2.Height > 10)
                     {
-                        item = MatchItemName(text.Trim().ToCharArray());
-                        break;
+                        ScreenMat.Rectangle(rect2, Scalar.Black, 2);
+                        String text = getTesseract(ScreenMat.SubMat(rect2));
+                        if (!text.Equals(""))
+                        {
+                            item = MatchItemName(text.Trim().ToCharArray());
+                            break;
+                        }
                     }
                 }
+                FindItemInfo(item);
+                overlay.ShowInfo(item, point);
             }
-            FindItemInfo(item);
-            overlay.ShowInfo(item, point);
         }
 
         private Item MatchItemName(char[] itemname)
@@ -352,7 +371,6 @@ namespace TarkovPriceViewer
                 {
                     if (item.last_updated == null)
                     {
-                        HtmlAgilityPack.HtmlDocument doc = new HtmlAgilityPack.HtmlDocument();
                         doc.LoadHtml(wc.DownloadString(Program.tarkovmarket + item.name_tm));
                         HtmlAgilityPack.HtmlNode node_tm = doc.DocumentNode.SelectSingleNode("//div[@class='updated-block']");
                         if (node_tm != null)
@@ -378,6 +396,7 @@ namespace TarkovPriceViewer
                                 item.trader_price = node2.InnerText.Trim();
                             }
                         }
+                        node_tm = null;
                         doc.LoadHtml(wc.DownloadString(Program.wiki + item.name_tm));
                         HtmlAgilityPack.HtmlNodeCollection nodes = doc.DocumentNode.SelectNodes("//li");
                         if (nodes != null)
@@ -392,6 +411,8 @@ namespace TarkovPriceViewer
                             }
                             item.Needs = sb.ToString().Trim();
                         }
+                        nodes = null;
+                        doc.LoadHtml(null);
                     }
                 }
                 catch (Exception e)
