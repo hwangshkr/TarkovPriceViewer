@@ -1,14 +1,11 @@
 ﻿using OpenCvSharp;
 using OpenCvSharp.Extensions;
 using System;
-using System.Collections.Generic;
 using System.Diagnostics;
 using System.Drawing;
-using System.IO;
 using System.Net;
 using System.Runtime.InteropServices;
 using System.Text;
-using System.Text.Json;
 using System.Threading;
 using System.Windows.Forms;
 using Tesseract;
@@ -71,20 +68,14 @@ namespace TarkovPriceViewer
 
         private static readonly int WH_KEYBOARD_LL = 13;
         private static readonly int WM_KEYDOWN = 0x100;
-        private static readonly Overlay overlay = new Overlay();
-        private static readonly String setting_path = @"settings.json";
-        private static readonly String appname = "EscapeFromTarkov";
-        private static readonly String wiki = "https://escapefromtarkov.fandom.com/wiki/";
-        private static readonly String tarkovmarket = "https://tarkov-market.com/item/";
-        private static readonly List<Item> itemlist = new List<Item>();
         private static readonly WebClient wc = new WebClient();
         private static LowLevelKeyboardProc _proc = null;
-        private static Dictionary<String, String> settings;
         private static IntPtr hhook = IntPtr.Zero;
         private static int nFlags = 0x0;
         private static Bitmap fullimage = null;
         private static Thread backthread = null;
         private static System.Drawing.Point point = new System.Drawing.Point(0, 0);
+        private static Overlay overlay = new Overlay();
 
         public MainForm()
         {
@@ -99,13 +90,11 @@ namespace TarkovPriceViewer
             {
                 nFlags = 0x2;
             }
-            LoadSettings();
             TrayIcon.Visible = true;
             HideFormWhenStartup();
             wc.Encoding = Encoding.UTF8;
-            getItemList();
-            overlay.Show();
             SetHook();
+            overlay.Show();
         }
 
         private void HideFormWhenStartup()
@@ -163,22 +152,6 @@ namespace TarkovPriceViewer
             return CallNextHookEx(hhook, code, (int)wParam, lParam);
         }
 
-        private void LoadSettings()
-        {
-            try
-            {
-                if (!File.Exists(setting_path))
-                {
-                    File.Create(setting_path);
-                }
-                String text = File.ReadAllText(setting_path);
-                settings = JsonSerializer.Deserialize<Dictionary<String, String>>(text);
-            } catch (Exception e)
-            {
-                Debug.WriteLine(e.Message);
-            }
-        }
-
         public void CloseItemInfo()
         {
             if (backthread != null)
@@ -208,7 +181,7 @@ namespace TarkovPriceViewer
             {
                 StringBuilder sbWinText = new StringBuilder(260);
                 GetWindowText(hWnd, sbWinText, 260);
-                if (sbWinText.ToString() == appname)
+                if (sbWinText.ToString() == Program.appname)
                 {
                     return hWnd;
                 }
@@ -293,40 +266,19 @@ namespace TarkovPriceViewer
                     if (!text.Equals(""))
                     {
                         item = MatchItemName(text.Trim().ToCharArray());
+                        break;
                     }
-                    break;
                 }
             }
             FindItemInfo(item);
             overlay.ShowInfo(item, point);
         }
 
-        private void getItemList()
-        {
-            String[] textValue = null;
-            if (File.Exists(@"Resources\itemlist.txt"))
-            {
-                textValue = File.ReadAllLines(@"Resources\itemlist.txt");
-            }
-            if (textValue != null && textValue.Length > 0)
-            {
-                for (int i = 0; i < textValue.Length; i++)//ignore 1,2 Line
-                {
-                    String[] spl = textValue[i].Split('\t');
-                    Item item = new Item();
-                    item.name = spl[0].Trim().ToCharArray();//for compare '_' removed
-                    item.name_tm = spl[1].Trim();//for address '_' not removed
-                    itemlist.Add(item);
-                }
-            }
-            Debug.WriteLine("itemlist Count : " + itemlist.Count);
-        }
-
         private Item MatchItemName(char[] itemname)
         {
             Item result = new Item();
             int d = 999;
-            foreach (Item item in itemlist)
+            foreach (Item item in Program.itemlist)
             {
                 int d2 = levenshteinDistance(itemname, item.name);
                 if (d2 < d)
@@ -394,7 +346,7 @@ namespace TarkovPriceViewer
                     if (item.last_updated == null)
                     {
                         HtmlAgilityPack.HtmlDocument doc = new HtmlAgilityPack.HtmlDocument();
-                        doc.LoadHtml(wc.DownloadString(tarkovmarket + item.name_tm));
+                        doc.LoadHtml(wc.DownloadString(Program.tarkovmarket + item.name_tm));
                         HtmlAgilityPack.HtmlNode node_tm = doc.DocumentNode.SelectSingleNode("//div[@class='updated-block']");
                         if (node_tm != null)
                         {
@@ -419,7 +371,7 @@ namespace TarkovPriceViewer
                                 item.trader_price = node2.InnerText.Trim();
                             }
                         }
-                        doc.LoadHtml(wc.DownloadString(wiki + item.name_tm));
+                        doc.LoadHtml(wc.DownloadString(Program.wiki + item.name_tm));
                         HtmlAgilityPack.HtmlNodeCollection nodes = doc.DocumentNode.SelectNodes("//li");
                         if (nodes != null)
                         {
