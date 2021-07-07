@@ -90,9 +90,10 @@ namespace TarkovPriceViewer
             {
                 nFlags = 0x2;
             }
+            MaximizeBox = false;
             TrayIcon.Visible = true;
             HideFormWhenStartup();
-            wc.Encoding = Encoding.UTF8;
+            SettingWebClient();
             SetHook();
             overlay.Show();
         }
@@ -150,6 +151,12 @@ namespace TarkovPriceViewer
                 }
             }
             return CallNextHookEx(hhook, code, (int)wParam, lParam);
+        }
+
+        private void SettingWebClient()
+        {
+            wc.Proxy = null;
+            wc.Encoding = Encoding.UTF8;
         }
 
         public void CloseItemInfo()
@@ -396,16 +403,7 @@ namespace TarkovPriceViewer
 
         private void MainForm_FormClosing(object sender, FormClosingEventArgs e)
         {
-            if (e.CloseReason == CloseReason.UserClosing)
-            {
-                TrayIcon.Visible = true;
-                this.Hide();
-                e.Cancel = true;
-            }
-            else
-            {
-                Application.Exit();
-            }
+            Application.Exit();
         }
 
         private void MainForm_Move(object sender, EventArgs e)
@@ -423,6 +421,11 @@ namespace TarkovPriceViewer
         }
 
         private void TrayShow_Click(object sender, EventArgs e)
+        {
+            this.Show();
+        }
+
+        private void TrayIcon_MouseDoubleClick(object sender, MouseEventArgs e)
         {
             this.Show();
         }
