@@ -34,28 +34,54 @@ namespace TarkovPriceViewer
             this.Size = new Size(Screen.PrimaryScreen.Bounds.Width, Screen.PrimaryScreen.Bounds.Height);
         }
 
-        public void ShowInfo(Item item, Point point)
+        public void ShowInfo(Item item)
         {
             Action show = delegate ()
             {
-                iteminfo_panel.Visible = false;
-                iteminfo_panel.Location = point;
-                itemname.Text = "Name : " + new string(item.name);
-                itemprice.Text = "Flea Price : " + item.price + " (" + item.last_updated + ")";
-                itemtrader.Text = "Trader : " + item.trader;
-                traderprice.Text = "Trader Price : " + item.trader_price;
-                itemusage.Text = item.Needs;
-                if (item.Needs == null)
+                if (item.Equals(default(Item)))
                 {
-                    itemusage.Visible = false;
-                }
-                else
+                    itemusage.Text = "Item Name Not Found.";
+                } else
                 {
-                    itemusage.Visible = true;
+                    itemname.Text = "Name : " + new string(item.name);
+                    itemprice.Text = "Flea Price : " + item.price + " (" + item.last_updated + ")";
+                    itemtrader.Text = "Trader : " + item.trader;
+                    traderprice.Text = "Trader Price : " + item.trader_price;
+                    if (item.Needs == null)
+                    {
+                        itemusage.Visible = false;
+                    }
+                    else
+                    {
+                        itemusage.Text = item.Needs;
+                        itemusage.Visible = true;
+                    }
+                    setItemInfoContentVisibleExceptUsage(true);
                 }
                 iteminfo_panel.Visible = true;
             };
             Invoke(show);
+        }
+
+        public void LoadingInfo(Point point)
+        {
+            Action show = delegate ()
+            {
+                iteminfo_panel.Location = point;
+                setItemInfoContentVisibleExceptUsage(false);
+                itemusage.Text = "Loading...";
+                itemusage.Visible = true;
+                iteminfo_panel.Visible = true;
+            };
+            Invoke(show);
+        }
+
+        public void setItemInfoContentVisibleExceptUsage(bool isvisible)
+        {
+            itemname.Visible = isvisible;
+            itemprice.Visible = isvisible;
+            itemtrader.Visible = isvisible;
+            traderprice.Visible = isvisible;
         }
 
         public bool isItemInfoVisible()

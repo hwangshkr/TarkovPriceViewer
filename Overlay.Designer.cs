@@ -85,7 +85,7 @@ namespace TarkovPriceViewer
             this.traderprice.Margin = new System.Windows.Forms.Padding(3);
             this.traderprice.Name = "traderprice";
             this.traderprice.Size = new System.Drawing.Size(97, 12);
-            this.traderprice.TabIndex = 1;
+            this.traderprice.TabIndex = 0;
             this.traderprice.Text = "Trader Price :";
             this.traderprice.TextAlign = System.Drawing.ContentAlignment.MiddleLeft;
             // 
@@ -99,7 +99,7 @@ namespace TarkovPriceViewer
             this.itemtrader.Margin = new System.Windows.Forms.Padding(3);
             this.itemtrader.Name = "itemtrader";
             this.itemtrader.Size = new System.Drawing.Size(58, 12);
-            this.itemtrader.TabIndex = 1;
+            this.itemtrader.TabIndex = 0;
             this.itemtrader.Text = "Trader :";
             this.itemtrader.TextAlign = System.Drawing.ContentAlignment.MiddleLeft;
             // 
@@ -113,7 +113,7 @@ namespace TarkovPriceViewer
             this.itemprice.Margin = new System.Windows.Forms.Padding(3);
             this.itemprice.Name = "itemprice";
             this.itemprice.Size = new System.Drawing.Size(82, 12);
-            this.itemprice.TabIndex = 1;
+            this.itemprice.TabIndex = 0;
             this.itemprice.Text = "Flea Price :";
             this.itemprice.TextAlign = System.Drawing.ContentAlignment.MiddleLeft;
             // 

@@ -141,7 +141,7 @@ namespace TarkovPriceViewer
                         if (CurrentTime - presstime > 10000000)
                         {
                             point = Control.MousePosition;
-                            CloseItemInfo();
+                            LoadingItemInfo();
                             backthread = new Thread(FindItemThread);
                             backthread.IsBackground = true;
                             backthread.Start();
@@ -166,6 +166,16 @@ namespace TarkovPriceViewer
         {
             wc.Proxy = null;
             wc.Encoding = Encoding.UTF8;
+        }
+
+        public void LoadingItemInfo()
+        {
+            if (backthread != null)
+            {
+                backthread.Abort();
+                backthread.Join();
+            }
+            overlay.LoadingInfo(point);
         }
 
         public void CloseItemInfo()
@@ -216,16 +226,14 @@ namespace TarkovPriceViewer
                 using (Graphics Graphicsdata = Graphics.FromHwnd(hWnd))
                 {
                     Rectangle rect = Rectangle.Round(Graphicsdata.VisibleClipBounds);
-                    using (Bitmap bmp = new Bitmap(rect.Width, rect.Height))
+                    Bitmap bmp = new Bitmap(rect.Width, rect.Height);
+                    using (Graphics g = Graphics.FromImage(bmp))
                     {
-                        using (Graphics g = Graphics.FromImage(bmp))
-                        {
-                            IntPtr hdc = g.GetHdc();
-                            PrintWindow(hWnd, hdc, nFlags);
-                            g.ReleaseHdc(hdc);
-                        }
-                        return bmp;
+                        IntPtr hdc = g.GetHdc();
+                        PrintWindow(hWnd, hdc, nFlags);
+                        g.ReleaseHdc(hdc);
                     }
+                    return bmp;
                 }
             }
             else
@@ -296,7 +304,7 @@ namespace TarkovPriceViewer
                     }
                 }
                 FindItemInfo(item);
-                overlay.ShowInfo(item, point);
+                overlay.ShowInfo(item);
             }
         }
 
@@ -412,7 +420,7 @@ namespace TarkovPriceViewer
                             item.Needs = sb.ToString().Trim();
                         }
                         nodes = null;
-                        doc.LoadHtml(null);
+                        doc.LoadHtml("");
                     }
                 }
                 catch (Exception e)
