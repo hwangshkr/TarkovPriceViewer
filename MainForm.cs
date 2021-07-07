@@ -249,7 +249,7 @@ namespace TarkovPriceViewer
             }
         }
 
-        private void ShowImage(String name, Mat mat)
+        private void ShowtestImage(String name, Mat mat)
         {
             Action show = delegate ()
             {
@@ -267,12 +267,12 @@ namespace TarkovPriceViewer
                 TesseractEngine ocr = new TesseractEngine(@"./Resources/tessdata", "eng", EngineMode.Default);//should use once
                 Page texts = ocr.Process(b);
                 text = texts.GetText().Replace("\n", " ").Trim();
+                Debug.WriteLine("text : " + text);
             }
             catch (Exception e)
             {
                 Debug.WriteLine("tesseract error " + e.Message);
             }
-            Debug.WriteLine("text : " + text);
             return text;
         }
 
