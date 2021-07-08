@@ -163,6 +163,9 @@ namespace TarkovPriceViewer
 
         private void SettingWebClient()
         {
+            doc.DisableServerSideCode = true;
+            doc.OptionDefaultStreamEncoding = Encoding.UTF8;
+            doc.OptionUseIdAttribute = false;
             wc.Proxy = null;
             wc.Encoding = Encoding.UTF8;
         }
@@ -420,6 +423,7 @@ namespace TarkovPriceViewer
                         }
                         nodes = null;
                         doc.LoadHtml("");
+                        wc.Dispose();
                     }
                 }
                 catch (Exception e)
