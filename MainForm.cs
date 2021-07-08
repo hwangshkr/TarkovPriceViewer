@@ -297,7 +297,7 @@ namespace TarkovPriceViewer
                         String text = getTesseract(ScreenMat.SubMat(rect2));
                         if (!text.Equals(""))
                         {
-                            //item = MatchItemName(text.Trim().ToCharArray());
+                            item = MatchItemName(text.Trim().ToCharArray());
                             break;
                         }
                     }
