@@ -26,6 +26,7 @@ namespace TarkovPriceViewer
             SetWindowLong(this.Handle, GWL_EXSTYLE, style | WS_EX_LAYERED | WS_EX_TRANSPARENT | WS_EX_TOOLWINDOW);
             settingFormPos();
             iteminfo_panel.Visible = false;
+            onetext.Visible = false;
         }
 
         public void settingFormPos()
@@ -38,11 +39,13 @@ namespace TarkovPriceViewer
         {
             Action show = delegate ()
             {
-                if (item.Equals(default(Item)))
+                if (item.name_tm == null)
                 {
-                    itemusage.Text = "Item Name Not Found.";
-                } else
+                    onetext.Text = "Item Name Not Found";
+                }
+                else
                 {
+                    iteminfo_panel.Location = onetext.Location;
                     itemname.Text = "Name : " + new string(item.name);
                     itemprice.Text = "Flea Price : " + item.price + " (" + item.last_updated + ")";
                     itemtrader.Text = "Trader : " + item.trader;
@@ -56,45 +59,36 @@ namespace TarkovPriceViewer
                         itemusage.Text = item.Needs;
                         itemusage.Visible = true;
                     }
-                    setItemInfoContentVisibleExceptUsage(true);
+                    onetext.Visible = false;
+                    iteminfo_panel.Visible = true;
                 }
-                iteminfo_panel.Visible = true;
             };
             Invoke(show);
         }
 
-        public void LoadingInfo(Point point)
+        public void ShowLoadingInfo(Point point)
         {
             Action show = delegate ()
             {
-                iteminfo_panel.Location = point;
-                setItemInfoContentVisibleExceptUsage(false);
-                itemusage.Text = "Loading...";
-                itemusage.Visible = true;
-                iteminfo_panel.Visible = true;
+                onetext.Location = point;
+                onetext.Text = "Loading...";
+                iteminfo_panel.Visible = false;
+                onetext.Visible = true;
             };
             Invoke(show);
         }
 
-        public void setItemInfoContentVisibleExceptUsage(bool isvisible)
+        public void HideInfo()
         {
-            itemname.Visible = isvisible;
-            itemprice.Visible = isvisible;
-            itemtrader.Visible = isvisible;
-            traderprice.Visible = isvisible;
+            Action show = delegate ()
+            {
+                iteminfo_panel.Visible = false;
+                onetext.Visible = false;
+            };
+            Invoke(show);
         }
 
-        public bool isItemInfoVisible()
-        {
-            return iteminfo_panel.Visible;
-        }
-
-        public void setItemInfoVisible(bool isvisible)
-        {
-            iteminfo_panel.Visible = isvisible;
-        }
-
-        private void FixLocation(Panel p)
+        private void FixLocation(Control p)
         {
             int totalwidth = p.Location.X + p.Width;
             int totalheight = p.Location.Y + p.Height;
@@ -117,17 +111,32 @@ namespace TarkovPriceViewer
 
         private void iteminfo_panel_Paint(object sender, PaintEventArgs e)
         {
-            ControlPaint.DrawBorder(e.Graphics, (sender as Panel).ClientRectangle, Color.White, ButtonBorderStyle.Solid);
+            ControlPaint.DrawBorder(e.Graphics, (sender as Control).ClientRectangle, Color.White, ButtonBorderStyle.Solid);
         }
 
         private void iteminfo_panel_SizeChanged(object sender, EventArgs e)
         {
-            FixLocation(sender as Panel);
+            FixLocation(sender as Control);
         }
 
         private void iteminfo_panel_LocationChanged(object sender, EventArgs e)
         {
-            FixLocation(sender as Panel);
+            FixLocation(sender as Control);
+        }
+
+        private void onetext_Paint(object sender, PaintEventArgs e)
+        {
+            ControlPaint.DrawBorder(e.Graphics, (sender as Control).ClientRectangle, Color.White, ButtonBorderStyle.Solid);
+        }
+
+        private void onetext_SizeChanged(object sender, EventArgs e)
+        {
+            FixLocation(sender as Control);
+        }
+
+        private void onetext_LocationChanged(object sender, EventArgs e)
+        {
+            FixLocation(sender as Control);
         }
     }
 }

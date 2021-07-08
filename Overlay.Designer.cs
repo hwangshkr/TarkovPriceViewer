@@ -35,6 +35,7 @@ namespace TarkovPriceViewer
             this.itemtrader = new System.Windows.Forms.Label();
             this.itemprice = new System.Windows.Forms.Label();
             this.itemname = new System.Windows.Forms.Label();
+            this.onetext = new System.Windows.Forms.Label();
             this.iteminfo_panel.SuspendLayout();
             this.SuspendLayout();
             // 
@@ -46,6 +47,7 @@ namespace TarkovPriceViewer
             this.iteminfo_panel.AutoSize = true;
             this.iteminfo_panel.AutoSizeMode = System.Windows.Forms.AutoSizeMode.GrowAndShrink;
             this.iteminfo_panel.BackColor = System.Drawing.Color.Black;
+            this.iteminfo_panel.CausesValidation = false;
             this.iteminfo_panel.Controls.Add(this.itemusage);
             this.iteminfo_panel.Controls.Add(this.traderprice);
             this.iteminfo_panel.Controls.Add(this.itemtrader);
@@ -65,6 +67,7 @@ namespace TarkovPriceViewer
             // 
             this.itemusage.AutoSize = true;
             this.itemusage.BackColor = System.Drawing.Color.Transparent;
+            this.itemusage.CausesValidation = false;
             this.itemusage.Font = new System.Drawing.Font("굴림", 9F, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point, ((byte)(129)));
             this.itemusage.ForeColor = System.Drawing.Color.White;
             this.itemusage.Location = new System.Drawing.Point(14, 94);
@@ -79,6 +82,7 @@ namespace TarkovPriceViewer
             // 
             this.traderprice.AutoSize = true;
             this.traderprice.BackColor = System.Drawing.Color.Transparent;
+            this.traderprice.CausesValidation = false;
             this.traderprice.Font = new System.Drawing.Font("굴림", 9F, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point, ((byte)(129)));
             this.traderprice.ForeColor = System.Drawing.Color.White;
             this.traderprice.Location = new System.Drawing.Point(14, 74);
@@ -93,6 +97,7 @@ namespace TarkovPriceViewer
             // 
             this.itemtrader.AutoSize = true;
             this.itemtrader.BackColor = System.Drawing.Color.Transparent;
+            this.itemtrader.CausesValidation = false;
             this.itemtrader.Font = new System.Drawing.Font("굴림", 9F, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point, ((byte)(129)));
             this.itemtrader.ForeColor = System.Drawing.Color.White;
             this.itemtrader.Location = new System.Drawing.Point(14, 54);
@@ -107,6 +112,7 @@ namespace TarkovPriceViewer
             // 
             this.itemprice.AutoSize = true;
             this.itemprice.BackColor = System.Drawing.Color.Transparent;
+            this.itemprice.CausesValidation = false;
             this.itemprice.Font = new System.Drawing.Font("굴림", 9F, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point, ((byte)(129)));
             this.itemprice.ForeColor = System.Drawing.Color.White;
             this.itemprice.Location = new System.Drawing.Point(14, 34);
@@ -121,6 +127,7 @@ namespace TarkovPriceViewer
             // 
             this.itemname.AutoSize = true;
             this.itemname.BackColor = System.Drawing.Color.Transparent;
+            this.itemname.CausesValidation = false;
             this.itemname.Font = new System.Drawing.Font("굴림", 9F, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point, ((byte)(129)));
             this.itemname.ForeColor = System.Drawing.Color.White;
             this.itemname.Location = new System.Drawing.Point(14, 17);
@@ -131,18 +138,45 @@ namespace TarkovPriceViewer
             this.itemname.Text = "Name :";
             this.itemname.TextAlign = System.Drawing.ContentAlignment.MiddleLeft;
             // 
+            // onetext
+            // 
+            this.onetext.AutoSize = true;
+            this.onetext.BackColor = System.Drawing.Color.Black;
+            this.onetext.CausesValidation = false;
+            this.onetext.Font = new System.Drawing.Font("굴림", 9F, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point, ((byte)(129)));
+            this.onetext.ForeColor = System.Drawing.Color.White;
+            this.onetext.Location = new System.Drawing.Point(12, 137);
+            this.onetext.Margin = new System.Windows.Forms.Padding(3);
+            this.onetext.Name = "onetext";
+            this.onetext.Padding = new System.Windows.Forms.Padding(8);
+            this.onetext.Size = new System.Drawing.Size(113, 28);
+            this.onetext.TabIndex = 2;
+            this.onetext.Text = "Trader Price :";
+            this.onetext.TextAlign = System.Drawing.ContentAlignment.MiddleLeft;
+            this.onetext.LocationChanged += new System.EventHandler(this.onetext_LocationChanged);
+            this.onetext.SizeChanged += new System.EventHandler(this.onetext_SizeChanged);
+            this.onetext.Paint += new System.Windows.Forms.PaintEventHandler(this.onetext_Paint);
+            // 
             // Overlay
             // 
             this.AutoScaleDimensions = new System.Drawing.SizeF(7F, 12F);
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
             this.AutoSizeMode = System.Windows.Forms.AutoSizeMode.GrowAndShrink;
+            this.AutoValidate = System.Windows.Forms.AutoValidate.Disable;
             this.BackColor = System.Drawing.Color.Fuchsia;
+            this.BackgroundImageLayout = System.Windows.Forms.ImageLayout.None;
+            this.CausesValidation = false;
             this.ClientSize = new System.Drawing.Size(800, 450);
+            this.ControlBox = false;
+            this.Controls.Add(this.onetext);
             this.Controls.Add(this.iteminfo_panel);
             this.FormBorderStyle = System.Windows.Forms.FormBorderStyle.None;
+            this.MaximizeBox = false;
+            this.MinimizeBox = false;
             this.Name = "Overlay";
             this.ShowIcon = false;
             this.ShowInTaskbar = false;
+            this.SizeGripStyle = System.Windows.Forms.SizeGripStyle.Hide;
             this.StartPosition = System.Windows.Forms.FormStartPosition.Manual;
             this.Text = "Overlay";
             this.TopMost = true;
@@ -162,5 +196,6 @@ namespace TarkovPriceViewer
         private System.Windows.Forms.Label itemtrader;
         private System.Windows.Forms.Label traderprice;
         private System.Windows.Forms.Label itemusage;
+        private System.Windows.Forms.Label onetext;
     }
 }

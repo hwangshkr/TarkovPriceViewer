@@ -74,7 +74,6 @@ namespace TarkovPriceViewer
         private static IntPtr hhook = IntPtr.Zero;
         private static int nFlags = 0x0;
         private static Thread backthread = null;
-        private static System.Drawing.Point point = new System.Drawing.Point(0, 0);
         private static Overlay overlay = new Overlay();
         private static long presstime = 0;
 
@@ -83,10 +82,6 @@ namespace TarkovPriceViewer
             InitializeComponent();
             var style = GetWindowLong(this.Handle, GWL_EXSTYLE);
             SetWindowLong(this.Handle, GWL_EXSTYLE, style | WS_EX_LAYERED);
-        }
-
-        private void MainForm_load(object sender, EventArgs e)
-        {
             if (Environment.OSVersion.Version.Major == 10)
             {
                 nFlags = 0x2;
@@ -97,6 +92,11 @@ namespace TarkovPriceViewer
             SettingWebClient();
             SetHook();
             overlay.Show();
+        }
+
+        private void MainForm_load(object sender, EventArgs e)
+        {
+            //not use
         }
 
         private void HideFormWhenStartup()
@@ -140,8 +140,7 @@ namespace TarkovPriceViewer
                         long CurrentTime = DateTime.Now.Ticks;
                         if (CurrentTime - presstime > 10000000)
                         {
-                            point = Control.MousePosition;
-                            LoadingItemInfo();
+                            LoadingItemInfo(Control.MousePosition);
                             backthread = new Thread(FindItemThread);
                             backthread.IsBackground = true;
                             backthread.Start();
@@ -168,14 +167,14 @@ namespace TarkovPriceViewer
             wc.Encoding = Encoding.UTF8;
         }
 
-        public void LoadingItemInfo()
+        public void LoadingItemInfo(System.Drawing.Point point)
         {
             if (backthread != null)
             {
                 backthread.Abort();
                 backthread.Join();
             }
-            overlay.LoadingInfo(point);
+            overlay.ShowLoadingInfo(point);
         }
 
         public void CloseItemInfo()
@@ -185,7 +184,7 @@ namespace TarkovPriceViewer
                 backthread.Abort();
                 backthread.Join();
             }
-            overlay.setItemInfoVisible(false);
+            overlay.HideInfo();
         }
 
         private void FindItemThread()
@@ -298,7 +297,7 @@ namespace TarkovPriceViewer
                         String text = getTesseract(ScreenMat.SubMat(rect2));
                         if (!text.Equals(""))
                         {
-                            item = MatchItemName(text.Trim().ToCharArray());
+                            //item = MatchItemName(text.Trim().ToCharArray());
                             break;
                         }
                     }
