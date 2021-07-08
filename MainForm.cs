@@ -7,6 +7,7 @@ using System.Net;
 using System.Runtime.InteropServices;
 using System.Text;
 using System.Threading;
+using System.Threading.Tasks;
 using System.Windows.Forms;
 using Tesseract;
 
@@ -68,14 +69,12 @@ namespace TarkovPriceViewer
 
         private static readonly int WH_KEYBOARD_LL = 13;
         private static readonly int WM_KEYDOWN = 0x100;
-        private static readonly WebClient wc = new WebClient();
-        private static readonly HtmlAgilityPack.HtmlDocument doc = new HtmlAgilityPack.HtmlDocument();
         private static LowLevelKeyboardProc _proc = null;
         private static IntPtr hhook = IntPtr.Zero;
         private static int nFlags = 0x0;
-        private static Thread backthread = null;
         private static Overlay overlay = new Overlay();
         private static long presstime = 0;
+        private static CancellationTokenSource cts = new CancellationTokenSource();
 
         public MainForm()
         {
@@ -89,7 +88,6 @@ namespace TarkovPriceViewer
             MaximizeBox = false;
             TrayIcon.Visible = true;
             HideFormWhenStartup();
-            SettingWebClient();
             SetHook();
             overlay.Show();
         }
@@ -141,9 +139,6 @@ namespace TarkovPriceViewer
                         if (CurrentTime - presstime > 10000000)
                         {
                             LoadingItemInfo(Control.MousePosition);
-                            backthread = new Thread(FindItemThread);
-                            backthread.IsBackground = true;
-                            backthread.Start();
                         }
                         else
                         {
@@ -161,48 +156,37 @@ namespace TarkovPriceViewer
             return CallNextHookEx(hhook, code, (int)wParam, lParam);
         }
 
-        private void SettingWebClient()
-        {
-            doc.DisableServerSideCode = true;
-            doc.OptionDefaultStreamEncoding = Encoding.UTF8;
-            doc.OptionUseIdAttribute = false;
-            wc.Proxy = null;
-            wc.Encoding = Encoding.UTF8;
-        }
-
         public void LoadingItemInfo(System.Drawing.Point point)
         {
-            if (backthread != null)
-            {
-                backthread.Abort();
-                backthread.Join();
-            }
-            overlay.ShowLoadingInfo(point);
+            cts.Cancel();
+            cts = new CancellationTokenSource();
+            overlay.ShowLoadingInfo(point, cts.Token);
+            Task task = Task.Factory.StartNew(() => FindItemTask(cts.Token));
         }
 
         public void CloseItemInfo()
         {
-            if (backthread != null)
-            {
-                backthread.Abort();
-                backthread.Join();
-            }
+            cts.Cancel();
             overlay.HideInfo();
         }
 
-        private void FindItemThread()
+        private int FindItemTask(CancellationToken cts)
         {
             using (Bitmap fullimage = CaptureScreen(CheckisTarkov()))
             {
                 if (fullimage != null)
                 {
-                    FindItem(fullimage);
+                    if (!cts.IsCancellationRequested)
+                    {
+                        FindItem(fullimage, cts);
+                    }
                 }
                 else
                 {
                     Debug.WriteLine("image null");
                 }
             }
+            return 0;
         }
 
         private IntPtr CheckisTarkov()
@@ -283,7 +267,7 @@ namespace TarkovPriceViewer
             return text;
         }
 
-        private void FindItem(Bitmap fullimage)
+        private void FindItem(Bitmap fullimage, CancellationToken cts)
         {
             Item item = new Item();
             using (Mat ScreenMat = BitmapConverter.ToMat(fullimage).CvtColor(ColorConversionCodes.BGRA2BGR))
@@ -293,20 +277,26 @@ namespace TarkovPriceViewer
                 rac_img.FindContours(out contours, out HierarchyIndex[] hierarchy, RetrievalModes.List, ContourApproximationModes.ApproxSimple);
                 foreach (OpenCvSharp.Point[] contour in contours)
                 {
-                    OpenCvSharp.Rect rect2 = Cv2.BoundingRect(contour);
-                    if (rect2.Width > 5 && rect2.Height > 10)
+                    if (!cts.IsCancellationRequested)
                     {
-                        ScreenMat.Rectangle(rect2, Scalar.Black, 2);
-                        String text = getTesseract(ScreenMat.SubMat(rect2));
-                        if (!text.Equals(""))
+                        OpenCvSharp.Rect rect2 = Cv2.BoundingRect(contour);
+                        if (rect2.Width > 5 && rect2.Height > 10)
                         {
-                            item = MatchItemName(text.Trim().ToCharArray());
-                            break;
+                            ScreenMat.Rectangle(rect2, Scalar.Black, 2);
+                            String text = getTesseract(ScreenMat.SubMat(rect2));
+                            if (!text.Equals(""))
+                            {
+                                item = MatchItemName(text.Trim().ToCharArray());
+                                break;
+                            }
                         }
                     }
                 }
-                FindItemInfo(item);
-                overlay.ShowInfo(item);
+                if (!cts.IsCancellationRequested)
+                {
+                    FindItemInfo(item);
+                    overlay.ShowInfo(item, cts);
+                }
             }
         }
 
@@ -381,49 +371,51 @@ namespace TarkovPriceViewer
                 {
                     if (item.last_updated == null)
                     {
-                        doc.LoadHtml(wc.DownloadString(Program.tarkovmarket + item.name_tm));
-                        HtmlAgilityPack.HtmlNode node_tm = doc.DocumentNode.SelectSingleNode("//div[@class='updated-block']");
-                        if (node_tm != null)
+                        using (WebClient wc = new WebClient())
                         {
-                            item.last_updated = node_tm.InnerText.Trim();
-                        }
-                        node_tm = doc.DocumentNode.SelectSingleNode("//div[@class='c-price last alt']");
-                        if (node_tm != null)
-                        {
-                            item.price = node_tm.InnerText.Trim();
-                        }
-                        node_tm = doc.DocumentNode.SelectSingleNode("//div[@class='prices-blk']");
-                        if (node_tm != null)
-                        {
-                            HtmlAgilityPack.HtmlNode node2 = node_tm.SelectSingleNode("//div[@class='bold']");
-                            if (node2 != null)
+                            wc.Proxy = null;
+                            wc.Encoding = Encoding.UTF8;
+                            HtmlAgilityPack.HtmlDocument doc = new HtmlAgilityPack.HtmlDocument();
+                            doc.LoadHtml(wc.DownloadString(Program.tarkovmarket + item.name_tm));
+                            HtmlAgilityPack.HtmlNode node_tm = doc.DocumentNode.SelectSingleNode("//div[@class='updated-block']");
+                            if (node_tm != null)
                             {
-                                item.trader = node2.InnerText.Trim();
+                                item.last_updated = node_tm.InnerText.Trim();
                             }
-                            node2 = node_tm.SelectSingleNode("//div[@class='c-price alt']");
-                            if (node2 != null)
+                            node_tm = doc.DocumentNode.SelectSingleNode("//div[@class='c-price last alt']");
+                            if (node_tm != null)
                             {
-                                item.trader_price = node2.InnerText.Trim();
+                                item.price = node_tm.InnerText.Trim();
                             }
-                        }
-                        node_tm = null;
-                        doc.LoadHtml(wc.DownloadString(Program.wiki + item.name_tm));
-                        HtmlAgilityPack.HtmlNodeCollection nodes = doc.DocumentNode.SelectNodes("//li");
-                        if (nodes != null)
-                        {
-                            StringBuilder sb = new StringBuilder();
-                            foreach (HtmlAgilityPack.HtmlNode node in nodes)
+                            node_tm = doc.DocumentNode.SelectSingleNode("//div[@class='prices-blk']");
+                            if (node_tm != null)
                             {
-                                if (node.InnerText.Contains(" to be found "))
+                                HtmlAgilityPack.HtmlNode node2 = node_tm.SelectSingleNode("//div[@class='bold']");
+                                if (node2 != null)
                                 {
-                                    sb.Append(node.InnerText).Append("\n");
+                                    item.trader = node2.InnerText.Trim();
+                                }
+                                node2 = node_tm.SelectSingleNode("//div[@class='c-price alt']");
+                                if (node2 != null)
+                                {
+                                    item.trader_price = node2.InnerText.Trim();
                                 }
                             }
-                            item.Needs = sb.ToString().Trim();
+                            doc.LoadHtml(wc.DownloadString(Program.wiki + item.name_tm));
+                            HtmlAgilityPack.HtmlNodeCollection nodes = doc.DocumentNode.SelectNodes("//li");
+                            if (nodes != null)
+                            {
+                                StringBuilder sb = new StringBuilder();
+                                foreach (HtmlAgilityPack.HtmlNode node in nodes)
+                                {
+                                    if (node.InnerText.Contains(" to be found "))
+                                    {
+                                        sb.Append(node.InnerText).Append("\n");
+                                    }
+                                }
+                                item.Needs = sb.ToString().Trim();
+                            }
                         }
-                        nodes = null;
-                        doc.LoadHtml("");
-                        wc.Dispose();
                     }
                 }
                 catch (Exception e)

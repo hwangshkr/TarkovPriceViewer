@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Drawing;
 using System.Runtime.InteropServices;
+using System.Threading;
 using System.Windows.Forms;
 
 namespace TarkovPriceViewer
@@ -35,45 +36,51 @@ namespace TarkovPriceViewer
             this.Size = new Size(Screen.PrimaryScreen.Bounds.Width, Screen.PrimaryScreen.Bounds.Height);
         }
 
-        public void ShowInfo(Item item)
+        public void ShowInfo(Item item, CancellationToken cts)
         {
             Action show = delegate ()
             {
-                if (item.name_tm == null)
+                if (!cts.IsCancellationRequested)
                 {
-                    onetext.Text = "Item Name Not Found";
-                }
-                else
-                {
-                    iteminfo_panel.Location = onetext.Location;
-                    itemname.Text = "Name : " + new string(item.name);
-                    itemprice.Text = "Flea Price : " + item.price + " (" + item.last_updated + ")";
-                    itemtrader.Text = "Trader : " + item.trader;
-                    traderprice.Text = "Trader Price : " + item.trader_price;
-                    if (item.Needs == null)
+                    if (item.name_tm == null)
                     {
-                        itemusage.Visible = false;
+                        onetext.Text = Program.notfound;
                     }
                     else
                     {
-                        itemusage.Text = item.Needs;
-                        itemusage.Visible = true;
+                        iteminfo_panel.Location = onetext.Location;
+                        itemname.Text = "Name : " + new string(item.name);
+                        itemprice.Text = "Flea Price : " + item.price + " (" + item.last_updated + ")";
+                        itemtrader.Text = "Trader : " + item.trader;
+                        traderprice.Text = "Trader Price : " + item.trader_price;
+                        if (item.Needs == null)
+                        {
+                            itemusage.Visible = false;
+                        }
+                        else
+                        {
+                            itemusage.Text = item.Needs;
+                            itemusage.Visible = true;
+                        }
+                        onetext.Visible = false;
+                        iteminfo_panel.Visible = true;
                     }
-                    onetext.Visible = false;
-                    iteminfo_panel.Visible = true;
                 }
             };
             Invoke(show);
         }
 
-        public void ShowLoadingInfo(Point point)
+        public void ShowLoadingInfo(Point point, CancellationToken cts)
         {
             Action show = delegate ()
             {
-                onetext.Location = point;
-                onetext.Text = "Loading...";
-                iteminfo_panel.Visible = false;
-                onetext.Visible = true;
+                if (!cts.IsCancellationRequested)
+                {
+                    onetext.Location = point;
+                    onetext.Text = Program.loading;
+                    iteminfo_panel.Visible = false;
+                    onetext.Visible = true;
+                }
             };
             Invoke(show);
         }
