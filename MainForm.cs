@@ -98,7 +98,7 @@ namespace TarkovPriceViewer
 
         private void MainForm_closed(object sender, FormClosedEventArgs e)
         {
-            Close();
+            CloseApp();
         }
 
         public void SetHook()
@@ -142,7 +142,7 @@ namespace TarkovPriceViewer
             return CallNextHookEx(hhook, code, (int)wParam, lParam);
         }
 
-        private void Close()
+        private void CloseApp()
         {
             TrayIcon.Dispose();
             UnHook();
@@ -426,7 +426,7 @@ namespace TarkovPriceViewer
 
         private void MainForm_FormClosing(object sender, FormClosingEventArgs e)
         {
-            Close();
+            CloseApp();
         }
 
         private void MainForm_Move(object sender, EventArgs e)
@@ -440,7 +440,7 @@ namespace TarkovPriceViewer
 
         private void TrayExit_Click(object sender, EventArgs e)
         {
-            Close();
+            CloseApp();
         }
 
         private void TrayShow_Click(object sender, EventArgs e)
