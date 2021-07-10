@@ -18,6 +18,10 @@ namespace TarkovPriceViewer
         public static readonly String notfound = "Item Name Not Found";
         public static readonly String wiki = "https://escapefromtarkov.fandom.com/wiki/";
         public static readonly String tarkovmarket = "https://tarkov-market.com/item/";
+        public static readonly char rouble = '₽';
+        public static readonly char dollar = '$';
+        public static readonly char euro = '€';
+        public static readonly char[] splitcur = new char[] { rouble, dollar, euro };
 
         /// <summary>
         /// 해당 애플리케이션의 주 진입점입니다.
@@ -45,7 +49,7 @@ namespace TarkovPriceViewer
             LoadSettings();
             getItemList();
             main = new MainForm();
-            Application.Run(main);
+            Application.Run();
         }
 
         static void LoadSettings()

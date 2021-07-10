@@ -87,7 +87,6 @@ namespace TarkovPriceViewer
             }
             MaximizeBox = false;
             TrayIcon.Visible = true;
-            HideFormWhenStartup();
             SetHook();
             overlay.Show();
         }
@@ -97,22 +96,9 @@ namespace TarkovPriceViewer
             //not use
         }
 
-        private void HideFormWhenStartup()
-        {
-            this.Opacity = 0;
-            this.Show();
-            BeginInvoke(new MethodInvoker(delegate
-            {
-                this.Hide();
-                this.Opacity = 1;
-            }));
-        }
-
         private void MainForm_closed(object sender, FormClosedEventArgs e)
         {
-            TrayIcon.Dispose();
-            UnHook();
-            CloseItemInfo();
+            Close();
         }
 
         public void SetHook()
@@ -154,6 +140,14 @@ namespace TarkovPriceViewer
                 }
             }
             return CallNextHookEx(hhook, code, (int)wParam, lParam);
+        }
+
+        private void Close()
+        {
+            TrayIcon.Dispose();
+            UnHook();
+            CloseItemInfo();
+            Application.Exit();
         }
 
         public void LoadingItemInfo(System.Drawing.Point point)
@@ -239,6 +233,11 @@ namespace TarkovPriceViewer
             }
         }
 
+        private void ShowtestImage(Mat mat)
+        {
+            ShowtestImage("test", mat);
+        }
+
         private void ShowtestImage(String name, Mat mat)
         {
             Action show = delegate ()
@@ -256,7 +255,7 @@ namespace TarkovPriceViewer
                 using (TesseractEngine ocr = new TesseractEngine(@"./Resources/tessdata", "eng", EngineMode.Default))//should use once
                 using (Page texts = ocr.Process(BitmapConverter.ToBitmap(textmat)))
                 {
-                    text = texts.GetText().Replace("\n", " ").Trim();
+                    text = texts.GetText().Replace("\n", " ").Split(Program.splitcur)[0].Trim();
                     Debug.WriteLine("text : " + text);
                 }
             }
@@ -283,7 +282,7 @@ namespace TarkovPriceViewer
                         if (rect2.Width > 5 && rect2.Height > 10)
                         {
                             ScreenMat.Rectangle(rect2, Scalar.Black, 2);
-                            String text = getTesseract(ScreenMat.SubMat(rect2));
+                            String text = getTesseract(ScreenMat.SubMat(rect2).Threshold(0, 255, ThresholdTypes.BinaryInv));
                             if (!text.Equals(""))
                             {
                                 item = MatchItemName(text.Trim().ToCharArray());
@@ -427,7 +426,7 @@ namespace TarkovPriceViewer
 
         private void MainForm_FormClosing(object sender, FormClosingEventArgs e)
         {
-            Application.Exit();
+            Close();
         }
 
         private void MainForm_Move(object sender, EventArgs e)
@@ -441,7 +440,7 @@ namespace TarkovPriceViewer
 
         private void TrayExit_Click(object sender, EventArgs e)
         {
-            Application.Exit();
+            Close();
         }
 
         private void TrayShow_Click(object sender, EventArgs e)

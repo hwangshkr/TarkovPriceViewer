@@ -16,8 +16,6 @@ namespace TarkovPriceViewer
         private static readonly int WS_EX_TOOLWINDOW = 0x00000080;
         private static readonly int WS_EX_LAYERED = 0x80000;
         private static readonly int WS_EX_TRANSPARENT = 0x20;
-        //private static readonly String rouble = "₽";
-        //private static readonly String dollar = "$";
 
         public Overlay()
         {
