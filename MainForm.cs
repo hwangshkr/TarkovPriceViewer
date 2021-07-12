@@ -122,13 +122,13 @@ namespace TarkovPriceViewer
                 {
                     case 120:
                         long CurrentTime = DateTime.Now.Ticks;
-                        if (CurrentTime - presstime > 10000000)
+                        if (CurrentTime - presstime > 5000000)
                         {
                             LoadingItemInfo(Control.MousePosition);
                         }
                         else
                         {
-                            Debug.WriteLine("key pressed in 1 second.");
+                            Debug.WriteLine("key pressed in 0.5 seconds.");
                         }
                         presstime = CurrentTime;
                         break;
@@ -316,7 +316,7 @@ namespace TarkovPriceViewer
                     }
                 }
             }
-            Debug.WriteLine("text match : " + new String(result.name));
+            Debug.WriteLine(d + " text match : " + new String(result.name));
             return result;
         }
 
@@ -377,31 +377,50 @@ namespace TarkovPriceViewer
                             HtmlAgilityPack.HtmlDocument doc = new HtmlAgilityPack.HtmlDocument();
                             doc.LoadHtml(wc.DownloadString(Program.tarkovmarket + item.name_tm));
                             HtmlAgilityPack.HtmlNode node_tm = doc.DocumentNode.SelectSingleNode("//div[@class='updated-block']");
+                            HtmlAgilityPack.HtmlNodeCollection nodes = null;
                             if (node_tm != null)
                             {
                                 item.last_updated = node_tm.InnerText.Trim();
                             }
-                            node_tm = doc.DocumentNode.SelectSingleNode("//div[@class='c-price last alt']");
+                            node_tm = doc.DocumentNode.SelectSingleNode("//div[@class='w-100']");
                             if (node_tm != null)
                             {
-                                item.price = node_tm.InnerText.Trim();
-                            }
-                            node_tm = doc.DocumentNode.SelectSingleNode("//div[@class='prices-blk']");
-                            if (node_tm != null)
-                            {
-                                HtmlAgilityPack.HtmlNode node2 = node_tm.SelectSingleNode("//div[@class='bold']");
-                                if (node2 != null)
+                                nodes = node_tm.SelectNodes("//div[@class='blk-item']");
+                                if (nodes != null)
                                 {
-                                    item.trader = node2.InnerText.Trim();
-                                }
-                                node2 = node_tm.SelectSingleNode("//div[@class='c-price alt']");
-                                if (node2 != null)
-                                {
-                                    item.trader_price = node2.InnerText.Trim();
+                                    foreach (HtmlAgilityPack.HtmlNode node in nodes)
+                                    {
+                                        node_tm = node.FirstChild;
+                                        if (node_tm != null)
+                                        {
+                                            if (node_tm.InnerText.Trim().Equals("Price"))
+                                            {
+                                                node_tm = node.SelectSingleNode("//div[@class='c-price last alt']");
+                                                if (node_tm != null)
+                                                {
+                                                    item.price = node_tm.InnerText.Trim();
+                                                }
+                                            }
+                                            else if (node_tm.InnerText.Trim().Contains("Price")
+                                                || node_tm.InnerText.Trim().Equals("Fee"))
+                                            {
+                                                continue;
+                                            }
+                                            else if (!node_tm.InnerText.Trim().Contains("LL"))
+                                            {
+                                                item.trader = node_tm.InnerText.Trim();
+                                                node_tm = node.SelectSingleNode("//div[@class='c-price alt']");
+                                                if (node_tm != null)
+                                                {
+                                                    item.trader_price = node_tm.InnerText.Trim();
+                                                }
+                                            }
+                                        }
+                                    }
                                 }
                             }
                             doc.LoadHtml(wc.DownloadString(Program.wiki + item.name_tm));
-                            HtmlAgilityPack.HtmlNodeCollection nodes = doc.DocumentNode.SelectNodes("//li");
+                            nodes = doc.DocumentNode.SelectNodes("//li");
                             if (nodes != null)
                             {
                                 StringBuilder sb = new StringBuilder();

@@ -63,7 +63,7 @@ East wing room 205 key	East_wing_room_205_key
 Office 107 East wing key	Office_107_East_wing_key
 East wing room 308 key	East_wing_room_308_key
 West wing room 306 key	West_wing_room_306_key
-West wing room 301 key	West_wing_room_301_key
+Health Resort west wing room 301 key	West_wing_room_301_key
 West wing room 222 key	West_wing_room_222_key
 West wing room 221 key	West_wing_room_221_key
 West wing room 220 key	West_wing_room_220_key
@@ -2354,7 +2354,7 @@ NFM THOR Concealable Vest body armor	nfm_thor_integrated_carrier_body_armor
 Tagilla's welding mask "Gorilla"	tagilla's_welding_mask_gorilla
 Tagilla's welding mask "UBEY"	tagilla's_welding_mask_ubey
 Sanitar	boss_cap
-Kotton beanie	bomber_beanie
+Bomber Beanie	bomber_beanie
 Stich Profi Chimera boonie hat	stich_profi_chimera_boonie_hat
 Can of RatCola	can_of_ratcola
 Superfors DB 2020 Dead Blow Hammer	superfors_db_2020_dead_blow_hammer
