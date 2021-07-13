@@ -82,6 +82,7 @@ namespace TarkovPriceViewer
         private static Overlay overlay = new Overlay();
         private static long presstime = 0;
         private static CancellationTokenSource cts = new CancellationTokenSource();
+        private static Control press_key_control = null;
 
         public MainForm()
         {
@@ -92,7 +93,10 @@ namespace TarkovPriceViewer
             {
                 nFlags = 0x2;
             }
+            MinimizeBox = false;
             MaximizeBox = false;
+            CloseOverlayWhenMouseMoved.Checked = Program.CloseOverlayWhenMouseMoved;
+
             TrayIcon.Visible = true;
             SetHook();
             overlay.Show();
@@ -103,24 +107,31 @@ namespace TarkovPriceViewer
             //not use
         }
 
-        private void MainForm_closed(object sender, FormClosedEventArgs e)
-        {
-            CloseApp();
-        }
-
         public void SetHook()
         {
             try
             {
-                IntPtr hInstance = LoadLibrary("User32");
                 _proc_keyboard = hookKeyboardProc;
-                hhook_keyboard = SetWindowsHookEx(WH_KEYBOARD_LL, _proc_keyboard, hInstance, 0);
-                _proc_mouse = hookMouseProc;
-                hhook_mouse = SetWindowsHookEx(WH_MOUSE_LL, _proc_mouse, hInstance, 0);
+                hhook_keyboard = SetWindowsHookEx(WH_KEYBOARD_LL, _proc_keyboard, LoadLibrary("User32"), 0);
+                if (Program.CloseOverlayWhenMouseMoved)
+                {
+                    setMouseHook();
+                }
             } catch (Exception e)
             {
                 Debug.WriteLine(e.Message);
             }
+        }
+
+        public void setMouseHook()
+        {
+            _proc_mouse = hookMouseProc;
+            hhook_mouse = SetWindowsHookEx(WH_MOUSE_LL, _proc_mouse, LoadLibrary("User32"), 0);
+        }
+
+        public void unsetMouseHook()
+        {
+            UnhookWindowsHookEx(hhook_mouse);
         }
 
         public void UnHook()
@@ -128,7 +139,7 @@ namespace TarkovPriceViewer
             try
             {
                 UnhookWindowsHookEx(hhook_keyboard);
-                UnhookWindowsHookEx(hhook_mouse);
+                unsetMouseHook();
             }
             catch (Exception e)
             {
@@ -305,7 +316,6 @@ namespace TarkovPriceViewer
                 using (Page texts = ocr.Process(BitmapConverter.ToBitmap(textmat)))
                 {
                     text = texts.GetText().Replace("\n", " ").Split(Program.splitcur)[0].Trim();
-                    text = "Salewa first aid kit";
                     Debug.WriteLine("text : " + text);
                 }
             }
@@ -494,20 +504,6 @@ namespace TarkovPriceViewer
             }
         }
 
-        private void MainForm_FormClosing(object sender, FormClosingEventArgs e)
-        {
-            CloseApp();
-        }
-
-        private void MainForm_Move(object sender, EventArgs e)
-        {
-            if (this.WindowState == FormWindowState.Minimized)
-            {
-                TrayIcon.Visible = true;
-                this.Hide();
-            }
-        }
-
         private void TrayExit_Click(object sender, EventArgs e)
         {
             CloseApp();
@@ -521,6 +517,59 @@ namespace TarkovPriceViewer
         private void TrayIcon_MouseDoubleClick(object sender, MouseEventArgs e)
         {
             this.Show();
+        }
+
+        private void MainForm_FormClosing(object sender, FormClosingEventArgs e)
+        {
+            if (e.CloseReason == CloseReason.UserClosing)
+            {
+                TrayIcon.Visible = true;
+                this.Hide();
+                e.Cancel = true;
+            }
+        }
+
+        private void MinimizetoTrayWhenStartup_CheckedChanged(object sender, EventArgs e)
+        {
+            Program.MinimizetoTrayWhenStartup = (sender as CheckBox).Checked;
+        }
+
+        private void TarkovWiki_Click(object sender, EventArgs e)
+        {
+            Process.Start(Program.wiki);
+        }
+
+        private void TarkovMarket_Click(object sender, EventArgs e)
+        {
+            Process.Start(Program.tarkovmarket);
+        }
+
+        private void CloseOverlayWhenMouseMoved_CheckedChanged(object sender, EventArgs e)
+        {
+            Program.CloseOverlayWhenMouseMoved = (sender as CheckBox).Checked;
+            if (Program.CloseOverlayWhenMouseMoved)
+            {
+                setMouseHook();
+            } else
+            {
+                unsetMouseHook();
+            }
+        }
+
+        public void ChangePressKeyData()
+        {
+            if (press_key_control != null)
+            {
+                press_key_control.Text = Program.ShowOverlay_Key;
+                press_key_control = null;
+            }
+        }
+
+        private void ShowOverlay_Button_Click(object sender, EventArgs e)
+        {
+            press_key_control = (sender as Control);
+            KeyPressCheck kpc = new KeyPressCheck(this);
+            kpc.ShowDialog();
         }
     }
 }

@@ -22,6 +22,10 @@ namespace TarkovPriceViewer
         public static readonly char dollar = '$';
         public static readonly char euro = '€';
         public static readonly char[] splitcur = new char[] { rouble, dollar, euro };
+        public static bool MinimizetoTrayWhenStartup = false;
+        public static bool CloseOverlayWhenMouseMoved = true;
+        public static String ShowOverlay_Key = "F9";
+        //public static System.Drawing.Point startpoint = new System.Drawing.Point(0, 0);
 
         /// <summary>
         /// 해당 애플리케이션의 주 진입점입니다.
@@ -49,7 +53,13 @@ namespace TarkovPriceViewer
             LoadSettings();
             getItemList();
             main = new MainForm();
-            Application.Run();
+            if (MinimizetoTrayWhenStartup)
+            {
+                Application.Run();
+            } else
+            {
+                Application.Run(main);
+            }
         }
 
         static void LoadSettings()
@@ -62,6 +72,32 @@ namespace TarkovPriceViewer
                 }
                 String text = File.ReadAllText(setting_path);
                 settings = JsonSerializer.Deserialize<Dictionary<String, String>>(text);
+                foreach (KeyValuePair<String, String> setting in settings)
+                {
+                    try
+                    {
+                        switch (setting.Key)
+                        {
+                            case "MinimizetoTrayWhenStartup":
+                                MinimizetoTrayWhenStartup = Convert.ToBoolean(setting.Value);
+                                break;
+                            case "CloseOverlayWhenMouseMoved":
+                                CloseOverlayWhenMouseMoved = Convert.ToBoolean(setting.Value);
+                                break;
+                            case "ShowOverlay_Key":
+                                ShowOverlay_Key = setting.Value;
+                                break;
+                                /*case "StartPos":
+                                    String[] pos = setting.Value.Split(',');
+                                    startpoint = new System.Drawing.Point(Int32.Parse(pos[0]), Int32.Parse(pos[1]));
+                                    break;*/
+                        }
+                    }
+                    catch (Exception e)
+                    {
+                        Debug.WriteLine(e.Message);
+                    }
+                }
             }
             catch (Exception e)
             {
