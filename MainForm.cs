@@ -77,6 +77,7 @@ namespace TarkovPriceViewer
         private static LowLevelProc _proc_mouse = null;
         private static IntPtr hhook_keyboard = IntPtr.Zero;
         private static IntPtr hhook_mouse = IntPtr.Zero;
+        private static System.Drawing.Point point = new System.Drawing.Point(0, 0);
         private static int nFlags = 0x0;
         private static Overlay overlay = new Overlay();
         private static long presstime = 0;
@@ -148,7 +149,8 @@ namespace TarkovPriceViewer
                             long CurrentTime = DateTime.Now.Ticks;
                             if (CurrentTime - presstime > 5000000)
                             {
-                                LoadingItemInfo(Control.MousePosition);
+                                point = Control.MousePosition;
+                                LoadingItemInfo();
                             }
                             else
                             {
@@ -177,7 +179,10 @@ namespace TarkovPriceViewer
             {
                 if (overlay.CheckisVisible() && code >= 0 && wParam == (IntPtr)WM_MOUSEMOVE)
                 {
-                    CloseItemInfo();
+                    if (Math.Abs(Control.MousePosition.X - point.X) > 5 || Math.Abs(Control.MousePosition.Y - point.Y) > 5)
+                    {
+                        CloseItemInfo();
+                    }
                 }
             } catch (Exception e)
             {
@@ -194,7 +199,7 @@ namespace TarkovPriceViewer
             Application.Exit();
         }
 
-        public void LoadingItemInfo(System.Drawing.Point point)
+        public void LoadingItemInfo()
         {
             cts.Cancel();
             cts = new CancellationTokenSource();

@@ -41,7 +41,9 @@ namespace TarkovPriceViewer
             // 
             // iteminfo_panel
             // 
-            this.iteminfo_panel.Anchor = System.Windows.Forms.AnchorStyles.Bottom;
+            this.iteminfo_panel.Anchor = ((System.Windows.Forms.AnchorStyles)((((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Bottom) 
+            | System.Windows.Forms.AnchorStyles.Left) 
+            | System.Windows.Forms.AnchorStyles.Right)));
             this.iteminfo_panel.AutoSize = true;
             this.iteminfo_panel.AutoSizeMode = System.Windows.Forms.AutoSizeMode.GrowAndShrink;
             this.iteminfo_panel.BackColor = System.Drawing.Color.Black;
@@ -138,7 +140,9 @@ namespace TarkovPriceViewer
             // 
             // onetext
             // 
-            this.onetext.Anchor = System.Windows.Forms.AnchorStyles.Bottom;
+            this.onetext.Anchor = ((System.Windows.Forms.AnchorStyles)((((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Bottom) 
+            | System.Windows.Forms.AnchorStyles.Left) 
+            | System.Windows.Forms.AnchorStyles.Right)));
             this.onetext.AutoSize = true;
             this.onetext.BackColor = System.Drawing.Color.Black;
             this.onetext.CausesValidation = false;
