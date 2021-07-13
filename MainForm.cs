@@ -300,6 +300,7 @@ namespace TarkovPriceViewer
                 using (Page texts = ocr.Process(BitmapConverter.ToBitmap(textmat)))
                 {
                     text = texts.GetText().Replace("\n", " ").Split(Program.splitcur)[0].Trim();
+                    text = "Salewa first aid kit";
                     Debug.WriteLine("text : " + text);
                 }
             }
@@ -329,7 +330,7 @@ namespace TarkovPriceViewer
                             String text = getTesseract(ScreenMat.SubMat(rect2).Threshold(0, 255, ThresholdTypes.BinaryInv));
                             if (!text.Equals(""))
                             {
-                                item = MatchItemName(text.Trim().ToCharArray());
+                                item = MatchItemName(text.ToLower().Trim().ToCharArray());
                                 break;
                             }
                         }
@@ -349,7 +350,7 @@ namespace TarkovPriceViewer
             int d = 999;
             foreach (Item item in Program.itemlist)
             {
-                int d2 = levenshteinDistance(itemname, item.name);
+                int d2 = levenshteinDistance(itemname, item.name_compare);
                 if (d2 < d)
                 {
                     result = item;
@@ -360,7 +361,7 @@ namespace TarkovPriceViewer
                     }
                 }
             }
-            Debug.WriteLine(d + " text match : " + new String(result.name));
+            Debug.WriteLine(d + " text match : " + result.name_display);
             return result;
         }
 
@@ -408,7 +409,7 @@ namespace TarkovPriceViewer
 
         private void FindItemInfo(Item item)
         {
-            if (item.name_tm != null)
+            if (item.name_address != null)
             {
                 try
                 {
@@ -419,7 +420,7 @@ namespace TarkovPriceViewer
                             wc.Proxy = null;
                             wc.Encoding = Encoding.UTF8;
                             HtmlAgilityPack.HtmlDocument doc = new HtmlAgilityPack.HtmlDocument();
-                            doc.LoadHtml(wc.DownloadString(Program.tarkovmarket + item.name_tm));
+                            doc.LoadHtml(wc.DownloadString(Program.tarkovmarket + item.name_address));
                             HtmlAgilityPack.HtmlNode node_tm = doc.DocumentNode.SelectSingleNode("//div[@class='w-100']");
                             HtmlAgilityPack.HtmlNodeCollection nodes = null;
                             if (node_tm != null)
@@ -463,7 +464,7 @@ namespace TarkovPriceViewer
                                     }
                                 }
                             }
-                            doc.LoadHtml(wc.DownloadString(Program.wiki + item.name_tm));
+                            doc.LoadHtml(wc.DownloadString(Program.wiki + item.name_address));
                             nodes = doc.DocumentNode.SelectNodes("//li");
                             if (nodes != null)
                             {

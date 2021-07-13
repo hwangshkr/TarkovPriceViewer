@@ -82,8 +82,9 @@ namespace TarkovPriceViewer
                 {
                     String[] spl = textValue[i].Split('\t');
                     Item item = new Item();
-                    item.name = spl[0].Trim().ToCharArray();//for compare '_' removed
-                    item.name_tm = spl[1].Trim();//for address '_' not removed
+                    item.name_display = spl[0].Trim();//for display '_' removed
+                    item.name_compare = item.name_display.ToLower().ToCharArray();//for compare '_' removed
+                    item.name_address = spl[1].Trim();//for address '_' not removed
                     itemlist.Add(item);
                 }
             }

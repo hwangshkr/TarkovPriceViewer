@@ -4,8 +4,9 @@ namespace TarkovPriceViewer
 {
     public class Item
     {
-        public char[] name;
-        public String name_tm;
+        public String name_display;
+        public char[] name_compare;
+        public String name_address;
         public String price;
         public String trader;
         public String trader_price;

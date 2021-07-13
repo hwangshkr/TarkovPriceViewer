@@ -40,14 +40,14 @@ namespace TarkovPriceViewer
             {
                 if (!cts.IsCancellationRequested)
                 {
-                    if (item.name_tm == null)
+                    if (item.name_address == null)
                     {
                         onetext.Text = Program.notfound;
                     }
                     else
                     {
                         iteminfo_panel.Location = onetext.Location;
-                        itemname.Text = "Name : " + new string(item.name);
+                        itemname.Text = "Name : " + item.name_display;
                         itemprice.Text = "Flea Price : " + item.price + " (" + item.last_updated + ")";
                         itemtrader.Text = "Trader : " + item.trader;
                         traderprice.Text = "Trader Price : " + item.trader_price;
