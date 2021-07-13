@@ -41,9 +41,7 @@ namespace TarkovPriceViewer
             // 
             // iteminfo_panel
             // 
-            this.iteminfo_panel.Anchor = ((System.Windows.Forms.AnchorStyles)((((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Bottom) 
-            | System.Windows.Forms.AnchorStyles.Left) 
-            | System.Windows.Forms.AnchorStyles.Right)));
+            this.iteminfo_panel.Anchor = System.Windows.Forms.AnchorStyles.Bottom;
             this.iteminfo_panel.AutoSize = true;
             this.iteminfo_panel.AutoSizeMode = System.Windows.Forms.AutoSizeMode.GrowAndShrink;
             this.iteminfo_panel.BackColor = System.Drawing.Color.Black;
@@ -140,6 +138,7 @@ namespace TarkovPriceViewer
             // 
             // onetext
             // 
+            this.onetext.Anchor = System.Windows.Forms.AnchorStyles.Bottom;
             this.onetext.AutoSize = true;
             this.onetext.BackColor = System.Drawing.Color.Black;
             this.onetext.CausesValidation = false;
@@ -149,9 +148,9 @@ namespace TarkovPriceViewer
             this.onetext.Margin = new System.Windows.Forms.Padding(3);
             this.onetext.Name = "onetext";
             this.onetext.Padding = new System.Windows.Forms.Padding(8);
-            this.onetext.Size = new System.Drawing.Size(113, 28);
+            this.onetext.Size = new System.Drawing.Size(73, 28);
             this.onetext.TabIndex = 2;
-            this.onetext.Text = "Trader Price :";
+            this.onetext.Text = "Loading";
             this.onetext.TextAlign = System.Drawing.ContentAlignment.MiddleLeft;
             this.onetext.LocationChanged += new System.EventHandler(this.onetext_LocationChanged);
             this.onetext.SizeChanged += new System.EventHandler(this.onetext_SizeChanged);

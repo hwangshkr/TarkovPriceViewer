@@ -32,7 +32,7 @@ namespace TarkovPriceViewer
         private static extern IntPtr LoadLibrary(string lpFileName);
 
         [DllImport("user32.dll")]
-        private static extern IntPtr SetWindowsHookEx(int idHook, LowLevelKeyboardProc callback, IntPtr hInstance, uint threadId);
+        private static extern IntPtr SetWindowsHookEx(int idHook, LowLevelProc callback, IntPtr hInstance, uint threadId);
 
         [DllImport("user32.dll")]
         private static extern bool UnhookWindowsHookEx(IntPtr hInstance);
@@ -40,12 +40,14 @@ namespace TarkovPriceViewer
         [DllImport("user32.dll")]
         private static extern IntPtr CallNextHookEx(IntPtr idHook, int nCode, int wParam, IntPtr lParam);
 
-        private delegate IntPtr LowLevelKeyboardProc(int nCode, IntPtr wParam, IntPtr lParam);
+        private delegate IntPtr LowLevelProc(int nCode, IntPtr wParam, IntPtr lParam);
 
         [DllImport("user32.dll", SetLastError = true)]
         private static extern int GetWindowLong(IntPtr hWnd, int nIndex);
+
         [DllImport("user32.dll")]
         private static extern int SetWindowLong(IntPtr hWnd, int nIndex, int dwNewLong);
+
         private const int GWL_EXSTYLE = -20;
         private const int WS_EX_LAYERED = 0x80000;
 
@@ -69,8 +71,12 @@ namespace TarkovPriceViewer
 
         private static readonly int WH_KEYBOARD_LL = 13;
         private static readonly int WM_KEYDOWN = 0x100;
-        private static LowLevelKeyboardProc _proc = null;
-        private static IntPtr hhook = IntPtr.Zero;
+        private static readonly int WH_MOUSE_LL = 14;
+        private static readonly int WM_MOUSEMOVE = 0x200;
+        private static LowLevelProc _proc_keyboard = null;
+        private static LowLevelProc _proc_mouse = null;
+        private static IntPtr hhook_keyboard = IntPtr.Zero;
+        private static IntPtr hhook_mouse = IntPtr.Zero;
         private static int nFlags = 0x0;
         private static Overlay overlay = new Overlay();
         private static long presstime = 0;
@@ -79,7 +85,7 @@ namespace TarkovPriceViewer
         public MainForm()
         {
             InitializeComponent();
-            var style = GetWindowLong(this.Handle, GWL_EXSTYLE);
+            int style = GetWindowLong(this.Handle, GWL_EXSTYLE);
             SetWindowLong(this.Handle, GWL_EXSTYLE, style | WS_EX_LAYERED);
             if (Environment.OSVersion.Version.Major == 10)
             {
@@ -103,49 +109,87 @@ namespace TarkovPriceViewer
 
         public void SetHook()
         {
-            _proc = hookProc;
-            IntPtr hInstance = LoadLibrary("User32");
-            hhook = SetWindowsHookEx(WH_KEYBOARD_LL, _proc, hInstance, 0);
+            try
+            {
+                IntPtr hInstance = LoadLibrary("User32");
+                _proc_keyboard = hookKeyboardProc;
+                hhook_keyboard = SetWindowsHookEx(WH_KEYBOARD_LL, _proc_keyboard, hInstance, 0);
+                _proc_mouse = hookMouseProc;
+                hhook_mouse = SetWindowsHookEx(WH_MOUSE_LL, _proc_mouse, hInstance, 0);
+            } catch (Exception e)
+            {
+                Debug.WriteLine(e.Message);
+            }
         }
 
         public void UnHook()
         {
-            UnhookWindowsHookEx(hhook);
+            try
+            {
+                UnhookWindowsHookEx(hhook_keyboard);
+                UnhookWindowsHookEx(hhook_mouse);
+            }
+            catch (Exception e)
+            {
+                Debug.WriteLine(e.Message);
+            }
         }
 
-        public IntPtr hookProc(int code, IntPtr wParam, IntPtr lParam)
+        public IntPtr hookKeyboardProc(int code, IntPtr wParam, IntPtr lParam)
         {
-            if (code >= 0 && wParam == (IntPtr)WM_KEYDOWN)
+            try
             {
-                int vkCode = Marshal.ReadInt32(lParam);
-                switch (vkCode)
+                if (code >= 0 && wParam == (IntPtr)WM_KEYDOWN)
                 {
-                    case 120:
-                        long CurrentTime = DateTime.Now.Ticks;
-                        if (CurrentTime - presstime > 5000000)
-                        {
-                            LoadingItemInfo(Control.MousePosition);
-                        }
-                        else
-                        {
-                            Debug.WriteLine("key pressed in 0.5 seconds.");
-                        }
-                        presstime = CurrentTime;
-                        break;
-                    case 9:
-                    case 27:
-                    case 121:
-                        CloseItemInfo();
-                        break;
+                    int vkCode = Marshal.ReadInt32(lParam);
+                    switch (vkCode)
+                    {
+                        case 120:
+                            long CurrentTime = DateTime.Now.Ticks;
+                            if (CurrentTime - presstime > 5000000)
+                            {
+                                LoadingItemInfo(Control.MousePosition);
+                            }
+                            else
+                            {
+                                Debug.WriteLine("key pressed in 0.5 seconds.");
+                            }
+                            presstime = CurrentTime;
+                            break;
+                        case 9:
+                        case 27:
+                        case 121:
+                            CloseItemInfo();
+                            break;
+                    }
                 }
             }
-            return CallNextHookEx(hhook, code, (int)wParam, lParam);
+            catch (Exception e)
+            {
+                Debug.WriteLine(e.Message);
+            }
+            return CallNextHookEx(hhook_keyboard, code, (int)wParam, lParam);
+        }
+
+        public IntPtr hookMouseProc(int code, IntPtr wParam, IntPtr lParam)
+        {
+            try
+            {
+                if (overlay.CheckisVisible() && code >= 0 && wParam == (IntPtr)WM_MOUSEMOVE)
+                {
+                    CloseItemInfo();
+                }
+            } catch (Exception e)
+            {
+                Debug.WriteLine(e.Message);
+            }
+            return CallNextHookEx(hhook_mouse, code, (int)wParam, lParam);
         }
 
         private void CloseApp()
         {
-            TrayIcon.Dispose();
             UnHook();
+            TrayIcon.Dispose();
             CloseItemInfo();
             Application.Exit();
         }
@@ -376,16 +420,16 @@ namespace TarkovPriceViewer
                             wc.Encoding = Encoding.UTF8;
                             HtmlAgilityPack.HtmlDocument doc = new HtmlAgilityPack.HtmlDocument();
                             doc.LoadHtml(wc.DownloadString(Program.tarkovmarket + item.name_tm));
-                            HtmlAgilityPack.HtmlNode node_tm = doc.DocumentNode.SelectSingleNode("//div[@class='updated-block']");
+                            HtmlAgilityPack.HtmlNode node_tm = doc.DocumentNode.SelectSingleNode("//div[@class='w-100']");
                             HtmlAgilityPack.HtmlNodeCollection nodes = null;
                             if (node_tm != null)
                             {
-                                item.last_updated = node_tm.InnerText.Trim();
-                            }
-                            node_tm = doc.DocumentNode.SelectSingleNode("//div[@class='w-100']");
-                            if (node_tm != null)
-                            {
                                 nodes = node_tm.SelectNodes("//div[@class='blk-item']");
+                                node_tm = node_tm.SelectSingleNode("//div[@class='updated-block']");
+                                if (node_tm != null)
+                                {
+                                    item.last_updated = node_tm.InnerText.Trim();
+                                }
                                 if (nodes != null)
                                 {
                                     foreach (HtmlAgilityPack.HtmlNode node in nodes)

@@ -36,10 +36,10 @@ namespace TarkovPriceViewer
             this.trayshow = new System.Windows.Forms.ToolStripMenuItem();
             this.trayexit = new System.Windows.Forms.ToolStripMenuItem();
             this.panel1 = new System.Windows.Forms.Panel();
+            this.button3 = new System.Windows.Forms.Button();
             this.label1 = new System.Windows.Forms.Label();
             this.Donate = new System.Windows.Forms.Button();
-            this.Update = new System.Windows.Forms.Button();
-            this.button3 = new System.Windows.Forms.Button();
+            this.CheckUpdate = new System.Windows.Forms.Button();
             this.panel2 = new System.Windows.Forms.Panel();
             this.button4 = new System.Windows.Forms.Button();
             this.label2 = new System.Windows.Forms.Label();
@@ -51,8 +51,8 @@ namespace TarkovPriceViewer
             this.TarkovMarket = new System.Windows.Forms.Button();
             this.TarkovWiki = new System.Windows.Forms.Button();
             this.panel4 = new System.Windows.Forms.Panel();
-            this.panel5 = new System.Windows.Forms.Panel();
             this.DataProvidedBy = new System.Windows.Forms.Label();
+            this.panel5 = new System.Windows.Forms.Panel();
             this.TrayMenu.SuspendLayout();
             this.panel1.SuspendLayout();
             this.panel2.SuspendLayout();
@@ -100,6 +100,15 @@ namespace TarkovPriceViewer
             this.panel1.Size = new System.Drawing.Size(200, 100);
             this.panel1.TabIndex = 1;
             // 
+            // button3
+            // 
+            this.button3.Location = new System.Drawing.Point(101, 41);
+            this.button3.Name = "button3";
+            this.button3.Size = new System.Drawing.Size(75, 23);
+            this.button3.TabIndex = 1;
+            this.button3.Text = "button3";
+            this.button3.UseVisualStyleBackColor = true;
+            // 
             // label1
             // 
             this.label1.AutoSize = true;
@@ -118,23 +127,14 @@ namespace TarkovPriceViewer
             this.Donate.Text = "Donate";
             this.Donate.UseVisualStyleBackColor = true;
             // 
-            // Update
+            // CheckUpdate
             // 
-            this.Update.Location = new System.Drawing.Point(97, 20);
-            this.Update.Name = "Update";
-            this.Update.Size = new System.Drawing.Size(75, 23);
-            this.Update.TabIndex = 5;
-            this.Update.Text = "Update";
-            this.Update.UseVisualStyleBackColor = true;
-            // 
-            // button3
-            // 
-            this.button3.Location = new System.Drawing.Point(101, 41);
-            this.button3.Name = "button3";
-            this.button3.Size = new System.Drawing.Size(75, 23);
-            this.button3.TabIndex = 1;
-            this.button3.Text = "button3";
-            this.button3.UseVisualStyleBackColor = true;
+            this.CheckUpdate.Location = new System.Drawing.Point(97, 20);
+            this.CheckUpdate.Name = "CheckUpdate";
+            this.CheckUpdate.Size = new System.Drawing.Size(75, 23);
+            this.CheckUpdate.TabIndex = 5;
+            this.CheckUpdate.Text = "CheckUpdate";
+            this.CheckUpdate.UseVisualStyleBackColor = true;
             // 
             // panel2
             // 
@@ -237,16 +237,6 @@ namespace TarkovPriceViewer
             this.panel4.Size = new System.Drawing.Size(200, 100);
             this.panel4.TabIndex = 7;
             // 
-            // panel5
-            // 
-            this.panel5.Controls.Add(this.MadeBy);
-            this.panel5.Controls.Add(this.Update);
-            this.panel5.Controls.Add(this.Donate);
-            this.panel5.Location = new System.Drawing.Point(419, 149);
-            this.panel5.Name = "panel5";
-            this.panel5.Size = new System.Drawing.Size(200, 100);
-            this.panel5.TabIndex = 8;
-            // 
             // DataProvidedBy
             // 
             this.DataProvidedBy.AutoSize = true;
@@ -255,6 +245,16 @@ namespace TarkovPriceViewer
             this.DataProvidedBy.Size = new System.Drawing.Size(94, 12);
             this.DataProvidedBy.TabIndex = 6;
             this.DataProvidedBy.Text = "DataProvidedBy";
+            // 
+            // panel5
+            // 
+            this.panel5.Controls.Add(this.MadeBy);
+            this.panel5.Controls.Add(this.CheckUpdate);
+            this.panel5.Controls.Add(this.Donate);
+            this.panel5.Location = new System.Drawing.Point(419, 149);
+            this.panel5.Name = "panel5";
+            this.panel5.Size = new System.Drawing.Size(200, 100);
+            this.panel5.TabIndex = 8;
             // 
             // MainForm
             // 
@@ -298,7 +298,7 @@ namespace TarkovPriceViewer
         private System.Windows.Forms.Panel panel1;
         private System.Windows.Forms.Label label1;
         private System.Windows.Forms.Button Donate;
-        private System.Windows.Forms.Button Update;
+        private System.Windows.Forms.Button CheckUpdate;
         private System.Windows.Forms.Button button3;
         private System.Windows.Forms.Panel panel2;
         private System.Windows.Forms.Button button4;

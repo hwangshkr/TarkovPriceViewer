@@ -93,6 +93,11 @@ namespace TarkovPriceViewer
             Invoke(show);
         }
 
+        public Boolean CheckisVisible()
+        {
+            return iteminfo_panel.Visible || onetext.Visible;
+        }
+
         private void FixLocation(Control p)
         {
             int totalwidth = p.Location.X + p.Width;
