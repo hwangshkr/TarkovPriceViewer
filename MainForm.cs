@@ -413,8 +413,9 @@ namespace TarkovPriceViewer
             {
                 try
                 {
-                    if (item.last_updated == null)
+                    if (item.last_fetch == null || (DateTime.Now - item.last_fetch).TotalHours >= 1)
                     {
+                        item.last_fetch = DateTime.Now;
                         using (WebClient wc = new WebClient())
                         {
                             wc.Proxy = null;

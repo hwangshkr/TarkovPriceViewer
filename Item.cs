@@ -12,5 +12,6 @@ namespace TarkovPriceViewer
         public String trader_price;
         public String Needs;
         public String last_updated;
+        public DateTime last_fetch;
     }
 }
