@@ -10,7 +10,7 @@ namespace TarkovPriceViewer
     static class Program
     {
         private static MainForm main;
-        private static Dictionary<String, String> settings;
+        public static Dictionary<String, String> settings;
         public static readonly List<Item> itemlist = new List<Item>();
         public static readonly String setting_path = @"settings.json";
         public static readonly String appname = "EscapeFromTarkov";
@@ -22,13 +22,6 @@ namespace TarkovPriceViewer
         public static readonly char dollar = '$';
         public static readonly char euro = '€';
         public static readonly char[] splitcur = new char[] { rouble, dollar, euro };
-        public static String Version = "1.00";
-        public static bool MinimizetoTrayWhenStartup = false;
-        public static bool CloseOverlayWhenMouseMoved = true;
-        public static int ShowOverlay_Key = 120;
-        public static int HideOverlay_Key = 121;
-        public static int Overlay_Transparent = 100;
-        //public static System.Drawing.Point startpoint = new System.Drawing.Point(0, 0);
 
         /// <summary>
         /// 해당 애플리케이션의 주 진입점입니다.
@@ -56,64 +49,12 @@ namespace TarkovPriceViewer
             LoadSettings();
             getItemList();
             main = new MainForm();
-            if (MinimizetoTrayWhenStartup)
+            if (Convert.ToBoolean(settings["MinimizetoTrayWhenStartup"]))
             {
                 Application.Run();
             } else
             {
                 Application.Run(main);
-            }
-        }
-
-        static void LoadSettings()
-        {
-            try
-            {
-                if (!File.Exists(setting_path))
-                {
-                    File.Create(setting_path);
-                }
-                String text = File.ReadAllText(setting_path);
-                settings = JsonSerializer.Deserialize<Dictionary<String, String>>(text);
-                foreach (KeyValuePair<String, String> setting in settings)
-                {
-                    try
-                    {
-                        switch (setting.Key)
-                        {
-                            case "Version":
-                                Version = setting.Value;
-                                break;
-                            case "MinimizetoTrayWhenStartup":
-                                MinimizetoTrayWhenStartup = Convert.ToBoolean(setting.Value);
-                                break;
-                            case "CloseOverlayWhenMouseMoved":
-                                CloseOverlayWhenMouseMoved = Convert.ToBoolean(setting.Value);
-                                break;
-                            case "ShowOverlay_Key":
-                                ShowOverlay_Key = Int32.Parse(setting.Value);
-                                break;
-                            case "HideOverlay_Key":
-                                HideOverlay_Key = Int32.Parse(setting.Value);
-                                break;
-                            case "Overlay_Transparent":
-                                Overlay_Transparent = Int32.Parse(setting.Value);
-                                break;
-                                /*case "StartPos":
-                                    String[] pos = setting.Value.Split(',');
-                                    startpoint = new System.Drawing.Point(Int32.Parse(pos[0]), Int32.Parse(pos[1]));
-                                    break;*/
-                        }
-                    }
-                    catch (Exception e)
-                    {
-                        Debug.WriteLine(e.Message);
-                    }
-                }
-            }
-            catch (Exception e)
-            {
-                Debug.WriteLine(e.Message);
             }
         }
 
@@ -137,6 +78,66 @@ namespace TarkovPriceViewer
                 }
             }
             Debug.WriteLine("itemlist Count : " + itemlist.Count);
+        }
+
+        static void LoadSettings()
+        {
+            try
+            {
+                if (!File.Exists(setting_path))
+                {
+                    File.Create(setting_path);
+                }
+                String text = File.ReadAllText(setting_path);
+                settings = JsonSerializer.Deserialize<Dictionary<String, String>>(text);
+                String st;
+                if (!settings.TryGetValue("Version", out st))
+                {
+                    settings.Add("Version", "1.00");
+                }
+                if (!settings.TryGetValue("MinimizetoTrayWhenStartup", out st))
+                {
+                    settings.Add("MinimizetoTrayWhenStartup", "false");
+                }
+                if (!settings.TryGetValue("CloseOverlayWhenMouseMoved", out st))
+                {
+                    settings.Add("CloseOverlayWhenMouseMoved", "true");
+                }
+                if (!settings.TryGetValue("ShowOverlay_Key", out st))
+                {
+                    settings.Add("ShowOverlay_Key", "120");
+                }
+                if (!settings.TryGetValue("HideOverlay_Key", out st))
+                {
+                    settings.Add("HideOverlay_Key", "121");
+                }
+                if (!settings.TryGetValue("Overlay_Transparent", out st))
+                {
+                    settings.Add("Overlay_Transparent", "100");
+                }
+                Debug.WriteLine("sssssss" + settings["Overlay_Transparent"]);
+            }
+            catch (Exception e)
+            {
+                Debug.WriteLine(e.Message);
+            }
+        }
+
+        public static void SaveSettings()
+        {
+            try
+            {
+                if (!File.Exists(setting_path))
+                {
+                    File.Create(setting_path);
+                }
+                string jsonString = JsonSerializer.Serialize<Dictionary<String, String>>(settings);
+                File.WriteAllText(setting_path, jsonString);
+            }
+            catch (Exception e)
+            {
+                Debug.WriteLine(e.Message);
+            }
         }
     }
 }

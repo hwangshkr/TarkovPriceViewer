@@ -21,7 +21,7 @@ namespace TarkovPriceViewer
         {
             InitializeComponent();
             this.TopMost = true;
-            this.Opacity = Program.Overlay_Transparent;
+            this.Opacity = Int32.Parse(Program.settings["Overlay_Transparent"]);
             var style = GetWindowLong(this.Handle, GWL_EXSTYLE);
             SetWindowLong(this.Handle, GWL_EXSTYLE, style | WS_EX_LAYERED | WS_EX_TRANSPARENT | WS_EX_TOOLWINDOW);
             settingFormPos();

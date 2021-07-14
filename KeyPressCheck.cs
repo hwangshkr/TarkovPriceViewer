@@ -13,12 +13,10 @@ namespace TarkovPriceViewer
 {
     public partial class KeyPressCheck : Form
     {
-        private MainForm main;
         private int button;
 
-        public KeyPressCheck(MainForm main, int button)
+        public KeyPressCheck(int button)
         {
-            this.main = main;
             this.button = button;
             InitializeComponent();
         }
@@ -63,14 +61,17 @@ namespace TarkovPriceViewer
                     switch (button)
                     {
                         case 1:
-                            Program.ShowOverlay_Key = (int)e.KeyCode;
+                            Program.settings["ShowOverlay_Key"] = ((int)e.KeyCode).ToString();
                             break;
                         case 2:
-                            Program.HideOverlay_Key = (int)e.KeyCode;
+                            Program.settings["HideOverlay_Key"] = ((int)e.KeyCode).ToString();
                             break;
                     }
+                    if (Owner != null)
+                    {
+                        ((MainForm)Owner).ChangePressKeyData(e.KeyCode);
+                    }
                 }
-                main.ChangePressKeyData();
                 this.Close();
             }
         }

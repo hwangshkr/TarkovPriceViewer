@@ -102,12 +102,12 @@ namespace TarkovPriceViewer
         {
             MinimizeBox = false;
             MaximizeBox = false;
-            Version.Text = Program.Version;
-            CloseOverlayWhenMouseMoved.Checked = Program.CloseOverlayWhenMouseMoved;
-            ShowOverlay_Button.Text = ((Keys)Program.ShowOverlay_Key).ToString();
-            HideOverlay_Button.Text = ((Keys)Program.HideOverlay_Key).ToString();
-            TransParent_Bar.Value = Program.Overlay_Transparent;
-            TransParent_Text.Text = Program.Overlay_Transparent.ToString();
+            Version.Text = Program.settings["Version"];
+            CloseOverlayWhenMouseMoved.Checked = Convert.ToBoolean(Program.settings["CloseOverlayWhenMouseMoved"]);
+            ShowOverlay_Button.Text = ((Keys)Int32.Parse(Program.settings["ShowOverlay_Key"])).ToString();
+            HideOverlay_Button.Text = ((Keys)Int32.Parse(Program.settings["HideOverlay_Key"])).ToString();
+            TransParent_Bar.Value = Int32.Parse(Program.settings["Overlay_Transparent"]);
+            TransParent_Text.Text = Program.settings["Overlay_Transparent"];
             TrayIcon.Visible = true;
         }
 
@@ -125,7 +125,7 @@ namespace TarkovPriceViewer
                     _proc_keyboard = hookKeyboardProc;
                     hhook_keyboard = SetWindowsHookEx(WH_KEYBOARD_LL, _proc_keyboard, LoadLibrary("User32"), 0);
                 }
-                if (Program.CloseOverlayWhenMouseMoved)
+                if (Convert.ToBoolean(Program.settings["CloseOverlayWhenMouseMoved"]))
                 {
                     setMouseHook();
                 }
@@ -179,7 +179,7 @@ namespace TarkovPriceViewer
                 if (code >= 0 && wParam == (IntPtr)WM_KEYDOWN)
                 {
                     int vkCode = Marshal.ReadInt32(lParam);
-                    if (vkCode == Program.ShowOverlay_Key)
+                    if (vkCode == Int32.Parse(Program.settings["ShowOverlay_Key"]))
                     {
                         long CurrentTime = DateTime.Now.Ticks;
                         if (CurrentTime - presstime > 5000000)
@@ -192,7 +192,7 @@ namespace TarkovPriceViewer
                             Debug.WriteLine("key pressed in 0.5 seconds.");
                         }
                         presstime = CurrentTime;
-                    } else if (vkCode == Program.HideOverlay_Key
+                    } else if (vkCode == Int32.Parse(Program.settings["HideOverlay_Key"])
                         || vkCode == 9 //tab
                         || vkCode == 27 //esc
                         )
@@ -231,6 +231,7 @@ namespace TarkovPriceViewer
             UnHook();
             TrayIcon.Dispose();
             CloseItemInfo();
+            Program.SaveSettings();
             Application.Exit();
         }
 
@@ -565,7 +566,7 @@ namespace TarkovPriceViewer
 
         private void MinimizetoTrayWhenStartup_CheckedChanged(object sender, EventArgs e)
         {
-            Program.MinimizetoTrayWhenStartup = (sender as CheckBox).Checked;
+            Program.settings["MinimizetoTrayWhenStartup"] = (sender as CheckBox).Checked.ToString();
         }
 
         private void TarkovWiki_Click(object sender, EventArgs e)
@@ -580,8 +581,8 @@ namespace TarkovPriceViewer
 
         private void CloseOverlayWhenMouseMoved_CheckedChanged(object sender, EventArgs e)
         {
-            Program.CloseOverlayWhenMouseMoved = (sender as CheckBox).Checked;
-            if (Program.CloseOverlayWhenMouseMoved)
+            Program.settings["CloseOverlayWhenMouseMoved"] = (sender as CheckBox).Checked.ToString();
+            if ((sender as CheckBox).Checked)
             {
                 setMouseHook();
             } else
@@ -590,11 +591,11 @@ namespace TarkovPriceViewer
             }
         }
 
-        public void ChangePressKeyData()
+        public void ChangePressKeyData(Keys keycode)
         {
             if (press_key_control != null)
             {
-                press_key_control.Text = ((Keys)Program.ShowOverlay_Key).ToString();
+                press_key_control.Text = keycode.ToString();
                 press_key_control = null;
             }
         }
@@ -612,17 +613,17 @@ namespace TarkovPriceViewer
             }
             if (selected != 0)
             {
-                KeyPressCheck kpc = new KeyPressCheck(this, 1);
-                kpc.ShowDialog();
+                KeyPressCheck kpc = new KeyPressCheck(selected);
+                kpc.ShowDialog(this);
             }
         }
 
         private void TransParent_Bar_Scroll(object sender, EventArgs e)
         {
             TrackBar tb = (sender as TrackBar);
-            Program.Overlay_Transparent = tb.Value;
-            TransParent_Text.Text = Program.Overlay_Transparent + "%";
-            overlay.ChangeTransparent(Program.Overlay_Transparent);
+            Program.settings["Overlay_Transparent"] = tb.Value.ToString();
+            TransParent_Text.Text = Program.settings["Overlay_Transparent"] + "%";
+            overlay.ChangeTransparent(tb.Value);
         }
     }
 }
