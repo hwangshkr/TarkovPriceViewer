@@ -41,24 +41,28 @@ namespace TarkovPriceViewer
             this.Donate = new System.Windows.Forms.Button();
             this.CheckUpdate = new System.Windows.Forms.Button();
             this.panel2 = new System.Windows.Forms.Panel();
-            this.button4 = new System.Windows.Forms.Button();
-            this.label2 = new System.Windows.Forms.Label();
+            this.HideOverlay_Button = new System.Windows.Forms.Button();
+            this.HideOverlay_Desc = new System.Windows.Forms.Label();
             this.panel3 = new System.Windows.Forms.Panel();
-            this.button5 = new System.Windows.Forms.Button();
-            this.label5 = new System.Windows.Forms.Label();
-            this.MadeBy = new System.Windows.Forms.Button();
+            this.TransParent_Desc = new System.Windows.Forms.Label();
+            this.Github = new System.Windows.Forms.Button();
             this.TarkovMarket = new System.Windows.Forms.Button();
             this.TarkovWiki = new System.Windows.Forms.Button();
             this.panel4 = new System.Windows.Forms.Panel();
             this.DataProvidedBy = new System.Windows.Forms.Label();
-            this.panel5 = new System.Windows.Forms.Panel();
             this.MinimizetoTrayWhenStartup = new System.Windows.Forms.CheckBox();
             this.CloseOverlayWhenMouseMoved = new System.Windows.Forms.CheckBox();
+            this.HideOverlay_Desc2 = new System.Windows.Forms.Label();
+            this.TransParent_Bar = new System.Windows.Forms.TrackBar();
+            this.TransParent_Text = new System.Windows.Forms.Label();
+            this.panel5 = new System.Windows.Forms.Panel();
+            this.Version = new System.Windows.Forms.Label();
             this.TrayMenu.SuspendLayout();
             this.panel1.SuspendLayout();
             this.panel2.SuspendLayout();
             this.panel3.SuspendLayout();
             this.panel4.SuspendLayout();
+            ((System.ComponentModel.ISupportInitialize)(this.TransParent_Bar)).BeginInit();
             this.panel5.SuspendLayout();
             this.SuspendLayout();
             // 
@@ -96,7 +100,7 @@ namespace TarkovPriceViewer
             // 
             this.panel1.Controls.Add(this.ShowOverlay_Button);
             this.panel1.Controls.Add(this.ShowOverlay_Desc);
-            this.panel1.Location = new System.Drawing.Point(58, 48);
+            this.panel1.Location = new System.Drawing.Point(58, 59);
             this.panel1.Name = "panel1";
             this.panel1.Size = new System.Drawing.Size(200, 100);
             this.panel1.TabIndex = 1;
@@ -107,9 +111,10 @@ namespace TarkovPriceViewer
             this.ShowOverlay_Button.Name = "ShowOverlay_Button";
             this.ShowOverlay_Button.Size = new System.Drawing.Size(59, 23);
             this.ShowOverlay_Button.TabIndex = 1;
+            this.ShowOverlay_Button.TabStop = false;
             this.ShowOverlay_Button.Text = "F9";
             this.ShowOverlay_Button.UseVisualStyleBackColor = true;
-            this.ShowOverlay_Button.Click += new System.EventHandler(this.ShowOverlay_Button_Click);
+            this.ShowOverlay_Button.Click += new System.EventHandler(this.Overlay_Button_Click);
             // 
             // ShowOverlay_Desc
             // 
@@ -126,6 +131,7 @@ namespace TarkovPriceViewer
             this.Donate.Name = "Donate";
             this.Donate.Size = new System.Drawing.Size(138, 23);
             this.Donate.TabIndex = 4;
+            this.Donate.TabStop = false;
             this.Donate.Text = "Donate";
             this.Donate.UseVisualStyleBackColor = true;
             // 
@@ -135,71 +141,69 @@ namespace TarkovPriceViewer
             this.CheckUpdate.Name = "CheckUpdate";
             this.CheckUpdate.Size = new System.Drawing.Size(115, 23);
             this.CheckUpdate.TabIndex = 5;
+            this.CheckUpdate.TabStop = false;
             this.CheckUpdate.Text = "CheckUpdate";
             this.CheckUpdate.UseVisualStyleBackColor = true;
             // 
             // panel2
             // 
-            this.panel2.Controls.Add(this.button4);
-            this.panel2.Controls.Add(this.label2);
+            this.panel2.Controls.Add(this.HideOverlay_Button);
+            this.panel2.Controls.Add(this.HideOverlay_Desc2);
+            this.panel2.Controls.Add(this.HideOverlay_Desc);
+            this.panel2.Controls.Add(this.CloseOverlayWhenMouseMoved);
             this.panel2.Location = new System.Drawing.Point(58, 165);
             this.panel2.Name = "panel2";
             this.panel2.Size = new System.Drawing.Size(200, 100);
             this.panel2.TabIndex = 1;
             // 
-            // button4
+            // HideOverlay_Button
             // 
-            this.button4.Location = new System.Drawing.Point(101, 41);
-            this.button4.Name = "button4";
-            this.button4.Size = new System.Drawing.Size(75, 23);
-            this.button4.TabIndex = 1;
-            this.button4.Text = "button3";
-            this.button4.UseVisualStyleBackColor = true;
+            this.HideOverlay_Button.Location = new System.Drawing.Point(117, 61);
+            this.HideOverlay_Button.Name = "HideOverlay_Button";
+            this.HideOverlay_Button.Size = new System.Drawing.Size(62, 23);
+            this.HideOverlay_Button.TabIndex = 1;
+            this.HideOverlay_Button.TabStop = false;
+            this.HideOverlay_Button.Text = "F10";
+            this.HideOverlay_Button.UseVisualStyleBackColor = true;
+            this.HideOverlay_Button.Click += new System.EventHandler(this.Overlay_Button_Click);
             // 
-            // label2
+            // HideOverlay_Desc
             // 
-            this.label2.AutoSize = true;
-            this.label2.Location = new System.Drawing.Point(48, 46);
-            this.label2.Name = "label2";
-            this.label2.Size = new System.Drawing.Size(38, 12);
-            this.label2.TabIndex = 0;
-            this.label2.Text = "label1";
+            this.HideOverlay_Desc.AutoSize = true;
+            this.HideOverlay_Desc.Location = new System.Drawing.Point(48, 28);
+            this.HideOverlay_Desc.Name = "HideOverlay_Desc";
+            this.HideOverlay_Desc.Size = new System.Drawing.Size(108, 12);
+            this.HideOverlay_Desc.TabIndex = 0;
+            this.HideOverlay_Desc.Text = "HideOverlay_Desc";
             // 
             // panel3
             // 
-            this.panel3.Controls.Add(this.button5);
-            this.panel3.Controls.Add(this.label5);
+            this.panel3.Controls.Add(this.TransParent_Text);
+            this.panel3.Controls.Add(this.TransParent_Bar);
+            this.panel3.Controls.Add(this.TransParent_Desc);
             this.panel3.Location = new System.Drawing.Point(58, 271);
             this.panel3.Name = "panel3";
-            this.panel3.Size = new System.Drawing.Size(200, 100);
+            this.panel3.Size = new System.Drawing.Size(307, 100);
             this.panel3.TabIndex = 1;
             // 
-            // button5
+            // TransParent_Desc
             // 
-            this.button5.Location = new System.Drawing.Point(101, 41);
-            this.button5.Name = "button5";
-            this.button5.Size = new System.Drawing.Size(75, 23);
-            this.button5.TabIndex = 1;
-            this.button5.Text = "button3";
-            this.button5.UseVisualStyleBackColor = true;
+            this.TransParent_Desc.AutoSize = true;
+            this.TransParent_Desc.Location = new System.Drawing.Point(58, 18);
+            this.TransParent_Desc.Name = "TransParent_Desc";
+            this.TransParent_Desc.Size = new System.Drawing.Size(109, 12);
+            this.TransParent_Desc.TabIndex = 0;
+            this.TransParent_Desc.Text = "TransParent_Desc";
             // 
-            // label5
+            // Github
             // 
-            this.label5.AutoSize = true;
-            this.label5.Location = new System.Drawing.Point(48, 46);
-            this.label5.Name = "label5";
-            this.label5.Size = new System.Drawing.Size(38, 12);
-            this.label5.TabIndex = 0;
-            this.label5.Text = "label1";
-            // 
-            // MadeBy
-            // 
-            this.MadeBy.Location = new System.Drawing.Point(32, 33);
-            this.MadeBy.Name = "MadeBy";
-            this.MadeBy.Size = new System.Drawing.Size(161, 23);
-            this.MadeBy.TabIndex = 5;
-            this.MadeBy.Text = "MadeBy";
-            this.MadeBy.UseVisualStyleBackColor = true;
+            this.Github.Location = new System.Drawing.Point(32, 33);
+            this.Github.Name = "Github";
+            this.Github.Size = new System.Drawing.Size(161, 23);
+            this.Github.TabIndex = 5;
+            this.Github.TabStop = false;
+            this.Github.Text = "Github";
+            this.Github.UseVisualStyleBackColor = true;
             // 
             // TarkovMarket
             // 
@@ -207,16 +211,18 @@ namespace TarkovPriceViewer
             this.TarkovMarket.Name = "TarkovMarket";
             this.TarkovMarket.Size = new System.Drawing.Size(142, 23);
             this.TarkovMarket.TabIndex = 5;
+            this.TarkovMarket.TabStop = false;
             this.TarkovMarket.Text = "Tarkov Market";
             this.TarkovMarket.UseVisualStyleBackColor = true;
             this.TarkovMarket.Click += new System.EventHandler(this.TarkovMarket_Click);
             // 
             // TarkovWiki
             // 
-            this.TarkovWiki.Location = new System.Drawing.Point(12, 41);
+            this.TarkovWiki.Location = new System.Drawing.Point(32, 32);
             this.TarkovWiki.Name = "TarkovWiki";
             this.TarkovWiki.Size = new System.Drawing.Size(100, 23);
             this.TarkovWiki.TabIndex = 5;
+            this.TarkovWiki.TabStop = false;
             this.TarkovWiki.Text = "Tarkov Wiki";
             this.TarkovWiki.UseVisualStyleBackColor = true;
             this.TarkovWiki.Click += new System.EventHandler(this.TarkovWiki_Click);
@@ -226,9 +232,9 @@ namespace TarkovPriceViewer
             this.panel4.Controls.Add(this.DataProvidedBy);
             this.panel4.Controls.Add(this.TarkovWiki);
             this.panel4.Controls.Add(this.TarkovMarket);
-            this.panel4.Location = new System.Drawing.Point(419, 271);
+            this.panel4.Location = new System.Drawing.Point(419, 226);
             this.panel4.Name = "panel4";
-            this.panel4.Size = new System.Drawing.Size(200, 100);
+            this.panel4.Size = new System.Drawing.Size(200, 145);
             this.panel4.TabIndex = 7;
             // 
             // DataProvidedBy
@@ -240,16 +246,6 @@ namespace TarkovPriceViewer
             this.DataProvidedBy.TabIndex = 6;
             this.DataProvidedBy.Text = "Data Provided By";
             // 
-            // panel5
-            // 
-            this.panel5.Controls.Add(this.MadeBy);
-            this.panel5.Controls.Add(this.CheckUpdate);
-            this.panel5.Controls.Add(this.Donate);
-            this.panel5.Location = new System.Drawing.Point(419, 149);
-            this.panel5.Name = "panel5";
-            this.panel5.Size = new System.Drawing.Size(200, 100);
-            this.panel5.TabIndex = 8;
-            // 
             // MinimizetoTrayWhenStartup
             // 
             this.MinimizetoTrayWhenStartup.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Right)));
@@ -258,6 +254,7 @@ namespace TarkovPriceViewer
             this.MinimizetoTrayWhenStartup.Name = "MinimizetoTrayWhenStartup";
             this.MinimizetoTrayWhenStartup.Size = new System.Drawing.Size(198, 16);
             this.MinimizetoTrayWhenStartup.TabIndex = 6;
+            this.MinimizetoTrayWhenStartup.TabStop = false;
             this.MinimizetoTrayWhenStartup.Text = "Minimize to Tray When Startup";
             this.MinimizetoTrayWhenStartup.UseVisualStyleBackColor = true;
             this.MinimizetoTrayWhenStartup.CheckedChanged += new System.EventHandler(this.MinimizetoTrayWhenStartup_CheckedChanged);
@@ -266,13 +263,62 @@ namespace TarkovPriceViewer
             // 
             this.CloseOverlayWhenMouseMoved.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Right)));
             this.CloseOverlayWhenMouseMoved.AutoSize = true;
-            this.CloseOverlayWhenMouseMoved.Location = new System.Drawing.Point(34, 413);
+            this.CloseOverlayWhenMouseMoved.Location = new System.Drawing.Point(3, 81);
             this.CloseOverlayWhenMouseMoved.Name = "CloseOverlayWhenMouseMoved";
             this.CloseOverlayWhenMouseMoved.Size = new System.Drawing.Size(224, 16);
             this.CloseOverlayWhenMouseMoved.TabIndex = 6;
+            this.CloseOverlayWhenMouseMoved.TabStop = false;
             this.CloseOverlayWhenMouseMoved.Text = "Close Overlay When Mouse Moved";
             this.CloseOverlayWhenMouseMoved.UseVisualStyleBackColor = true;
             this.CloseOverlayWhenMouseMoved.CheckedChanged += new System.EventHandler(this.CloseOverlayWhenMouseMoved_CheckedChanged);
+            // 
+            // HideOverlay_Desc2
+            // 
+            this.HideOverlay_Desc2.AutoSize = true;
+            this.HideOverlay_Desc2.Location = new System.Drawing.Point(3, 61);
+            this.HideOverlay_Desc2.Name = "HideOverlay_Desc2";
+            this.HideOverlay_Desc2.Size = new System.Drawing.Size(114, 12);
+            this.HideOverlay_Desc2.TabIndex = 0;
+            this.HideOverlay_Desc2.Text = "HideOverlay_Desc2";
+            // 
+            // TransParent_Bar
+            // 
+            this.TransParent_Bar.Location = new System.Drawing.Point(5, 41);
+            this.TransParent_Bar.Maximum = 100;
+            this.TransParent_Bar.Name = "TransParent_Bar";
+            this.TransParent_Bar.Size = new System.Drawing.Size(235, 45);
+            this.TransParent_Bar.TabIndex = 3;
+            this.TransParent_Bar.TabStop = false;
+            this.TransParent_Bar.Value = 100;
+            this.TransParent_Bar.Scroll += new System.EventHandler(this.TransParent_Bar_Scroll);
+            // 
+            // TransParent_Text
+            // 
+            this.TransParent_Text.AutoSize = true;
+            this.TransParent_Text.Location = new System.Drawing.Point(246, 52);
+            this.TransParent_Text.Name = "TransParent_Text";
+            this.TransParent_Text.Size = new System.Drawing.Size(33, 12);
+            this.TransParent_Text.TabIndex = 4;
+            this.TransParent_Text.Text = "100%";
+            // 
+            // panel5
+            // 
+            this.panel5.Controls.Add(this.Github);
+            this.panel5.Controls.Add(this.CheckUpdate);
+            this.panel5.Controls.Add(this.Donate);
+            this.panel5.Location = new System.Drawing.Point(419, 71);
+            this.panel5.Name = "panel5";
+            this.panel5.Size = new System.Drawing.Size(200, 100);
+            this.panel5.TabIndex = 8;
+            // 
+            // Version
+            // 
+            this.Version.AutoSize = true;
+            this.Version.Location = new System.Drawing.Point(13, 417);
+            this.Version.Name = "Version";
+            this.Version.Size = new System.Drawing.Size(48, 12);
+            this.Version.TabIndex = 9;
+            this.Version.Text = "Version";
             // 
             // MainForm
             // 
@@ -280,9 +326,9 @@ namespace TarkovPriceViewer
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
             this.AutoSizeMode = System.Windows.Forms.AutoSizeMode.GrowAndShrink;
             this.ClientSize = new System.Drawing.Size(624, 441);
+            this.Controls.Add(this.Version);
             this.Controls.Add(this.panel5);
             this.Controls.Add(this.panel4);
-            this.Controls.Add(this.CloseOverlayWhenMouseMoved);
             this.Controls.Add(this.MinimizetoTrayWhenStartup);
             this.Controls.Add(this.panel3);
             this.Controls.Add(this.panel2);
@@ -291,8 +337,10 @@ namespace TarkovPriceViewer
             this.MaximizeBox = false;
             this.MinimizeBox = false;
             this.Name = "MainForm";
+            this.StartPosition = System.Windows.Forms.FormStartPosition.Manual;
             this.Text = "TarkovPriceViewer";
             this.FormClosing += new System.Windows.Forms.FormClosingEventHandler(this.MainForm_FormClosing);
+            this.FormClosed += new System.Windows.Forms.FormClosedEventHandler(this.MainForm_FormClosed);
             this.Load += new System.EventHandler(this.MainForm_load);
             this.TrayMenu.ResumeLayout(false);
             this.panel1.ResumeLayout(false);
@@ -303,6 +351,7 @@ namespace TarkovPriceViewer
             this.panel3.PerformLayout();
             this.panel4.ResumeLayout(false);
             this.panel4.PerformLayout();
+            ((System.ComponentModel.ISupportInitialize)(this.TransParent_Bar)).EndInit();
             this.panel5.ResumeLayout(false);
             this.ResumeLayout(false);
             this.PerformLayout();
@@ -320,19 +369,22 @@ namespace TarkovPriceViewer
         private System.Windows.Forms.Button CheckUpdate;
         private System.Windows.Forms.Button ShowOverlay_Button;
         private System.Windows.Forms.Panel panel2;
-        private System.Windows.Forms.Button button4;
-        private System.Windows.Forms.Label label2;
+        private System.Windows.Forms.Button HideOverlay_Button;
+        private System.Windows.Forms.Label HideOverlay_Desc;
         private System.Windows.Forms.Panel panel3;
-        private System.Windows.Forms.Button button5;
-        private System.Windows.Forms.Label label5;
-        private System.Windows.Forms.Button MadeBy;
+        private System.Windows.Forms.Label TransParent_Desc;
+        private System.Windows.Forms.Button Github;
         private System.Windows.Forms.Button TarkovMarket;
         private System.Windows.Forms.Button TarkovWiki;
         private System.Windows.Forms.Panel panel4;
         private System.Windows.Forms.Label DataProvidedBy;
-        private System.Windows.Forms.Panel panel5;
         private System.Windows.Forms.CheckBox MinimizetoTrayWhenStartup;
         private System.Windows.Forms.CheckBox CloseOverlayWhenMouseMoved;
+        private System.Windows.Forms.Label HideOverlay_Desc2;
+        private System.Windows.Forms.TrackBar TransParent_Bar;
+        private System.Windows.Forms.Label TransParent_Text;
+        private System.Windows.Forms.Panel panel5;
+        private System.Windows.Forms.Label Version;
     }
 }
 

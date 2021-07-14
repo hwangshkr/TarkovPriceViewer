@@ -21,6 +21,7 @@ namespace TarkovPriceViewer
         {
             InitializeComponent();
             this.TopMost = true;
+            this.Opacity = Program.Overlay_Transparent;
             var style = GetWindowLong(this.Handle, GWL_EXSTYLE);
             SetWindowLong(this.Handle, GWL_EXSTYLE, style | WS_EX_LAYERED | WS_EX_TRANSPARENT | WS_EX_TOOLWINDOW);
             settingFormPos();
@@ -98,6 +99,15 @@ namespace TarkovPriceViewer
             return iteminfo_panel.Visible || onetext.Visible;
         }
 
+        public void ChangeTransparent(int value)
+        {
+            Action show = delegate ()
+            {
+                this.Opacity = value * 0.01;
+            };
+            Invoke(show);
+        }
+
         private void FixLocation(Control p)
         {
             int totalwidth = p.Location.X + p.Width;
@@ -147,6 +157,10 @@ namespace TarkovPriceViewer
         private void onetext_LocationChanged(object sender, EventArgs e)
         {
             FixLocation(sender as Control);
+        }
+
+        private void Overlay_FormClosing(object sender, FormClosingEventArgs e)
+        {
         }
     }
 }

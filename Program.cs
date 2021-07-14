@@ -22,9 +22,12 @@ namespace TarkovPriceViewer
         public static readonly char dollar = '$';
         public static readonly char euro = '€';
         public static readonly char[] splitcur = new char[] { rouble, dollar, euro };
+        public static String Version = "1.00";
         public static bool MinimizetoTrayWhenStartup = false;
         public static bool CloseOverlayWhenMouseMoved = true;
-        public static String ShowOverlay_Key = "F9";
+        public static int ShowOverlay_Key = 120;
+        public static int HideOverlay_Key = 121;
+        public static int Overlay_Transparent = 100;
         //public static System.Drawing.Point startpoint = new System.Drawing.Point(0, 0);
 
         /// <summary>
@@ -78,6 +81,9 @@ namespace TarkovPriceViewer
                     {
                         switch (setting.Key)
                         {
+                            case "Version":
+                                Version = setting.Value;
+                                break;
                             case "MinimizetoTrayWhenStartup":
                                 MinimizetoTrayWhenStartup = Convert.ToBoolean(setting.Value);
                                 break;
@@ -85,7 +91,13 @@ namespace TarkovPriceViewer
                                 CloseOverlayWhenMouseMoved = Convert.ToBoolean(setting.Value);
                                 break;
                             case "ShowOverlay_Key":
-                                ShowOverlay_Key = setting.Value;
+                                ShowOverlay_Key = Int32.Parse(setting.Value);
+                                break;
+                            case "HideOverlay_Key":
+                                HideOverlay_Key = Int32.Parse(setting.Value);
+                                break;
+                            case "Overlay_Transparent":
+                                Overlay_Transparent = Int32.Parse(setting.Value);
                                 break;
                                 /*case "StartPos":
                                     String[] pos = setting.Value.Split(',');

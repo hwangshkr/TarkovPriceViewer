@@ -86,20 +86,29 @@ namespace TarkovPriceViewer
 
         public MainForm()
         {
-            InitializeComponent();
             int style = GetWindowLong(this.Handle, GWL_EXSTYLE);
             SetWindowLong(this.Handle, GWL_EXSTYLE, style | WS_EX_LAYERED);
             if (Environment.OSVersion.Version.Major == 10)
             {
                 nFlags = 0x2;
             }
-            MinimizeBox = false;
-            MaximizeBox = false;
-            CloseOverlayWhenMouseMoved.Checked = Program.CloseOverlayWhenMouseMoved;
-
-            TrayIcon.Visible = true;
+            InitializeComponent();
+            SettingUI();
             SetHook();
             overlay.Show();
+        }
+
+        private void SettingUI()
+        {
+            MinimizeBox = false;
+            MaximizeBox = false;
+            Version.Text = Program.Version;
+            CloseOverlayWhenMouseMoved.Checked = Program.CloseOverlayWhenMouseMoved;
+            ShowOverlay_Button.Text = ((Keys)Program.ShowOverlay_Key).ToString();
+            HideOverlay_Button.Text = ((Keys)Program.HideOverlay_Key).ToString();
+            TransParent_Bar.Value = Program.Overlay_Transparent;
+            TransParent_Text.Text = Program.Overlay_Transparent.ToString();
+            TrayIcon.Visible = true;
         }
 
         private void MainForm_load(object sender, EventArgs e)
@@ -111,8 +120,11 @@ namespace TarkovPriceViewer
         {
             try
             {
-                _proc_keyboard = hookKeyboardProc;
-                hhook_keyboard = SetWindowsHookEx(WH_KEYBOARD_LL, _proc_keyboard, LoadLibrary("User32"), 0);
+                if (hhook_keyboard == IntPtr.Zero)
+                {
+                    _proc_keyboard = hookKeyboardProc;
+                    hhook_keyboard = SetWindowsHookEx(WH_KEYBOARD_LL, _proc_keyboard, LoadLibrary("User32"), 0);
+                }
                 if (Program.CloseOverlayWhenMouseMoved)
                 {
                     setMouseHook();
@@ -125,20 +137,33 @@ namespace TarkovPriceViewer
 
         public void setMouseHook()
         {
-            _proc_mouse = hookMouseProc;
-            hhook_mouse = SetWindowsHookEx(WH_MOUSE_LL, _proc_mouse, LoadLibrary("User32"), 0);
+            if (hhook_mouse == IntPtr.Zero)
+            {
+                _proc_mouse = hookMouseProc;
+                hhook_mouse = SetWindowsHookEx(WH_MOUSE_LL, _proc_mouse, LoadLibrary("User32"), 0);
+            }
         }
 
         public void unsetMouseHook()
         {
-            UnhookWindowsHookEx(hhook_mouse);
+            if (hhook_mouse != IntPtr.Zero)
+            {
+                UnhookWindowsHookEx(hhook_mouse);
+                hhook_mouse = IntPtr.Zero;
+                _proc_mouse = null;
+            }
         }
 
         public void UnHook()
         {
             try
             {
-                UnhookWindowsHookEx(hhook_keyboard);
+                if (hhook_keyboard != IntPtr.Zero)
+                {
+                    UnhookWindowsHookEx(hhook_keyboard);
+                    hhook_keyboard = IntPtr.Zero;
+                    _proc_keyboard = null;
+                }
                 unsetMouseHook();
             }
             catch (Exception e)
@@ -154,26 +179,25 @@ namespace TarkovPriceViewer
                 if (code >= 0 && wParam == (IntPtr)WM_KEYDOWN)
                 {
                     int vkCode = Marshal.ReadInt32(lParam);
-                    switch (vkCode)
+                    if (vkCode == Program.ShowOverlay_Key)
                     {
-                        case 120:
-                            long CurrentTime = DateTime.Now.Ticks;
-                            if (CurrentTime - presstime > 5000000)
-                            {
-                                point = Control.MousePosition;
-                                LoadingItemInfo();
-                            }
-                            else
-                            {
-                                Debug.WriteLine("key pressed in 0.5 seconds.");
-                            }
-                            presstime = CurrentTime;
-                            break;
-                        case 9:
-                        case 27:
-                        case 121:
-                            CloseItemInfo();
-                            break;
+                        long CurrentTime = DateTime.Now.Ticks;
+                        if (CurrentTime - presstime > 5000000)
+                        {
+                            point = Control.MousePosition;
+                            LoadingItemInfo();
+                        }
+                        else
+                        {
+                            Debug.WriteLine("key pressed in 0.5 seconds.");
+                        }
+                        presstime = CurrentTime;
+                    } else if (vkCode == Program.HideOverlay_Key
+                        || vkCode == 9 //tab
+                        || vkCode == 27 //esc
+                        )
+                    {
+                        CloseItemInfo();
                     }
                 }
             }
@@ -313,7 +337,8 @@ namespace TarkovPriceViewer
             try
             {
                 using (TesseractEngine ocr = new TesseractEngine(@"./Resources/tessdata", "eng", EngineMode.Default))//should use once
-                using (Page texts = ocr.Process(BitmapConverter.ToBitmap(textmat)))
+                using (Bitmap temp = BitmapConverter.ToBitmap(textmat))
+                using (Page texts = ocr.Process(temp))
                 {
                     text = texts.GetText().Replace("\n", " ").Split(Program.splitcur)[0].Trim();
                     Debug.WriteLine("text : " + text);
@@ -329,7 +354,7 @@ namespace TarkovPriceViewer
         private void FindItem(Bitmap fullimage, CancellationToken cts)
         {
             Item item = new Item();
-            using (Mat ScreenMat = BitmapConverter.ToMat(fullimage).CvtColor(ColorConversionCodes.BGRA2BGR))
+            using (Mat ScreenMat = BitmapConverter.ToMat(fullimage))
             using (Mat rac_img = ScreenMat.InRange(new Scalar(90, 89, 82), new Scalar(90, 89, 82)))
             {
                 OpenCvSharp.Point[][] contours;
@@ -342,11 +367,15 @@ namespace TarkovPriceViewer
                         if (rect2.Width > 5 && rect2.Height > 10)
                         {
                             ScreenMat.Rectangle(rect2, Scalar.Black, 2);
-                            String text = getTesseract(ScreenMat.SubMat(rect2).Threshold(0, 255, ThresholdTypes.BinaryInv));
-                            if (!text.Equals(""))
+                            using (Mat temp = ScreenMat.SubMat(rect2))
+                            using (Mat temp2 = temp.Threshold(0, 255, ThresholdTypes.BinaryInv))
                             {
-                                item = MatchItemName(text.ToLower().Trim().ToCharArray());
-                                break;
+                                String text = getTesseract(temp2);
+                                if (!text.Equals(""))
+                                {
+                                    item = MatchItemName(text.ToLower().Trim().ToCharArray());
+                                    break;
+                                }
                             }
                         }
                     }
@@ -504,6 +533,11 @@ namespace TarkovPriceViewer
             }
         }
 
+        private void MainForm_FormClosed(object sender, FormClosedEventArgs e)
+        {
+            CloseApp();
+        }
+
         private void TrayExit_Click(object sender, EventArgs e)
         {
             CloseApp();
@@ -521,7 +555,7 @@ namespace TarkovPriceViewer
 
         private void MainForm_FormClosing(object sender, FormClosingEventArgs e)
         {
-            if (e.CloseReason == CloseReason.UserClosing)
+            if (e.CloseReason == CloseReason.UserClosing)//must be checked
             {
                 TrayIcon.Visible = true;
                 this.Hide();
@@ -560,16 +594,35 @@ namespace TarkovPriceViewer
         {
             if (press_key_control != null)
             {
-                press_key_control.Text = Program.ShowOverlay_Key;
+                press_key_control.Text = ((Keys)Program.ShowOverlay_Key).ToString();
                 press_key_control = null;
             }
         }
 
-        private void ShowOverlay_Button_Click(object sender, EventArgs e)
+        private void Overlay_Button_Click(object sender, EventArgs e)
         {
             press_key_control = (sender as Control);
-            KeyPressCheck kpc = new KeyPressCheck(this);
-            kpc.ShowDialog();
+            int selected = 0;
+            if (press_key_control == ShowOverlay_Button)
+            {
+                selected = 1;
+            } else if (press_key_control == HideOverlay_Button)
+            {
+                selected = 2;
+            }
+            if (selected != 0)
+            {
+                KeyPressCheck kpc = new KeyPressCheck(this, 1);
+                kpc.ShowDialog();
+            }
+        }
+
+        private void TransParent_Bar_Scroll(object sender, EventArgs e)
+        {
+            TrackBar tb = (sender as TrackBar);
+            Program.Overlay_Transparent = tb.Value;
+            TransParent_Text.Text = Program.Overlay_Transparent + "%";
+            overlay.ChangeTransparent(Program.Overlay_Transparent);
         }
     }
 }

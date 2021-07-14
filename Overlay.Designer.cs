@@ -184,6 +184,7 @@ namespace TarkovPriceViewer
             this.Text = "Overlay";
             this.TopMost = true;
             this.TransparencyKey = System.Drawing.Color.Fuchsia;
+            this.FormClosing += new System.Windows.Forms.FormClosingEventHandler(this.Overlay_FormClosing);
             this.iteminfo_panel.ResumeLayout(false);
             this.iteminfo_panel.PerformLayout();
             this.ResumeLayout(false);
