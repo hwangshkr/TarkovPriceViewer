@@ -83,6 +83,7 @@ namespace TarkovPriceViewer
         private static long presstime = 0;
         private static CancellationTokenSource cts = new CancellationTokenSource();
         private static Control press_key_control = null;
+        private static Scalar linecolor = new Scalar(90, 89, 82);
 
         public MainForm()
         {
@@ -355,8 +356,9 @@ namespace TarkovPriceViewer
         private void FindItem(Bitmap fullimage, CancellationToken cts)
         {
             Item item = new Item();
-            using (Mat ScreenMat = BitmapConverter.ToMat(fullimage))
-            using (Mat rac_img = ScreenMat.InRange(new Scalar(90, 89, 82), new Scalar(90, 89, 82)))
+            using (Mat ScreenMat_original = BitmapConverter.ToMat(fullimage))
+            using (Mat ScreenMat = ScreenMat_original.CvtColor(ColorConversionCodes.BGRA2BGR))
+            using (Mat rac_img = ScreenMat.InRange(linecolor, linecolor))
             {
                 OpenCvSharp.Point[][] contours;
                 rac_img.FindContours(out contours, out HierarchyIndex[] hierarchy, RetrievalModes.List, ContourApproximationModes.ApproxSimple);

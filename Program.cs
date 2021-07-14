@@ -89,7 +89,15 @@ namespace TarkovPriceViewer
                     File.Create(setting_path);
                 }
                 String text = File.ReadAllText(setting_path);
-                settings = JsonSerializer.Deserialize<Dictionary<String, String>>(text);
+                try
+                {
+                    settings = JsonSerializer.Deserialize<Dictionary<String, String>>(text);
+                } catch (JsonException je)
+                {
+                    Debug.WriteLine(je.Message);
+                    text = "{}";
+                    settings = JsonSerializer.Deserialize<Dictionary<String, String>>(text);
+                }
                 String st;
                 if (!settings.TryGetValue("Version", out st))
                 {
@@ -115,7 +123,6 @@ namespace TarkovPriceViewer
                 {
                     settings.Add("Overlay_Transparent", "100");
                 }
-                Debug.WriteLine("sssssss" + settings["Overlay_Transparent"]);
             }
             catch (Exception e)
             {
