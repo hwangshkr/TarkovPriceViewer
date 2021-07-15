@@ -647,7 +647,38 @@ namespace TarkovPriceViewer
 
         private void CheckUpdate_Click(object sender, EventArgs e)
         {
-
+            (sender as Control).Enabled = false;
+            try
+            {
+                using (WebClient wc = new WebClient())
+                {
+                    wc.Proxy = null;
+                    wc.Encoding = Encoding.UTF8;
+                    String check = wc.DownloadString(Program.checkupdate);
+                    if (!check.Equals(""))
+                    {
+                        String sp = check.Split('\n')[0];
+                        if (sp.Contains("Tarkov Price Viewer"))
+                        {
+                            sp = sp.Replace("Tarkov Price Viewer", "").Trim();
+                            if (!Program.settings["Version"].Equals(sp))
+                            {
+                                MessageBox.Show("New version (" + sp + ") found. Please download new version.");
+                                Process.Start(Program.github);
+                            } else
+                            {
+                                MessageBox.Show("Current version is newest.");
+                            }
+                        }
+                    }
+                }
+            }
+            catch (Exception ex)
+            {
+                Debug.WriteLine(ex.Message);
+                MessageBox.Show("Can not check update. Please check your network.");
+            }
+            (sender as Control).Enabled = true;
         }
     }
 }
