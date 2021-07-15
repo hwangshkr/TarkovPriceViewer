@@ -181,6 +181,7 @@
     <None Include="Resources\itemlist.txt">
       <CopyToOutputDirectory>Always</CopyToOutputDirectory>
     </None>
+    <None Include="Resources\title.png" />
     <Content Include="tpv.ico" />
   </ItemGroup>
   <ItemGroup>

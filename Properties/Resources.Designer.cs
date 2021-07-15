@@ -71,35 +71,27 @@ namespace TarkovPriceViewer.Properties {
         }
         
         /// <summary>
-        ///   Secure Flash drive
-        ///SSD drive
-        ///Trijicon REAP-IR thermal riflescope
-        ///T-7 Thermal Goggles with Night Vision Mounts
-        ///Purified water
-        ///GPNVG-18 Night Vision
-        ///T H I C C Weapon case
-        ///Lucky Scav Junkbox
-        ///Lab. Blue keycard
-        ///TerraGroup Labs access keycard
-        ///Money case
-        ///Red Rebel Ice pick
-        ///Ammo case
-        ///Folder with intelligence
-        ///Physical bitcoin
-        ///Documents case
-        ///Meds case
-        ///Bronze lion
-        ///T H I C C Items case
-        ///Key to KIBA store outlet
-        ///&quot;Fierce Hatchling&quot; moonshine
-        ///Graphics card
-        ///Keytool
-        ///West wing room 219 key
-        ///Corrugated h[나머지 문자열은 잘림]&quot;;과(와) 유사한 지역화된 문자열을 찾습니다.
+        ///   Secure Flash drive	secure flash drive	Secure Flash drive
+        ///SSD drive	ssd drive	SSD drive
+        ///Trijicon REAP-IR thermal riflescope	trijicon reap-ir thermal riflescope	Trijicon REAP-IR thermal scope
+        ///T-7 Thermal Goggles with Night Vision Mounts	t-7 thermal goggles with night vision mounts	T-7 Thermal Goggles with Night Vision mount
+        ///Purified water	purified water	Purified water
+        ///GPNVG-18 Night Vision	gpnvg-18 night vision	GPNVG-18 Night Vision goggles
+        ///T H I C C Weapon case	t h i c c weapon case	T H I C C Weapon ca[나머지 문자열은 잘림]&quot;;과(와) 유사한 지역화된 문자열을 찾습니다.
         /// </summary>
         internal static string itemlist {
             get {
                 return ResourceManager.GetString("itemlist", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   System.Drawing.Bitmap 형식의 지역화된 리소스를 찾습니다.
+        /// </summary>
+        internal static System.Drawing.Bitmap title {
+            get {
+                object obj = ResourceManager.GetObject("title", resourceCulture);
+                return ((System.Drawing.Bitmap)(obj));
             }
         }
     }
