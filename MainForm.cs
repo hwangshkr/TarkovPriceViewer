@@ -485,8 +485,8 @@ namespace TarkovPriceViewer
                             HtmlAgilityPack.HtmlNodeCollection nodes = null;
                             if (node_tm != null)
                             {
-                                nodes = node_tm.SelectNodes("//div[@class='blk-item']");
-                                node_tm = node_tm.SelectSingleNode("//div[@class='updated-block']");
+                                nodes = node_tm.SelectNodes(".//div[@class='blk-item']");
+                                node_tm = node_tm.SelectSingleNode(".//div[@class='updated-block']");
                                 if (node_tm != null)
                                 {
                                     item.last_updated = node_tm.InnerText.Trim();
@@ -500,13 +500,13 @@ namespace TarkovPriceViewer
                                         {
                                             if (node_tm.InnerText.Trim().Equals("Price"))
                                             {
-                                                node_tm = node.SelectSingleNode("//div[@class='c-price last alt']");
+                                                node_tm = node.SelectSingleNode(".//div[@class='c-price last alt']");
                                                 if (node_tm != null)
                                                 {
                                                     item.price = node_tm.InnerText.Trim();
                                                 }
                                             }
-                                            else if (node_tm.InnerText.Trim().Contains("Price")
+                                            else if (node_tm.InnerText.Trim().ToLower().Contains("price")
                                                 || node_tm.InnerText.Trim().Equals("Fee"))
                                             {
                                                 continue;
@@ -514,7 +514,7 @@ namespace TarkovPriceViewer
                                             else if (!node_tm.InnerText.Trim().Contains("LL"))
                                             {
                                                 item.trader = node_tm.InnerText.Trim();
-                                                node_tm = node.SelectSingleNode("//div[@class='c-price alt']");
+                                                node_tm = node.SelectSingleNode(".//div[@class='c-price alt']");
                                                 if (node_tm != null)
                                                 {
                                                     item.trader_price = node_tm.InnerText.Trim();
