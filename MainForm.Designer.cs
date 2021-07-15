@@ -42,8 +42,12 @@ namespace TarkovPriceViewer
             this.CheckUpdate = new System.Windows.Forms.Button();
             this.panel2 = new System.Windows.Forms.Panel();
             this.HideOverlay_Button = new System.Windows.Forms.Button();
+            this.HideOverlay_Desc2 = new System.Windows.Forms.Label();
             this.HideOverlay_Desc = new System.Windows.Forms.Label();
+            this.CloseOverlayWhenMouseMoved = new System.Windows.Forms.CheckBox();
             this.panel3 = new System.Windows.Forms.Panel();
+            this.TransParent_Text = new System.Windows.Forms.Label();
+            this.TransParent_Bar = new System.Windows.Forms.TrackBar();
             this.TransParent_Desc = new System.Windows.Forms.Label();
             this.Github = new System.Windows.Forms.Button();
             this.TarkovMarket = new System.Windows.Forms.Button();
@@ -51,18 +55,14 @@ namespace TarkovPriceViewer
             this.panel4 = new System.Windows.Forms.Panel();
             this.DataProvidedBy = new System.Windows.Forms.Label();
             this.MinimizetoTrayWhenStartup = new System.Windows.Forms.CheckBox();
-            this.CloseOverlayWhenMouseMoved = new System.Windows.Forms.CheckBox();
-            this.HideOverlay_Desc2 = new System.Windows.Forms.Label();
-            this.TransParent_Bar = new System.Windows.Forms.TrackBar();
-            this.TransParent_Text = new System.Windows.Forms.Label();
             this.panel5 = new System.Windows.Forms.Panel();
             this.Version = new System.Windows.Forms.Label();
             this.TrayMenu.SuspendLayout();
             this.panel1.SuspendLayout();
             this.panel2.SuspendLayout();
             this.panel3.SuspendLayout();
-            this.panel4.SuspendLayout();
             ((System.ComponentModel.ISupportInitialize)(this.TransParent_Bar)).BeginInit();
+            this.panel4.SuspendLayout();
             this.panel5.SuspendLayout();
             this.SuspendLayout();
             // 
@@ -167,6 +167,15 @@ namespace TarkovPriceViewer
             this.HideOverlay_Button.UseVisualStyleBackColor = true;
             this.HideOverlay_Button.Click += new System.EventHandler(this.Overlay_Button_Click);
             // 
+            // HideOverlay_Desc2
+            // 
+            this.HideOverlay_Desc2.AutoSize = true;
+            this.HideOverlay_Desc2.Location = new System.Drawing.Point(3, 61);
+            this.HideOverlay_Desc2.Name = "HideOverlay_Desc2";
+            this.HideOverlay_Desc2.Size = new System.Drawing.Size(114, 12);
+            this.HideOverlay_Desc2.TabIndex = 0;
+            this.HideOverlay_Desc2.Text = "HideOverlay_Desc2";
+            // 
             // HideOverlay_Desc
             // 
             this.HideOverlay_Desc.AutoSize = true;
@@ -175,6 +184,19 @@ namespace TarkovPriceViewer
             this.HideOverlay_Desc.Size = new System.Drawing.Size(108, 12);
             this.HideOverlay_Desc.TabIndex = 0;
             this.HideOverlay_Desc.Text = "HideOverlay_Desc";
+            // 
+            // CloseOverlayWhenMouseMoved
+            // 
+            this.CloseOverlayWhenMouseMoved.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Right)));
+            this.CloseOverlayWhenMouseMoved.AutoSize = true;
+            this.CloseOverlayWhenMouseMoved.Location = new System.Drawing.Point(3, 81);
+            this.CloseOverlayWhenMouseMoved.Name = "CloseOverlayWhenMouseMoved";
+            this.CloseOverlayWhenMouseMoved.Size = new System.Drawing.Size(224, 16);
+            this.CloseOverlayWhenMouseMoved.TabIndex = 6;
+            this.CloseOverlayWhenMouseMoved.TabStop = false;
+            this.CloseOverlayWhenMouseMoved.Text = "Close Overlay When Mouse Moved";
+            this.CloseOverlayWhenMouseMoved.UseVisualStyleBackColor = true;
+            this.CloseOverlayWhenMouseMoved.CheckedChanged += new System.EventHandler(this.CloseOverlayWhenMouseMoved_CheckedChanged);
             // 
             // panel3
             // 
@@ -185,6 +207,26 @@ namespace TarkovPriceViewer
             this.panel3.Name = "panel3";
             this.panel3.Size = new System.Drawing.Size(307, 100);
             this.panel3.TabIndex = 1;
+            // 
+            // TransParent_Text
+            // 
+            this.TransParent_Text.AutoSize = true;
+            this.TransParent_Text.Location = new System.Drawing.Point(246, 52);
+            this.TransParent_Text.Name = "TransParent_Text";
+            this.TransParent_Text.Size = new System.Drawing.Size(33, 12);
+            this.TransParent_Text.TabIndex = 4;
+            this.TransParent_Text.Text = "100%";
+            // 
+            // TransParent_Bar
+            // 
+            this.TransParent_Bar.Location = new System.Drawing.Point(5, 41);
+            this.TransParent_Bar.Maximum = 100;
+            this.TransParent_Bar.Name = "TransParent_Bar";
+            this.TransParent_Bar.Size = new System.Drawing.Size(235, 45);
+            this.TransParent_Bar.TabIndex = 3;
+            this.TransParent_Bar.TabStop = false;
+            this.TransParent_Bar.Value = 100;
+            this.TransParent_Bar.Scroll += new System.EventHandler(this.TransParent_Bar_Scroll);
             // 
             // TransParent_Desc
             // 
@@ -259,48 +301,6 @@ namespace TarkovPriceViewer
             this.MinimizetoTrayWhenStartup.UseVisualStyleBackColor = true;
             this.MinimizetoTrayWhenStartup.CheckedChanged += new System.EventHandler(this.MinimizetoTrayWhenStartup_CheckedChanged);
             // 
-            // CloseOverlayWhenMouseMoved
-            // 
-            this.CloseOverlayWhenMouseMoved.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Right)));
-            this.CloseOverlayWhenMouseMoved.AutoSize = true;
-            this.CloseOverlayWhenMouseMoved.Location = new System.Drawing.Point(3, 81);
-            this.CloseOverlayWhenMouseMoved.Name = "CloseOverlayWhenMouseMoved";
-            this.CloseOverlayWhenMouseMoved.Size = new System.Drawing.Size(224, 16);
-            this.CloseOverlayWhenMouseMoved.TabIndex = 6;
-            this.CloseOverlayWhenMouseMoved.TabStop = false;
-            this.CloseOverlayWhenMouseMoved.Text = "Close Overlay When Mouse Moved";
-            this.CloseOverlayWhenMouseMoved.UseVisualStyleBackColor = true;
-            this.CloseOverlayWhenMouseMoved.CheckedChanged += new System.EventHandler(this.CloseOverlayWhenMouseMoved_CheckedChanged);
-            // 
-            // HideOverlay_Desc2
-            // 
-            this.HideOverlay_Desc2.AutoSize = true;
-            this.HideOverlay_Desc2.Location = new System.Drawing.Point(3, 61);
-            this.HideOverlay_Desc2.Name = "HideOverlay_Desc2";
-            this.HideOverlay_Desc2.Size = new System.Drawing.Size(114, 12);
-            this.HideOverlay_Desc2.TabIndex = 0;
-            this.HideOverlay_Desc2.Text = "HideOverlay_Desc2";
-            // 
-            // TransParent_Bar
-            // 
-            this.TransParent_Bar.Location = new System.Drawing.Point(5, 41);
-            this.TransParent_Bar.Maximum = 100;
-            this.TransParent_Bar.Name = "TransParent_Bar";
-            this.TransParent_Bar.Size = new System.Drawing.Size(235, 45);
-            this.TransParent_Bar.TabIndex = 3;
-            this.TransParent_Bar.TabStop = false;
-            this.TransParent_Bar.Value = 100;
-            this.TransParent_Bar.Scroll += new System.EventHandler(this.TransParent_Bar_Scroll);
-            // 
-            // TransParent_Text
-            // 
-            this.TransParent_Text.AutoSize = true;
-            this.TransParent_Text.Location = new System.Drawing.Point(246, 52);
-            this.TransParent_Text.Name = "TransParent_Text";
-            this.TransParent_Text.Size = new System.Drawing.Size(33, 12);
-            this.TransParent_Text.TabIndex = 4;
-            this.TransParent_Text.Text = "100%";
-            // 
             // panel5
             // 
             this.panel5.Controls.Add(this.Github);
@@ -349,9 +349,9 @@ namespace TarkovPriceViewer
             this.panel2.PerformLayout();
             this.panel3.ResumeLayout(false);
             this.panel3.PerformLayout();
+            ((System.ComponentModel.ISupportInitialize)(this.TransParent_Bar)).EndInit();
             this.panel4.ResumeLayout(false);
             this.panel4.PerformLayout();
-            ((System.ComponentModel.ISupportInitialize)(this.TransParent_Bar)).EndInit();
             this.panel5.ResumeLayout(false);
             this.ResumeLayout(false);
             this.PerformLayout();

@@ -21,7 +21,7 @@ namespace TarkovPriceViewer
         {
             InitializeComponent();
             this.TopMost = true;
-            this.Opacity = Int32.Parse(Program.settings["Overlay_Transparent"]);
+            this.Opacity = Int32.Parse(Program.settings["Overlay_Transparent"]) * 0.01;
             var style = GetWindowLong(this.Handle, GWL_EXSTYLE);
             SetWindowLong(this.Handle, GWL_EXSTYLE, style | WS_EX_LAYERED | WS_EX_TRANSPARENT | WS_EX_TOOLWINDOW);
             settingFormPos();
@@ -48,7 +48,7 @@ namespace TarkovPriceViewer
                     else
                     {
                         iteminfo_panel.Location = onetext.Location;
-                        itemname.Text = "Name : " + item.name_display;
+                        itemname.Text = "Name : " + (item.isname2 ? item.name_display2 : item.name_display);
                         itemprice.Text = "Flea Price : " + item.price + " (" + item.last_updated + ")";
                         itemtrader.Text = "Trader : " + item.trader;
                         traderprice.Text = "Trader Price : " + item.trader_price;

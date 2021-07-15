@@ -6,6 +6,9 @@ namespace TarkovPriceViewer
     {
         public String name_display;
         public char[] name_compare;
+        public String name_display2;
+        public char[] name_compare2;
+        public bool isname2 = false;
         public String name_address;
         public String price;
         public String trader;

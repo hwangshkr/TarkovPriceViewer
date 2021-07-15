@@ -71,9 +71,11 @@ namespace TarkovPriceViewer
                 {
                     String[] spl = textValue[i].Split('\t');
                     Item item = new Item();
-                    item.name_display = spl[0].Trim();//for display '_' removed
-                    item.name_compare = item.name_display.ToLower().ToCharArray();//for compare '_' removed
-                    item.name_address = spl[1].Trim();//for address '_' not removed
+                    item.name_display = spl[0].Trim();
+                    item.name_compare = item.name_display.ToLower().ToCharArray();
+                    item.name_address = spl[1].Replace(" ", "_").Trim();
+                    item.name_display2 = spl[2].Trim();
+                    item.name_compare2 = item.name_display2.ToLower().ToCharArray();
                     itemlist.Add(item);
                 }
             }
@@ -121,7 +123,7 @@ namespace TarkovPriceViewer
                 }
                 if (!settings.TryGetValue("Overlay_Transparent", out st))
                 {
-                    settings.Add("Overlay_Transparent", "100");
+                    settings.Add("Overlay_Transparent", "80");
                 }
             }
             catch (Exception e)

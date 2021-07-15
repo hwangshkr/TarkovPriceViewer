@@ -104,6 +104,7 @@ namespace TarkovPriceViewer
             MinimizeBox = false;
             MaximizeBox = false;
             Version.Text = Program.settings["Version"];
+            MinimizetoTrayWhenStartup.Checked = Convert.ToBoolean(Program.settings["MinimizetoTrayWhenStartup"]);
             CloseOverlayWhenMouseMoved.Checked = Convert.ToBoolean(Program.settings["CloseOverlayWhenMouseMoved"]);
             ShowOverlay_Button.Text = ((Keys)Int32.Parse(Program.settings["ShowOverlay_Key"])).ToString();
             HideOverlay_Button.Text = ((Keys)Int32.Parse(Program.settings["HideOverlay_Key"])).ToString();
@@ -407,8 +408,19 @@ namespace TarkovPriceViewer
                         break;
                     }
                 }
+                d2 = levenshteinDistance(itemname, item.name_compare2);
+                if (d2 < d)
+                {
+                    result = item;
+                    d = d2;
+                    if (d == 0)
+                    {
+                        item.isname2 = true;
+                        break;
+                    }
+                }
             }
-            Debug.WriteLine(d + " text match : " + result.name_display);
+            Debug.WriteLine(d + " text match : " + result.name_display + " & " + result.name_display2);
             return result;
         }
 
