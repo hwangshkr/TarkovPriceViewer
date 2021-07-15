@@ -639,5 +639,15 @@ namespace TarkovPriceViewer
             TransParent_Text.Text = Program.settings["Overlay_Transparent"] + "%";
             overlay.ChangeTransparent(tb.Value);
         }
+
+        private void Github_Click(object sender, EventArgs e)
+        {
+            Process.Start(Program.github);
+        }
+
+        private void CheckUpdate_Click(object sender, EventArgs e)
+        {
+
+        }
     }
 }

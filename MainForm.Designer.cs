@@ -144,6 +144,7 @@ namespace TarkovPriceViewer
             this.CheckUpdate.TabStop = false;
             this.CheckUpdate.Text = "CheckUpdate";
             this.CheckUpdate.UseVisualStyleBackColor = true;
+            this.CheckUpdate.Click += new System.EventHandler(this.CheckUpdate_Click);
             // 
             // panel2
             // 
@@ -246,6 +247,7 @@ namespace TarkovPriceViewer
             this.Github.TabStop = false;
             this.Github.Text = "Github";
             this.Github.UseVisualStyleBackColor = true;
+            this.Github.Click += new System.EventHandler(this.Github_Click);
             // 
             // TarkovMarket
             // 

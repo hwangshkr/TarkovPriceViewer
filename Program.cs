@@ -18,6 +18,7 @@ namespace TarkovPriceViewer
         public static readonly String notfound = "Item Name Not Found";
         public static readonly String wiki = "https://escapefromtarkov.fandom.com/wiki/";
         public static readonly String tarkovmarket = "https://tarkov-market.com/item/";
+        public static readonly String github = "https://github.com/hwangshkr/TarkovPriceViewer";
         public static readonly char rouble = '₽';
         public static readonly char dollar = '$';
         public static readonly char euro = '€';
@@ -103,7 +104,7 @@ namespace TarkovPriceViewer
                 String st;
                 if (!settings.TryGetValue("Version", out st))
                 {
-                    settings.Add("Version", "1.00");
+                    settings.Add("Version", "v1.00");
                 }
                 if (!settings.TryGetValue("MinimizetoTrayWhenStartup", out st))
                 {
