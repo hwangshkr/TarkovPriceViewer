@@ -94,11 +94,6 @@ namespace TarkovPriceViewer
             Invoke(show);
         }
 
-        public Boolean CheckisVisible()
-        {
-            return iteminfo_panel.Visible || onetext.Visible;
-        }
-
         public void ChangeTransparent(int value)
         {
             Action show = delegate ()

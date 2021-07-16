@@ -70,9 +70,10 @@ namespace TarkovPriceViewer
         }
 
         private static readonly int WH_KEYBOARD_LL = 13;
-        private static readonly int WM_KEYDOWN = 0x100;
+        private static readonly int WM_KEYUP = 0x101;
         private static readonly int WH_MOUSE_LL = 14;
         private static readonly int WM_MOUSEMOVE = 0x200;
+        private static bool isinfoclosed = true;
         private static LowLevelProc _proc_keyboard = null;
         private static LowLevelProc _proc_mouse = null;
         private static IntPtr hhook_keyboard = IntPtr.Zero;
@@ -178,7 +179,7 @@ namespace TarkovPriceViewer
         {
             try
             {
-                if (code >= 0 && wParam == (IntPtr)WM_KEYDOWN)
+                if (code >= 0 && wParam == (IntPtr)WM_KEYUP)
                 {
                     int vkCode = Marshal.ReadInt32(lParam);
                     if (vkCode == Int32.Parse(Program.settings["ShowOverlay_Key"]))
@@ -214,12 +215,11 @@ namespace TarkovPriceViewer
         {
             try
             {
-                if (overlay.CheckisVisible() && code >= 0 && wParam == (IntPtr)WM_MOUSEMOVE)
+                if (!isinfoclosed && code >= 0
+                    && wParam == (IntPtr)WM_MOUSEMOVE
+                    && (Math.Abs(Control.MousePosition.X - point.X) > 5 || Math.Abs(Control.MousePosition.Y - point.Y) > 5))
                 {
-                    if (Math.Abs(Control.MousePosition.X - point.X) > 5 || Math.Abs(Control.MousePosition.Y - point.Y) > 5)
-                    {
-                        CloseItemInfo();
-                    }
+                    CloseItemInfo();
                 }
             } catch (Exception e)
             {
@@ -239,6 +239,7 @@ namespace TarkovPriceViewer
 
         public void LoadingItemInfo()
         {
+            isinfoclosed = false;
             cts.Cancel();
             cts = new CancellationTokenSource();
             overlay.ShowLoadingInfo(point, cts.Token);
@@ -247,6 +248,7 @@ namespace TarkovPriceViewer
 
         public void CloseItemInfo()
         {
+            isinfoclosed = true;
             cts.Cancel();
             overlay.HideInfo();
         }
