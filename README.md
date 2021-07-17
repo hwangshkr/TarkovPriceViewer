@@ -7,6 +7,8 @@ Most of the information for this program (names, prices, wiki links, etc.) was p
 <img width="100%" src="https://user-images.githubusercontent.com/32073152/126034618-8d46c368-752a-40d8-8a64-47a5519c50c7.gif"/>
 When the name appears as in the image, press the shortcut key (default: F9). By default, it disappears when you move the mouse, and this can be removed from the settings. It disappears even if you press the shortcut key (default: F10).
 
+If you got errors, please check you installed .NET Framework 4.7.2 (https://dotnet.microsoft.com/download/dotnet-framework/net472).
+
 # Notice - User
 1. It cannot be used in full screen. Borderless windowed mode is recommended.
 2. Since this information is fetched through parsing from the relevant sites, the information of this program will not be updated unless the information of the relevant sites is updated (especially, the information may be very different right after initialization).
