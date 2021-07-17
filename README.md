@@ -1,4 +1,4 @@
-# Tarkov Price Viewer v1.00
+# <img width="36" align="center" src="https://user-images.githubusercontent.com/32073152/126047438-2f1b7e59-ca31-43f2-bcf6-00b2f00e408c.png"/> Tarkov Price Viewer v1.00
 This program is for newbies. It is especially good to find out the market price in advance when the flea market is not open yet. Currently, only English is available.
 
 Most of the information for this program (names, prices, wiki links, etc.) was provided by the Tarkov Market, and some information (Needs, etc.) was provided by the Tarkov Wiki.
@@ -6,6 +6,8 @@ Most of the information for this program (names, prices, wiki links, etc.) was p
 # How to use
 <img width="100%" src="https://user-images.githubusercontent.com/32073152/126034618-8d46c368-752a-40d8-8a64-47a5519c50c7.gif"/>
 When the name appears as in the image, press the shortcut key (default: F9). By default, it disappears when you move the mouse, and this can be removed from the settings. It disappears even if you press the shortcut key (default: F10).
+
+If you got errors, please check you installed .NET Framework 4.7.2 (https://dotnet.microsoft.com/download/dotnet-framework/net472).
 
 # Notice - User
 1. It cannot be used in full screen. Borderless windowed mode is recommended.
