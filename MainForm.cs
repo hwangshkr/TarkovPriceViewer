@@ -405,6 +405,10 @@ namespace TarkovPriceViewer
                 {
                     result = item;
                     d = d2;
+                    if (item.isname2)
+                    {
+                        item.isname2 = false;
+                    }
                     if (d == 0)
                     {
                         break;
@@ -415,9 +419,9 @@ namespace TarkovPriceViewer
                 {
                     result = item;
                     d = d2;
+                    item.isname2 = true;
                     if (d == 0)
                     {
-                        item.isname2 = true;
                         break;
                     }
                 }
