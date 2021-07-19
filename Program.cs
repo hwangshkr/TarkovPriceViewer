@@ -9,8 +9,8 @@ namespace TarkovPriceViewer
 {
     static class Program
     {
-        private static MainForm main;
-        public static Dictionary<String, String> settings;
+        private static MainForm main = null;
+        public static Dictionary<String, String> settings = new Dictionary<String, String>();
         public static readonly List<Item> itemlist = new List<Item>();
         public static readonly String setting_path = @"settings.json";
         public static readonly String appname = "EscapeFromTarkov";
@@ -90,7 +90,7 @@ namespace TarkovPriceViewer
             {
                 if (!File.Exists(setting_path))
                 {
-                    File.Create(setting_path);
+                    File.Create(setting_path).Dispose();
                 }
                 String text = File.ReadAllText(setting_path);
                 try
@@ -103,10 +103,8 @@ namespace TarkovPriceViewer
                     settings = JsonSerializer.Deserialize<Dictionary<String, String>>(text);
                 }
                 String st;
-                if (!settings.TryGetValue("Version", out st))
-                {
-                    settings.Add("Version", "v1.00");
-                }
+                settings.Remove("Version");//force
+                settings.Add("Version", "v1.01");//force
                 if (!settings.TryGetValue("MinimizetoTrayWhenStartup", out st))
                 {
                     settings.Add("MinimizetoTrayWhenStartup", "false");
@@ -140,7 +138,7 @@ namespace TarkovPriceViewer
             {
                 if (!File.Exists(setting_path))
                 {
-                    File.Create(setting_path);
+                    File.Create(setting_path).Dispose();
                 }
                 string jsonString = JsonSerializer.Serialize<Dictionary<String, String>>(settings);
                 File.WriteAllText(setting_path, jsonString);

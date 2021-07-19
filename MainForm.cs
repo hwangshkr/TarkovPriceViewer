@@ -255,19 +255,21 @@ namespace TarkovPriceViewer
 
         private int FindItemTask(CancellationToken cts)
         {
-            using (Bitmap fullimage = CaptureScreen(CheckisTarkov()))
+            Bitmap fullimage = CaptureScreen(CheckisTarkov());
+            if (fullimage != null)
             {
-                if (fullimage != null)
+                if (!cts.IsCancellationRequested)
                 {
-                    if (!cts.IsCancellationRequested)
-                    {
-                        FindItem(fullimage, cts);
-                    }
+                    FindItem(fullimage, cts);
                 }
-                else
+            }
+            else
+            {
+                if (!cts.IsCancellationRequested)
                 {
-                    Debug.WriteLine("image null");
+                    overlay.ShowInfo(null, cts);
                 }
+                Debug.WriteLine("image null");
             }
             return 0;
         }
@@ -392,6 +394,7 @@ namespace TarkovPriceViewer
                     overlay.ShowInfo(item, cts);
                 }
             }
+            fullimage.Dispose();
         }
 
         private Item MatchItemName(char[] itemname)
@@ -654,6 +657,11 @@ namespace TarkovPriceViewer
         private void CheckUpdate_Click(object sender, EventArgs e)
         {
             (sender as Control).Enabled = false;
+            Task task = Task.Factory.StartNew(() => UpdateTask(sender as Control));
+        }
+
+        private int UpdateTask(Control control)
+        {
             try
             {
                 using (WebClient wc = new WebClient())
@@ -666,12 +674,14 @@ namespace TarkovPriceViewer
                         String sp = check.Split('\n')[0];
                         if (sp.Contains("Tarkov Price Viewer"))
                         {
-                            sp = sp.Replace("Tarkov Price Viewer", "").Trim();
+                            String[] sp2 = sp.Split(' ');
+                            sp = sp2[sp2.Length - 1].Trim();
                             if (!Program.settings["Version"].Equals(sp))
                             {
-                                MessageBox.Show("New version (" + sp + ") found. Please download new version.");
+                                MessageBox.Show("New version (" + sp + ") found. Please download new version. Current Version is " + Program.settings["Version"]);
                                 Process.Start(Program.github);
-                            } else
+                            }
+                            else
                             {
                                 MessageBox.Show("Current version is newest.");
                             }
@@ -684,7 +694,12 @@ namespace TarkovPriceViewer
                 Debug.WriteLine(ex.Message);
                 MessageBox.Show("Can not check update. Please check your network.");
             }
-            (sender as Control).Enabled = true;
+            Action show = delegate ()
+            {
+                control.Enabled = true;
+            };
+            Invoke(show);
+            return 0;
         }
     }
 }

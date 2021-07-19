@@ -41,7 +41,7 @@ namespace TarkovPriceViewer
             {
                 if (!cts.IsCancellationRequested)
                 {
-                    if (item.name_address == null)
+                    if (item == null || item.name_address == null)
                     {
                         onetext.Text = Program.notfound;
                     }
