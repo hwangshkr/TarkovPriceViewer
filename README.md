@@ -6,7 +6,12 @@ Most of the information for this program (names, prices, wiki links, etc.) was p
 # How to use
 <img width="100%" src="https://user-images.githubusercontent.com/32073152/126034618-8d46c368-752a-40d8-8a64-47a5519c50c7.gif"/>
 When the name appears as in the image, press the shortcut key (default: F9). By default, it disappears when you move the mouse, and this can be removed from the settings. It disappears even if you press the shortcut key (default: F10).
-
+</br>
+</br>
+<img width="50%" src="https://user-images.githubusercontent.com/32073152/126155317-688c2055-cb1f-4552-98a0-3fd708e8ddeb.png"/>
+This program can also be used for comparing the price of parts in Edit Preset.
+</br>
+</br>
 If you got errors, please check you installed .NET Framework 4.7.2 (https://dotnet.microsoft.com/download/dotnet-framework/net472).
 
 # Notice - User
