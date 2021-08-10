@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Drawing;
 using System.Runtime.InteropServices;
+using System.Text;
 using System.Threading;
 using System.Windows.Forms;
 
@@ -48,19 +49,16 @@ namespace TarkovPriceViewer
                     else
                     {
                         iteminfo_panel.Location = onetext.Location;
-                        itemname.Text = "Name : " + (item.isname2 ? item.name_display2 : item.name_display);
-                        itemprice.Text = "Flea Price : " + item.price + " (" + item.last_updated + ")";
-                        itemtrader.Text = "Trader : " + item.trader;
-                        traderprice.Text = "Trader Price : " + item.trader_price;
-                        if (item.Needs == null)
+                        StringBuilder sb = new StringBuilder();
+                        sb.Append(String.Format("Name : {0}", item.isname2 ? item.name_display2 : item.name_display));
+                        sb.Append(String.Format("\nFlea Price : {0} ({1})", item.price, item.last_updated));
+                        sb.Append(String.Format("\nTrader : {0}", item.trader));
+                        sb.Append(String.Format("\nTrader Price : {0}", item.trader_price));
+                        if (item.Needs != null)
                         {
-                            itemusage.Visible = false;
+                            sb.Append(String.Format("\n{0}", item.Needs));
                         }
-                        else
-                        {
-                            itemusage.Text = item.Needs;
-                            itemusage.Visible = true;
-                        }
+                        iteminfo_text.Text = sb.ToString();
                         onetext.Visible = false;
                         iteminfo_panel.Visible = true;
                     }
@@ -156,6 +154,13 @@ namespace TarkovPriceViewer
 
         private void Overlay_FormClosing(object sender, FormClosingEventArgs e)
         {
+        }
+
+        private void iteminfo_text_ContentsResized(object sender, ContentsResizedEventArgs e)
+        {
+            const int MARGIN = 5;
+            RichTextBox richTextBox = sender as RichTextBox;
+            richTextBox.ClientSize = new Size(e.NewRectangle.Width + MARGIN, e.NewRectangle.Height + MARGIN);
         }
     }
 }

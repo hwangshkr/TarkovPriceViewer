@@ -388,6 +388,12 @@ namespace TarkovPriceViewer
                         }
                     }
                 }
+#if DEBUG
+                if (contours.Length == 0)
+                {
+                    item = MatchItemName("Salewa FIRST AID KIT".ToLower().ToCharArray());
+                }
+#endif
                 if (!cts.IsCancellationRequested)
                 {
                     FindItemInfo(item);
@@ -492,6 +498,7 @@ namespace TarkovPriceViewer
                             doc.LoadHtml(wc.DownloadString(Program.tarkovmarket + item.name_address));
                             HtmlAgilityPack.HtmlNode node_tm = doc.DocumentNode.SelectSingleNode("//div[@class='w-100']");
                             HtmlAgilityPack.HtmlNodeCollection nodes = null;
+                            HtmlAgilityPack.HtmlNodeCollection subnodes = null;
                             if (node_tm != null)
                             {
                                 nodes = node_tm.SelectNodes(".//div[@class='blk-item']");
@@ -507,26 +514,44 @@ namespace TarkovPriceViewer
                                         node_tm = node.FirstChild;
                                         if (node_tm != null)
                                         {
-                                            if (node_tm.InnerText.Trim().Equals("Price"))
+                                            if (node_tm.HasClass("title"))
                                             {
-                                                node_tm = node.SelectSingleNode(".//div[@class='c-price last alt']");
-                                                if (node_tm != null)
+                                                if (node_tm.InnerText.Trim().Equals("Price"))
                                                 {
-                                                    item.price = node_tm.InnerText.Trim();
+                                                    node_tm = node.SelectSingleNode(".//div[@class='c-price last alt']");
+                                                    if (node_tm != null)
+                                                    {
+                                                        item.price_last = node_tm.InnerText.Trim();
+                                                    }
+                                                }
+                                                else if (node_tm.InnerText.Trim().Equals("Average price"))
+                                                {
+                                                    subnodes = node.SelectNodes(".//div[@class='c-price alt']");
+                                                    if (subnodes != null && subnodes.Count >= 2)
+                                                    {
+                                                        item.price_day = subnodes[0].InnerText.Trim();
+                                                        item.price_week = subnodes[1].InnerText.Trim();
+                                                    }
                                                 }
                                             }
-                                            else if (node_tm.InnerText.Trim().ToLower().Contains("price")
-                                                || node_tm.InnerText.Trim().Equals("Fee"))
+                                            else if (node_tm.HasClass("bold"))
                                             {
-                                                continue;
-                                            }
-                                            else if (!node_tm.InnerText.Trim().Contains("LL"))
-                                            {
-                                                item.trader = node_tm.InnerText.Trim();
-                                                node_tm = node.SelectSingleNode(".//div[@class='c-price alt']");
-                                                if (node_tm != null)
+                                                if (node_tm.InnerText.Trim().Contains("LL"))
                                                 {
-                                                    item.trader_price = node_tm.InnerText.Trim();
+                                                    item.trader_sell = node_tm.InnerText.Trim();
+                                                    node_tm = node.SelectSingleNode(".//div[@class='c-price alt']");
+                                                    if (node_tm != null)
+                                                    {
+                                                        item.trader_sell_price = node_tm.InnerText.Trim();
+                                                    }
+                                                } else
+                                                {
+                                                    item.trader_buy = node_tm.InnerText.Trim();
+                                                    node_tm = node.SelectSingleNode(".//div[@class='c-price alt']");
+                                                    if (node_tm != null)
+                                                    {
+                                                        item.trader_buy_price = node_tm.InnerText.Trim();
+                                                    }
                                                 }
                                             }
                                         }

@@ -16,6 +16,7 @@ namespace TarkovPriceViewer
         public static readonly String appname = "EscapeFromTarkov";
         public static readonly String loading = "Loading...";
         public static readonly String notfound = "Item Name Not Found";
+        public static readonly String[] traderlist = { "Prapor", "Therapist", "Skier", "Peacekeeper", "Mechanic", "Ragman", "Jaeger" };//Fence
         public static readonly String wiki = "https://escapefromtarkov.fandom.com/wiki/";
         public static readonly String tarkovmarket = "https://tarkov-market.com/item/";
         public static readonly String github = "https://github.com/hwangshkr/TarkovPriceViewer";
