@@ -54,6 +54,12 @@ namespace TarkovPriceViewer
             this.MinimizetoTrayWhenStartup = new System.Windows.Forms.CheckBox();
             this.Version = new System.Windows.Forms.Label();
             this.pictureBox1 = new System.Windows.Forms.PictureBox();
+            this.last_price_box = new System.Windows.Forms.CheckBox();
+            this.day_price_box = new System.Windows.Forms.CheckBox();
+            this.week_price_box = new System.Windows.Forms.CheckBox();
+            this.sell_to_trader_box = new System.Windows.Forms.CheckBox();
+            this.buy_from_trader_box = new System.Windows.Forms.CheckBox();
+            this.Tarkov_Official = new System.Windows.Forms.Button();
             this.TrayMenu.SuspendLayout();
             this.panel1.SuspendLayout();
             ((System.ComponentModel.ISupportInitialize)(this.TransParent_Bar)).BeginInit();
@@ -93,6 +99,11 @@ namespace TarkovPriceViewer
             // 
             // panel1
             // 
+            this.panel1.Controls.Add(this.week_price_box);
+            this.panel1.Controls.Add(this.day_price_box);
+            this.panel1.Controls.Add(this.buy_from_trader_box);
+            this.panel1.Controls.Add(this.sell_to_trader_box);
+            this.panel1.Controls.Add(this.last_price_box);
             this.panel1.Controls.Add(this.TransParent_Text);
             this.panel1.Controls.Add(this.CloseOverlayWhenMouseMoved);
             this.panel1.Controls.Add(this.TransParent_Bar);
@@ -110,7 +121,7 @@ namespace TarkovPriceViewer
             // TransParent_Text
             // 
             this.TransParent_Text.AutoSize = true;
-            this.TransParent_Text.Location = new System.Drawing.Point(246, 145);
+            this.TransParent_Text.Location = new System.Drawing.Point(244, 164);
             this.TransParent_Text.Name = "TransParent_Text";
             this.TransParent_Text.Size = new System.Drawing.Size(27, 12);
             this.TransParent_Text.TabIndex = 4;
@@ -119,7 +130,7 @@ namespace TarkovPriceViewer
             // CloseOverlayWhenMouseMoved
             // 
             this.CloseOverlayWhenMouseMoved.AutoSize = true;
-            this.CloseOverlayWhenMouseMoved.Location = new System.Drawing.Point(5, 87);
+            this.CloseOverlayWhenMouseMoved.Location = new System.Drawing.Point(5, 119);
             this.CloseOverlayWhenMouseMoved.Name = "CloseOverlayWhenMouseMoved";
             this.CloseOverlayWhenMouseMoved.Size = new System.Drawing.Size(224, 16);
             this.CloseOverlayWhenMouseMoved.TabIndex = 6;
@@ -130,7 +141,7 @@ namespace TarkovPriceViewer
             // 
             // TransParent_Bar
             // 
-            this.TransParent_Bar.Location = new System.Drawing.Point(5, 135);
+            this.TransParent_Bar.Location = new System.Drawing.Point(3, 155);
             this.TransParent_Bar.Maximum = 100;
             this.TransParent_Bar.Name = "TransParent_Bar";
             this.TransParent_Bar.Size = new System.Drawing.Size(235, 45);
@@ -144,7 +155,7 @@ namespace TarkovPriceViewer
             this.HideOverlay_Desc2.AutoSize = true;
             this.HideOverlay_Desc2.Font = new System.Drawing.Font("굴림", 9F, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point, ((byte)(129)));
             this.HideOverlay_Desc2.ForeColor = System.Drawing.Color.Red;
-            this.HideOverlay_Desc2.Location = new System.Drawing.Point(19, 58);
+            this.HideOverlay_Desc2.Location = new System.Drawing.Point(20, 101);
             this.HideOverlay_Desc2.Name = "HideOverlay_Desc2";
             this.HideOverlay_Desc2.Size = new System.Drawing.Size(230, 12);
             this.HideOverlay_Desc2.TabIndex = 0;
@@ -154,7 +165,7 @@ namespace TarkovPriceViewer
             // 
             this.TransParent_Desc.AutoSize = true;
             this.TransParent_Desc.Font = new System.Drawing.Font("굴림", 9F, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point, ((byte)(129)));
-            this.TransParent_Desc.Location = new System.Drawing.Point(3, 120);
+            this.TransParent_Desc.Location = new System.Drawing.Point(3, 140);
             this.TransParent_Desc.Name = "TransParent_Desc";
             this.TransParent_Desc.Size = new System.Drawing.Size(107, 12);
             this.TransParent_Desc.TabIndex = 0;
@@ -162,7 +173,7 @@ namespace TarkovPriceViewer
             // 
             // HideOverlay_Button
             // 
-            this.HideOverlay_Button.Location = new System.Drawing.Point(170, 32);
+            this.HideOverlay_Button.Location = new System.Drawing.Point(170, 72);
             this.HideOverlay_Button.Name = "HideOverlay_Button";
             this.HideOverlay_Button.Size = new System.Drawing.Size(59, 23);
             this.HideOverlay_Button.TabIndex = 1;
@@ -196,7 +207,7 @@ namespace TarkovPriceViewer
             // 
             this.HideOverlay_Desc.AutoSize = true;
             this.HideOverlay_Desc.Font = new System.Drawing.Font("굴림", 9F, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point, ((byte)(129)));
-            this.HideOverlay_Desc.Location = new System.Drawing.Point(3, 37);
+            this.HideOverlay_Desc.Location = new System.Drawing.Point(3, 77);
             this.HideOverlay_Desc.Name = "HideOverlay_Desc";
             this.HideOverlay_Desc.Size = new System.Drawing.Size(119, 12);
             this.HideOverlay_Desc.TabIndex = 0;
@@ -204,7 +215,7 @@ namespace TarkovPriceViewer
             // 
             // CheckUpdate
             // 
-            this.CheckUpdate.Location = new System.Drawing.Point(21, 119);
+            this.CheckUpdate.Location = new System.Drawing.Point(21, 143);
             this.CheckUpdate.Name = "CheckUpdate";
             this.CheckUpdate.Size = new System.Drawing.Size(115, 23);
             this.CheckUpdate.TabIndex = 5;
@@ -215,7 +226,7 @@ namespace TarkovPriceViewer
             // 
             // Github
             // 
-            this.Github.Location = new System.Drawing.Point(21, 90);
+            this.Github.Location = new System.Drawing.Point(21, 114);
             this.Github.Name = "Github";
             this.Github.Size = new System.Drawing.Size(115, 23);
             this.Github.TabIndex = 5;
@@ -226,7 +237,7 @@ namespace TarkovPriceViewer
             // 
             // TarkovMarket
             // 
-            this.TarkovMarket.Location = new System.Drawing.Point(21, 32);
+            this.TarkovMarket.Location = new System.Drawing.Point(21, 56);
             this.TarkovMarket.Name = "TarkovMarket";
             this.TarkovMarket.Size = new System.Drawing.Size(115, 23);
             this.TarkovMarket.TabIndex = 5;
@@ -237,7 +248,7 @@ namespace TarkovPriceViewer
             // 
             // TarkovWiki
             // 
-            this.TarkovWiki.Location = new System.Drawing.Point(21, 61);
+            this.TarkovWiki.Location = new System.Drawing.Point(21, 85);
             this.TarkovWiki.Name = "TarkovWiki";
             this.TarkovWiki.Size = new System.Drawing.Size(115, 23);
             this.TarkovWiki.TabIndex = 5;
@@ -252,10 +263,11 @@ namespace TarkovPriceViewer
             this.panel4.Controls.Add(this.Github);
             this.panel4.Controls.Add(this.DataProvidedBy);
             this.panel4.Controls.Add(this.TarkovWiki);
+            this.panel4.Controls.Add(this.Tarkov_Official);
             this.panel4.Controls.Add(this.TarkovMarket);
             this.panel4.Location = new System.Drawing.Point(299, 89);
             this.panel4.Name = "panel4";
-            this.panel4.Size = new System.Drawing.Size(153, 157);
+            this.panel4.Size = new System.Drawing.Size(153, 176);
             this.panel4.TabIndex = 7;
             // 
             // DataProvidedBy
@@ -301,6 +313,77 @@ namespace TarkovPriceViewer
             this.pictureBox1.SizeMode = System.Windows.Forms.PictureBoxSizeMode.AutoSize;
             this.pictureBox1.TabIndex = 10;
             this.pictureBox1.TabStop = false;
+            // 
+            // last_price_box
+            // 
+            this.last_price_box.AutoSize = true;
+            this.last_price_box.Location = new System.Drawing.Point(5, 31);
+            this.last_price_box.Name = "last_price_box";
+            this.last_price_box.Size = new System.Drawing.Size(76, 16);
+            this.last_price_box.TabIndex = 7;
+            this.last_price_box.TabStop = false;
+            this.last_price_box.Text = "last price";
+            this.last_price_box.UseVisualStyleBackColor = true;
+            this.last_price_box.CheckedChanged += new System.EventHandler(this.last_price_box_CheckedChanged);
+            // 
+            // day_price_box
+            // 
+            this.day_price_box.AutoSize = true;
+            this.day_price_box.Location = new System.Drawing.Point(87, 32);
+            this.day_price_box.Name = "day_price_box";
+            this.day_price_box.Size = new System.Drawing.Size(77, 16);
+            this.day_price_box.TabIndex = 7;
+            this.day_price_box.TabStop = false;
+            this.day_price_box.Text = "day price";
+            this.day_price_box.UseVisualStyleBackColor = true;
+            this.day_price_box.CheckedChanged += new System.EventHandler(this.day_price_box_CheckedChanged);
+            // 
+            // week_price_box
+            // 
+            this.week_price_box.AutoSize = true;
+            this.week_price_box.Location = new System.Drawing.Point(170, 32);
+            this.week_price_box.Name = "week_price_box";
+            this.week_price_box.Size = new System.Drawing.Size(86, 16);
+            this.week_price_box.TabIndex = 7;
+            this.week_price_box.TabStop = false;
+            this.week_price_box.Text = "week price";
+            this.week_price_box.UseVisualStyleBackColor = true;
+            this.week_price_box.CheckedChanged += new System.EventHandler(this.week_price_box_CheckedChanged);
+            // 
+            // sell_to_trader_box
+            // 
+            this.sell_to_trader_box.AutoSize = true;
+            this.sell_to_trader_box.Location = new System.Drawing.Point(5, 53);
+            this.sell_to_trader_box.Name = "sell_to_trader_box";
+            this.sell_to_trader_box.Size = new System.Drawing.Size(94, 16);
+            this.sell_to_trader_box.TabIndex = 7;
+            this.sell_to_trader_box.TabStop = false;
+            this.sell_to_trader_box.Text = "sell to trader";
+            this.sell_to_trader_box.UseVisualStyleBackColor = true;
+            this.sell_to_trader_box.CheckedChanged += new System.EventHandler(this.sell_to_trader_box_CheckedChanged);
+            // 
+            // buy_from_trader_box
+            // 
+            this.buy_from_trader_box.AutoSize = true;
+            this.buy_from_trader_box.Location = new System.Drawing.Point(105, 54);
+            this.buy_from_trader_box.Name = "buy_from_trader_box";
+            this.buy_from_trader_box.Size = new System.Drawing.Size(110, 16);
+            this.buy_from_trader_box.TabIndex = 7;
+            this.buy_from_trader_box.TabStop = false;
+            this.buy_from_trader_box.Text = "buy from trader";
+            this.buy_from_trader_box.UseVisualStyleBackColor = true;
+            this.buy_from_trader_box.CheckedChanged += new System.EventHandler(this.buy_from_trader_box_CheckedChanged);
+            // 
+            // Tarkov_Official
+            // 
+            this.Tarkov_Official.Location = new System.Drawing.Point(21, 27);
+            this.Tarkov_Official.Name = "Tarkov_Official";
+            this.Tarkov_Official.Size = new System.Drawing.Size(115, 23);
+            this.Tarkov_Official.TabIndex = 5;
+            this.Tarkov_Official.TabStop = false;
+            this.Tarkov_Official.Text = "Tarkov Official";
+            this.Tarkov_Official.UseVisualStyleBackColor = true;
+            this.Tarkov_Official.Click += new System.EventHandler(this.Tarkov_Official_Click);
             // 
             // MainForm
             // 
@@ -359,6 +442,12 @@ namespace TarkovPriceViewer
         private System.Windows.Forms.Label TransParent_Text;
         private System.Windows.Forms.Label Version;
         private System.Windows.Forms.PictureBox pictureBox1;
+        private System.Windows.Forms.CheckBox last_price_box;
+        private System.Windows.Forms.CheckBox week_price_box;
+        private System.Windows.Forms.CheckBox day_price_box;
+        private System.Windows.Forms.CheckBox buy_from_trader_box;
+        private System.Windows.Forms.CheckBox sell_to_trader_box;
+        private System.Windows.Forms.Button Tarkov_Official;
     }
 }
 

@@ -13,10 +13,10 @@ namespace TarkovPriceViewer
         public String price_last;
         public String price_day;
         public String price_week;
-        public String trader_sell;
-        public String trader_sell_price;
-        public String trader_buy;
-        public String trader_buy_price;
+        public String sell_to_trader;
+        public String sell_to_trader_price;
+        public String buy_from_trader;
+        public String buy_from_trader_price;
         public String Needs;
         public String last_updated;
         public DateTime last_fetch;

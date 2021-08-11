@@ -107,6 +107,11 @@ namespace TarkovPriceViewer
             Version.Text = Program.settings["Version"];
             MinimizetoTrayWhenStartup.Checked = Convert.ToBoolean(Program.settings["MinimizetoTrayWhenStartup"]);
             CloseOverlayWhenMouseMoved.Checked = Convert.ToBoolean(Program.settings["CloseOverlayWhenMouseMoved"]);
+            last_price_box.Checked = Convert.ToBoolean(Program.settings["Show_Last_Price"]);
+            day_price_box.Checked = Convert.ToBoolean(Program.settings["Show_Day_Price"]);
+            week_price_box.Checked = Convert.ToBoolean(Program.settings["Show_Week_Price"]);
+            sell_to_trader_box.Checked = Convert.ToBoolean(Program.settings["Sell_to_Trader"]);
+            buy_from_trader_box.Checked = Convert.ToBoolean(Program.settings["Buy_From_Trader"]);
             ShowOverlay_Button.Text = ((Keys)Int32.Parse(Program.settings["ShowOverlay_Key"])).ToString();
             HideOverlay_Button.Text = ((Keys)Int32.Parse(Program.settings["HideOverlay_Key"])).ToString();
             TransParent_Bar.Value = Int32.Parse(Program.settings["Overlay_Transparent"]);
@@ -391,7 +396,7 @@ namespace TarkovPriceViewer
 #if DEBUG
                 if (contours.Length == 0)
                 {
-                    item = MatchItemName("Salewa FIRST AID KIT".ToLower().ToCharArray());
+                    item = MatchItemName("Corrugated hose".ToLower().ToCharArray());
                 }
 #endif
                 if (!cts.IsCancellationRequested)
@@ -526,7 +531,7 @@ namespace TarkovPriceViewer
                                                 }
                                                 else if (node_tm.InnerText.Trim().Equals("Average price"))
                                                 {
-                                                    subnodes = node.SelectNodes(".//div[@class='c-price alt']");
+                                                    subnodes = node.SelectNodes(".//span[@class='c-price alt']");
                                                     if (subnodes != null && subnodes.Count >= 2)
                                                     {
                                                         item.price_day = subnodes[0].InnerText.Trim();
@@ -538,19 +543,19 @@ namespace TarkovPriceViewer
                                             {
                                                 if (node_tm.InnerText.Trim().Contains("LL"))
                                                 {
-                                                    item.trader_sell = node_tm.InnerText.Trim();
+                                                    item.buy_from_trader = node_tm.InnerText.Trim();
                                                     node_tm = node.SelectSingleNode(".//div[@class='c-price alt']");
                                                     if (node_tm != null)
                                                     {
-                                                        item.trader_sell_price = node_tm.InnerText.Trim();
+                                                        item.buy_from_trader_price = node_tm.InnerText.Trim();
                                                     }
                                                 } else
                                                 {
-                                                    item.trader_buy = node_tm.InnerText.Trim();
+                                                    item.sell_to_trader = node_tm.InnerText.Trim();
                                                     node_tm = node.SelectSingleNode(".//div[@class='c-price alt']");
                                                     if (node_tm != null)
                                                     {
-                                                        item.trader_buy_price = node_tm.InnerText.Trim();
+                                                        item.sell_to_trader_price = node_tm.InnerText.Trim();
                                                     }
                                                 }
                                             }
@@ -615,6 +620,11 @@ namespace TarkovPriceViewer
         private void MinimizetoTrayWhenStartup_CheckedChanged(object sender, EventArgs e)
         {
             Program.settings["MinimizetoTrayWhenStartup"] = (sender as CheckBox).Checked.ToString();
+        }
+
+        private void Tarkov_Official_Click(object sender, EventArgs e)
+        {
+            Process.Start(Program.official);
         }
 
         private void TarkovWiki_Click(object sender, EventArgs e)
@@ -725,6 +735,31 @@ namespace TarkovPriceViewer
             };
             Invoke(show);
             return 0;
+        }
+
+        private void last_price_box_CheckedChanged(object sender, EventArgs e)
+        {
+            Program.settings["Show_Last_Price"] = (sender as CheckBox).Checked.ToString();
+        }
+
+        private void day_price_box_CheckedChanged(object sender, EventArgs e)
+        {
+            Program.settings["Show_Day_Price"] = (sender as CheckBox).Checked.ToString();
+        }
+
+        private void week_price_box_CheckedChanged(object sender, EventArgs e)
+        {
+            Program.settings["Show_Week_Price"] = (sender as CheckBox).Checked.ToString();
+        }
+
+        private void sell_to_trader_box_CheckedChanged(object sender, EventArgs e)
+        {
+            Program.settings["Sell_to_Trader"] = (sender as CheckBox).Checked.ToString();
+        }
+
+        private void buy_from_trader_box_CheckedChanged(object sender, EventArgs e)
+        {
+            Program.settings["Buy_From_Trader"] = (sender as CheckBox).Checked.ToString();
         }
     }
 }

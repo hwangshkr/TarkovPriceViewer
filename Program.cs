@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using System.Diagnostics;
 using System.IO;
 using System.Text.Json;
+using System.Text.RegularExpressions;
 using System.Windows.Forms;
 
 namespace TarkovPriceViewer
@@ -16,15 +17,16 @@ namespace TarkovPriceViewer
         public static readonly String appname = "EscapeFromTarkov";
         public static readonly String loading = "Loading...";
         public static readonly String notfound = "Item Name Not Found";
-        public static readonly String[] traderlist = { "Prapor", "Therapist", "Skier", "Peacekeeper", "Mechanic", "Ragman", "Jaeger" };//Fence
         public static readonly String wiki = "https://escapefromtarkov.fandom.com/wiki/";
         public static readonly String tarkovmarket = "https://tarkov-market.com/item/";
+        public static readonly String official = "https://www.escapefromtarkov.com/";
         public static readonly String github = "https://github.com/hwangshkr/TarkovPriceViewer";
         public static readonly String checkupdate = "https://github.com/hwangshkr/TarkovPriceViewer/raw/main/README.md";
         public static readonly char rouble = '₽';
         public static readonly char dollar = '$';
         public static readonly char euro = '€';
         public static readonly char[] splitcur = new char[] { rouble, dollar, euro };
+        public static readonly Regex inraid_filter = new Regex("in raid");
 
         /// <summary>
         /// 해당 애플리케이션의 주 진입점입니다.
@@ -105,7 +107,7 @@ namespace TarkovPriceViewer
                 }
                 String st;
                 settings.Remove("Version");//force
-                settings.Add("Version", "v1.01");//force
+                settings.Add("Version", "v1.02");//force
                 if (!settings.TryGetValue("MinimizetoTrayWhenStartup", out st))
                 {
                     settings.Add("MinimizetoTrayWhenStartup", "false");
@@ -125,6 +127,26 @@ namespace TarkovPriceViewer
                 if (!settings.TryGetValue("Overlay_Transparent", out st))
                 {
                     settings.Add("Overlay_Transparent", "80");
+                }
+                if (!settings.TryGetValue("Show_Last_Price", out st))
+                {
+                    settings.Add("Show_Last_Price", "true");
+                }
+                if (!settings.TryGetValue("Show_Day_Price", out st))
+                {
+                    settings.Add("Show_Day_Price", "false");
+                }
+                if (!settings.TryGetValue("Show_Week_Price", out st))
+                {
+                    settings.Add("Show_Week_Price", "false");
+                }
+                if (!settings.TryGetValue("Sell_to_Trader", out st))
+                {
+                    settings.Add("Sell_to_Trader", "true");
+                }
+                if (!settings.TryGetValue("Buy_From_Trader", out st))
+                {
+                    settings.Add("Buy_From_Trader", "false");
                 }
             }
             catch (Exception e)
