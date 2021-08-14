@@ -564,18 +564,41 @@ namespace TarkovPriceViewer
                                 }
                             }
                             doc.LoadHtml(wc.DownloadString(Program.wiki + item.name_address));
-                            nodes = doc.DocumentNode.SelectNodes("//li");
-                            if (nodes != null)
+                            node_tm = doc.DocumentNode.SelectSingleNode("//div[@class='mw-parser-output']");
+                            if (node_tm != null)
                             {
                                 StringBuilder sb = new StringBuilder();
-                                foreach (HtmlAgilityPack.HtmlNode node in nodes)
+                                nodes = node_tm.SelectNodes(".//li");
+                                if (nodes != null)
                                 {
-                                    if (node.InnerText.Contains(" to be found "))
+                                    foreach (HtmlAgilityPack.HtmlNode node in nodes)
                                     {
-                                        sb.Append(node.InnerText).Append("\n");
+                                        if (node.InnerText.Contains(" to be found "))
+                                        {
+                                            sb.Append(node.InnerText).Append("\n");
+                                        }
                                     }
                                 }
-                                item.Needs = sb.ToString().Trim();
+                                /*node_tm = node_tm.SelectSingleNode(".//table[@class='wikitable']");
+                                if (node_tm != null)
+                                {
+                                    nodes = node_tm.SelectNodes(".//tr");
+                                    if (nodes != null)
+                                    {
+                                        foreach (HtmlAgilityPack.HtmlNode node in nodes)
+                                        {
+                                            subnodes = node.SelectNodes(".//th");
+                                            if (subnodes != null && subnodes.Count >= 5)
+                                            {
+                                                Debug.WriteLine(subnodes[0].InnerHtml);
+                                            }
+                                        }
+                                    }
+                                }*/
+                                if (!sb.ToString().Trim().Equals(""))
+                                {
+                                    item.Needs = sb.ToString().Trim();
+                                }
                             }
                         }
                     }

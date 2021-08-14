@@ -16,7 +16,8 @@ namespace TarkovPriceViewer
         public static readonly String setting_path = @"settings.json";
         public static readonly String appname = "EscapeFromTarkov";
         public static readonly String loading = "Loading...";
-        public static readonly String notfound = "Item Name Not Found";
+        public static readonly String notfound = "Item Name Not Found.";
+        public static readonly String noflea = "Item not Found on Flea.";
         public static readonly String wiki = "https://escapefromtarkov.fandom.com/wiki/";
         public static readonly String tarkovmarket = "https://tarkov-market.com/item/";
         public static readonly String official = "https://www.escapefromtarkov.com/";

@@ -30,8 +30,8 @@ namespace TarkovPriceViewer
         private void InitializeComponent()
         {
             this.iteminfo_panel = new System.Windows.Forms.Panel();
-            this.onetext = new System.Windows.Forms.Label();
             this.iteminfo_text = new System.Windows.Forms.RichTextBox();
+            this.onetext = new System.Windows.Forms.Label();
             this.iteminfo_panel.SuspendLayout();
             this.SuspendLayout();
             // 
@@ -55,6 +55,24 @@ namespace TarkovPriceViewer
             this.iteminfo_panel.SizeChanged += new System.EventHandler(this.iteminfo_panel_SizeChanged);
             this.iteminfo_panel.Paint += new System.Windows.Forms.PaintEventHandler(this.iteminfo_panel_Paint);
             // 
+            // iteminfo_text
+            // 
+            this.iteminfo_text.BackColor = System.Drawing.Color.Black;
+            this.iteminfo_text.BorderStyle = System.Windows.Forms.BorderStyle.None;
+            this.iteminfo_text.Cursor = System.Windows.Forms.Cursors.Default;
+            this.iteminfo_text.Font = new System.Drawing.Font("굴림", 9F, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point, ((byte)(129)));
+            this.iteminfo_text.ForeColor = System.Drawing.Color.White;
+            this.iteminfo_text.Location = new System.Drawing.Point(10, 10);
+            this.iteminfo_text.Name = "iteminfo_text";
+            this.iteminfo_text.ReadOnly = true;
+            this.iteminfo_text.ScrollBars = System.Windows.Forms.RichTextBoxScrollBars.None;
+            this.iteminfo_text.Size = new System.Drawing.Size(100, 20);
+            this.iteminfo_text.TabIndex = 0;
+            this.iteminfo_text.TabStop = false;
+            this.iteminfo_text.Text = "text";
+            this.iteminfo_text.WordWrap = false;
+            this.iteminfo_text.ContentsResized += new System.Windows.Forms.ContentsResizedEventHandler(this.iteminfo_text_ContentsResized);
+            // 
             // onetext
             // 
             this.onetext.Anchor = ((System.Windows.Forms.AnchorStyles)((((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Bottom) 
@@ -76,24 +94,6 @@ namespace TarkovPriceViewer
             this.onetext.LocationChanged += new System.EventHandler(this.onetext_LocationChanged);
             this.onetext.SizeChanged += new System.EventHandler(this.onetext_SizeChanged);
             this.onetext.Paint += new System.Windows.Forms.PaintEventHandler(this.onetext_Paint);
-            // 
-            // iteminfo_text
-            // 
-            this.iteminfo_text.BackColor = System.Drawing.Color.Black;
-            this.iteminfo_text.BorderStyle = System.Windows.Forms.BorderStyle.None;
-            this.iteminfo_text.Cursor = System.Windows.Forms.Cursors.Default;
-            this.iteminfo_text.Font = new System.Drawing.Font("굴림", 9F, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point, ((byte)(129)));
-            this.iteminfo_text.ForeColor = System.Drawing.Color.White;
-            this.iteminfo_text.Location = new System.Drawing.Point(10, 10);
-            this.iteminfo_text.Name = "iteminfo_text";
-            this.iteminfo_text.ReadOnly = true;
-            this.iteminfo_text.ScrollBars = System.Windows.Forms.RichTextBoxScrollBars.None;
-            this.iteminfo_text.Size = new System.Drawing.Size(100, 20);
-            this.iteminfo_text.TabIndex = 0;
-            this.iteminfo_text.TabStop = false;
-            this.iteminfo_text.Text = "text";
-            this.iteminfo_text.WordWrap = false;
-            this.iteminfo_text.ContentsResized += new System.Windows.Forms.ContentsResizedEventHandler(this.iteminfo_text_ContentsResized);
             // 
             // Overlay
             // 

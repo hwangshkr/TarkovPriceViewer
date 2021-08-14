@@ -47,6 +47,10 @@ namespace TarkovPriceViewer
                     {
                         onetext.Text = Program.notfound;
                     }
+                    else if (item.price_last == null)
+                    {
+                        onetext.Text = Program.noflea;
+                    }
                     else
                     {
                         iteminfo_panel.Location = onetext.Location;
@@ -56,44 +60,58 @@ namespace TarkovPriceViewer
                         {
                             sb.Append(String.Format("\nLast Price : {0} ({1})", item.price_last, item.last_updated));
                         }
-                        if (Convert.ToBoolean(Program.settings["Show_Day_Price"]))
+                        if (Convert.ToBoolean(Program.settings["Show_Day_Price"]) && item.price_day != null)
                         {
                             sb.Append(String.Format("\nDay Price : {0}", item.price_day));
                         }
-                        if (Convert.ToBoolean(Program.settings["Show_Week_Price"]))
+                        if (Convert.ToBoolean(Program.settings["Show_Week_Price"]) && item.price_week != null)
                         {
                             sb.Append(String.Format("\nWeek Price : {0}", item.price_week));
                         }
-                        if (Convert.ToBoolean(Program.settings["Sell_to_Trader"]))
+                        if (Convert.ToBoolean(Program.settings["Sell_to_Trader"]) && item.sell_to_trader != null)
                         {
+                            if (sb.Length > 0)
+                            {
+                                sb.Append("\n");
+                            }
                             sb.Append(String.Format("\nSell to Trader : {0}", item.sell_to_trader));
                             sb.Append(String.Format("\nSell to Trader Price : {0}", item.sell_to_trader_price));
                         }
-                        if (Convert.ToBoolean(Program.settings["Buy_From_Trader"]))
+                        if (Convert.ToBoolean(Program.settings["Buy_From_Trader"]) && item.buy_from_trader != null)
                         {
+                            if (sb.Length > 0)
+                            {
+                                sb.Append("\n");
+                            }
                             sb.Append(String.Format("\nBuy From Trader : {0}", item.buy_from_trader));
                             sb.Append(String.Format("\nBuy From Trader Price : {0}", item.buy_from_trader_price));
                         }
                         if (item.Needs != null)
                         {
+                            if (sb.Length > 0)
+                            {
+                                sb.Append("\n");
+                            }
                             sb.Append(String.Format("\nNeeds :\n{0}", item.Needs));
+                            setInraidColor();
                         }
                         iteminfo_text.Text = sb.ToString();
-                        MatchCollection mc = Program.inraid_filter.Matches(iteminfo_text.Text);
-                        int iCursorPosition = iteminfo_text.SelectionStart;
-                        foreach (Match m in mc)
-                        {
-                            iteminfo_text.Select(m.Index, m.Length);
-                            iteminfo_text.SelectionColor = Color.Red;
-                            iteminfo_text.SelectionStart = iCursorPosition;
-                            iteminfo_text.SelectionColor = Color.White;
-                        }
                         onetext.Visible = false;
                         iteminfo_panel.Visible = true;
                     }
                 }
             };
             Invoke(show);
+        }
+
+        public void setInraidColor()
+        {
+            MatchCollection mc = Program.inraid_filter.Matches(iteminfo_text.Text);
+            foreach (Match m in mc)
+            {
+                iteminfo_text.Select(m.Index, m.Length);
+                iteminfo_text.SelectionColor = Color.Red;
+            }
         }
 
         public void ShowLoadingInfo(Point point, CancellationToken cts)
