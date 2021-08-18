@@ -1,4 +1,4 @@
-# <img width="36" align="center" src="https://user-images.githubusercontent.com/32073152/126047438-2f1b7e59-ca31-43f2-bcf6-00b2f00e408c.png"/> Tarkov Price Viewer v1.02
+# <img width="36" align="center" src="https://user-images.githubusercontent.com/32073152/126047438-2f1b7e59-ca31-43f2-bcf6-00b2f00e408c.png"/> Tarkov Price Viewer v1.03
 This program is for newbies. It is especially good to find out the market price in advance when the flea market is not open yet. Currently, only English is available.
 
 Most of the information for this program (names, prices, wiki links, etc.) was provided by the Tarkov Market, and some information (Needs, etc.) was provided by the Tarkov Wiki.
@@ -30,3 +30,4 @@ If you got errors, please check you installed .NET Framework 4.7.2 (https://dotn
 2. Tesseract (https://github.com/tesseract-ocr/tesseract/blob/master/LICENSE)
 3. Tarkov Market (https://tarkov-market.com/)
 4. Tarkov Wiki (https://escapefromtarkov.fandom.com/wiki/Escape_from_Tarkov_Wiki)
+5. Escape from Tarkov(https://www.escapefromtarkov.com/)

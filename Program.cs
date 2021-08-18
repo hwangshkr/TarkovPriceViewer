@@ -27,7 +27,8 @@ namespace TarkovPriceViewer
         public static readonly char dollar = '$';
         public static readonly char euro = '€';
         public static readonly char[] splitcur = new char[] { rouble, dollar, euro };
-        public static readonly Regex inraid_filter = new Regex("in raid");
+        public static readonly Regex inraid_filter = new Regex(@"in raid");
+        public static readonly Regex money_filter = new Regex(@"[\d,]+[₽\$€]");
 
         /// <summary>
         /// 해당 애플리케이션의 주 진입점입니다.

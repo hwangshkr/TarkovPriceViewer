@@ -28,7 +28,6 @@ namespace TarkovPriceViewer
             SetWindowLong(this.Handle, GWL_EXSTYLE, style | WS_EX_LAYERED | WS_EX_TRANSPARENT | WS_EX_TOOLWINDOW);
             settingFormPos();
             iteminfo_panel.Visible = false;
-            onetext.Visible = false;
         }
 
         public void settingFormPos()
@@ -45,63 +44,64 @@ namespace TarkovPriceViewer
                 {
                     if (item == null || item.name_address == null)
                     {
-                        onetext.Text = Program.notfound;
+                        iteminfo_text.Text = Program.notfound;
                     }
                     else if (item.price_last == null)
                     {
-                        onetext.Text = Program.noflea;
+                        iteminfo_text.Text = Program.noflea;
                     }
                     else
                     {
-                        iteminfo_panel.Location = onetext.Location;
                         StringBuilder sb = new StringBuilder();
-                        sb.Append(String.Format("Name : {0}", item.isname2 ? item.name_display2 : item.name_display));
+                        sb.Append(String.Format("Name : {0}\n\n", item.isname2 ? item.name_display2 : item.name_display));
                         if (Convert.ToBoolean(Program.settings["Show_Last_Price"]))
                         {
-                            sb.Append(String.Format("\nLast Price : {0} ({1})", item.price_last, item.last_updated));
+                            sb.Append(String.Format("Last Price : {0} ({1})\n", item.price_last, item.last_updated));
                         }
                         if (Convert.ToBoolean(Program.settings["Show_Day_Price"]) && item.price_day != null)
                         {
-                            sb.Append(String.Format("\nDay Price : {0}", item.price_day));
+                            sb.Append(String.Format("Day Price : {0}\n", item.price_day));
                         }
                         if (Convert.ToBoolean(Program.settings["Show_Week_Price"]) && item.price_week != null)
                         {
-                            sb.Append(String.Format("\nWeek Price : {0}", item.price_week));
+                            sb.Append(String.Format("Week Price : {0}\n", item.price_week));
                         }
                         if (Convert.ToBoolean(Program.settings["Sell_to_Trader"]) && item.sell_to_trader != null)
                         {
-                            if (sb.Length > 0)
-                            {
-                                sb.Append("\n");
-                            }
                             sb.Append(String.Format("\nSell to Trader : {0}", item.sell_to_trader));
-                            sb.Append(String.Format("\nSell to Trader Price : {0}", item.sell_to_trader_price));
+                            sb.Append(String.Format("\nSell to Trader Price : {0}\n", item.sell_to_trader_price));
                         }
                         if (Convert.ToBoolean(Program.settings["Buy_From_Trader"]) && item.buy_from_trader != null)
                         {
-                            if (sb.Length > 0)
-                            {
-                                sb.Append("\n");
-                            }
                             sb.Append(String.Format("\nBuy From Trader : {0}", item.buy_from_trader));
-                            sb.Append(String.Format("\nBuy From Trader Price : {0}", item.buy_from_trader_price));
+                            sb.Append(String.Format("\nBuy From Trader Price : {0}\n", item.buy_from_trader_price));
                         }
                         if (item.Needs != null)
                         {
-                            if (sb.Length > 0)
-                            {
-                                sb.Append("\n");
-                            }
                             sb.Append(String.Format("\nNeeds :\n{0}", item.Needs));
-                            setInraidColor();
                         }
-                        iteminfo_text.Text = sb.ToString();
-                        onetext.Visible = false;
-                        iteminfo_panel.Visible = true;
+                        iteminfo_text.Text = sb.ToString().Trim();
+                        setTextColors();
                     }
                 }
             };
             Invoke(show);
+        }
+
+        public void setTextColors()
+        {
+            setPriceColor();
+            setInraidColor();
+        }
+
+        public void setPriceColor()
+        {
+            MatchCollection mc = Program.money_filter.Matches(iteminfo_text.Text);
+            foreach (Match m in mc)
+            {
+                iteminfo_text.Select(m.Index, m.Length);
+                iteminfo_text.SelectionColor = Color.Gold;
+            }
         }
 
         public void setInraidColor()
@@ -120,10 +120,9 @@ namespace TarkovPriceViewer
             {
                 if (!cts.IsCancellationRequested)
                 {
-                    onetext.Location = point;
-                    onetext.Text = Program.loading;
-                    iteminfo_panel.Visible = false;
-                    onetext.Visible = true;
+                    iteminfo_panel.Location = point;
+                    iteminfo_text.Text = Program.loading;
+                    iteminfo_panel.Visible = true;
                 }
             };
             Invoke(show);
@@ -134,7 +133,6 @@ namespace TarkovPriceViewer
             Action show = delegate ()
             {
                 iteminfo_panel.Visible = false;
-                onetext.Visible = false;
             };
             Invoke(show);
         }
@@ -184,30 +182,13 @@ namespace TarkovPriceViewer
             FixLocation(sender as Control);
         }
 
-        private void onetext_Paint(object sender, PaintEventArgs e)
-        {
-            ControlPaint.DrawBorder(e.Graphics, (sender as Control).ClientRectangle, Color.White, ButtonBorderStyle.Solid);
-        }
-
-        private void onetext_SizeChanged(object sender, EventArgs e)
-        {
-            FixLocation(sender as Control);
-        }
-
-        private void onetext_LocationChanged(object sender, EventArgs e)
-        {
-            FixLocation(sender as Control);
-        }
-
         private void Overlay_FormClosing(object sender, FormClosingEventArgs e)
         {
         }
 
         private void iteminfo_text_ContentsResized(object sender, ContentsResizedEventArgs e)
         {
-            const int MARGIN = 5;
-            RichTextBox richTextBox = sender as RichTextBox;
-            richTextBox.ClientSize = new Size(e.NewRectangle.Width + MARGIN, e.NewRectangle.Height + MARGIN);
+            (sender as Control).ClientSize = new Size(e.NewRectangle.Width + 1, e.NewRectangle.Height + 1);
         }
     }
 }
