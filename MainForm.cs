@@ -1,6 +1,7 @@
 ﻿using OpenCvSharp;
 using OpenCvSharp.Extensions;
 using System;
+using System.Collections.Generic;
 using System.Diagnostics;
 using System.Drawing;
 using System.Net;
@@ -396,7 +397,8 @@ namespace TarkovPriceViewer
 #if DEBUG
                 if (contours.Length == 0)
                 {
-                    item = MatchItemName("Corrugated hose".ToLower().ToCharArray());
+                    item = MatchItemName("Analog thermometer".ToLower().ToCharArray());
+                    //item = Program.itemlist[new Random().Next(Program.itemlist.Count - 1)];
                 }
 #endif
                 if (!cts.IsCancellationRequested)
@@ -488,19 +490,17 @@ namespace TarkovPriceViewer
 
         private void FindItemInfo(Item item)
         {
-            if (item.name_address != null)
+            if (item.market_address != null)
             {
                 try
                 {
                     if (item.last_fetch == null || (DateTime.Now - item.last_fetch).TotalHours >= 1)
                     {
-                        item.last_fetch = DateTime.Now;
-                        using (WebClient wc = new WebClient())
+                        using (TPVWebClient wc = new TPVWebClient())
                         {
-                            wc.Proxy = null;
-                            wc.Encoding = Encoding.UTF8;
                             HtmlAgilityPack.HtmlDocument doc = new HtmlAgilityPack.HtmlDocument();
-                            doc.LoadHtml(wc.DownloadString(Program.tarkovmarket + item.name_address));
+                            Debug.WriteLine(Program.tarkovmarket + item.market_address);
+                            doc.LoadHtml(wc.DownloadString(Program.tarkovmarket + item.market_address));
                             HtmlAgilityPack.HtmlNode node_tm = doc.DocumentNode.SelectSingleNode("//div[@class='w-100']");
                             HtmlAgilityPack.HtmlNodeCollection nodes = null;
                             HtmlAgilityPack.HtmlNodeCollection subnodes = null;
@@ -563,7 +563,8 @@ namespace TarkovPriceViewer
                                     }
                                 }
                             }
-                            doc.LoadHtml(wc.DownloadString(Program.wiki + item.name_address));
+                            Debug.WriteLine(Program.wiki + item.wiki_address);
+                            doc.LoadHtml(wc.DownloadString(Program.wiki + item.wiki_address));
                             node_tm = doc.DocumentNode.SelectSingleNode("//div[@class='mw-parser-output']");
                             if (node_tm != null)
                             {
@@ -579,22 +580,50 @@ namespace TarkovPriceViewer
                                         }
                                     }
                                 }
-                                /*node_tm = node_tm.SelectSingleNode(".//table[@class='wikitable']");
+                                node_tm = node_tm.SelectSingleNode(".//table[@class='wikitable']");
                                 if (node_tm != null)
                                 {
                                     nodes = node_tm.SelectNodes(".//tr");
                                     if (nodes != null)
                                     {
+                                        StringBuilder craftsb = new StringBuilder();
                                         foreach (HtmlAgilityPack.HtmlNode node in nodes)
                                         {
                                             subnodes = node.SelectNodes(".//th");
                                             if (subnodes != null && subnodes.Count >= 5)
                                             {
-                                                Debug.WriteLine(subnodes[0].InnerHtml);
+                                                List<String> craftlist = new List<string>();
+                                                foreach (HtmlAgilityPack.HtmlNode temp in subnodes)
+                                                {
+                                                    foreach (HtmlAgilityPack.HtmlNode temp2 in temp.ChildNodes)
+                                                    {
+                                                        if (!temp2.InnerText.Trim().Equals(""))
+                                                        {
+                                                            craftlist.Add(temp2.InnerText.Trim());
+                                                        }
+                                                    }
+                                                }
+                                                int firstarrow = craftlist.IndexOf("→");
+                                                int secondarrow = craftlist.LastIndexOf("→");
+                                                List<String> firstlist = craftlist.GetRange(0, firstarrow);
+                                                List<String> secondlist = craftlist.GetRange(firstarrow + 1, secondarrow - firstarrow - 1);
+                                                List<String> thirdlist = craftlist.GetRange(secondarrow + 1, craftlist.Count - secondarrow - 1);
+                                                firstlist.Reverse();
+                                                if (secondlist.Count <= 2)
+                                                {
+                                                    secondlist.Reverse();
+                                                }
+                                                thirdlist.Reverse();
+                                                craftsb.Append(String.Format("{0} → {2} ({1})"
+                                                    , String.Join(" ", firstlist), String.Join(secondlist.Count <= 2 ? " in " : " ", secondlist), String.Join(" ", thirdlist))).Append("\n");
                                             }
                                         }
+                                        if (!craftsb.ToString().Trim().Equals(""))
+                                        {
+                                            item.Crafts = craftsb.ToString().Trim();
+                                        }
                                     }
-                                }*/
+                                }
                                 if (!sb.ToString().Trim().Equals(""))
                                 {
                                     item.Needs = sb.ToString().Trim();
@@ -602,6 +631,7 @@ namespace TarkovPriceViewer
                             }
                         }
                     }
+                    item.last_fetch = DateTime.Now;
                 }
                 catch (Exception e)
                 {
@@ -722,10 +752,8 @@ namespace TarkovPriceViewer
         {
             try
             {
-                using (WebClient wc = new WebClient())
+                using (TPVWebClient wc = new TPVWebClient())
                 {
-                    wc.Proxy = null;
-                    wc.Encoding = Encoding.UTF8;
                     String check = wc.DownloadString(Program.checkupdate);
                     if (!check.Equals(""))
                     {

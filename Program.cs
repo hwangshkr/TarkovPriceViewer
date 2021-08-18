@@ -79,10 +79,11 @@ namespace TarkovPriceViewer
                     String[] spl = textValue[i].Split('\t');
                     Item item = new Item();
                     item.name_display = spl[0].Trim();
-                    item.name_compare = item.name_display.ToLower().ToCharArray();
-                    item.name_address = spl[1].Replace(" ", "_").Trim();
                     item.name_display2 = spl[2].Trim();
+                    item.name_compare = item.name_display.ToLower().ToCharArray();
                     item.name_compare2 = item.name_display2.ToLower().ToCharArray();
+                    item.market_address = spl[1].Replace(" ", "_").Trim();
+                    item.wiki_address = spl[0].Replace(" ", "_").Trim();
                     itemlist.Add(item);
                 }
             }
@@ -109,7 +110,7 @@ namespace TarkovPriceViewer
                 }
                 String st;
                 settings.Remove("Version");//force
-                settings.Add("Version", "v1.02");//force
+                settings.Add("Version", "v1.04");//force
                 if (!settings.TryGetValue("MinimizetoTrayWhenStartup", out st))
                 {
                     settings.Add("MinimizetoTrayWhenStartup", "false");

@@ -42,7 +42,7 @@ namespace TarkovPriceViewer
             {
                 if (!cts.IsCancellationRequested)
                 {
-                    if (item == null || item.name_address == null)
+                    if (item == null || item.market_address == null)
                     {
                         iteminfo_text.Text = Program.notfound;
                     }
@@ -78,20 +78,25 @@ namespace TarkovPriceViewer
                         }
                         if (item.Needs != null)
                         {
-                            sb.Append(String.Format("\nNeeds :\n{0}", item.Needs));
+                            sb.Append(String.Format("\nNeeds :\n{0}\n", item.Needs));
+                        }
+                        if (item.Crafts != null)
+                        {
+                            sb.Append(String.Format("\nCrafts :\n{0}\n", item.Crafts));
                         }
                         iteminfo_text.Text = sb.ToString().Trim();
-                        setTextColors();
+                        setTextColors(item);
                     }
                 }
             };
             Invoke(show);
         }
 
-        public void setTextColors()
+        public void setTextColors(Item item)
         {
             setPriceColor();
             setInraidColor();
+            setCraftColor(item);
         }
 
         public void setPriceColor()
@@ -111,6 +116,16 @@ namespace TarkovPriceViewer
             {
                 iteminfo_text.Select(m.Index, m.Length);
                 iteminfo_text.SelectionColor = Color.Red;
+            }
+        }
+
+        public void setCraftColor(Item item)
+        {
+            MatchCollection mc = new Regex(item.name_display).Matches(iteminfo_text.Text);
+            foreach (Match m in mc)
+            {
+                iteminfo_text.Select(m.Index, m.Length);
+                iteminfo_text.SelectionColor = Color.Green;
             }
         }
 

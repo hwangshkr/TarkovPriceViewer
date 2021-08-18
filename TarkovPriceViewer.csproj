@@ -160,6 +160,9 @@
     </Compile>
     <Compile Include="Program.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
+    <Compile Include="TPVWebClient.cs">
+      <SubType>Component</SubType>
+    </Compile>
     <EmbeddedResource Include="KeyPressCheck.resx">
       <DependentUpon>KeyPressCheck.cs</DependentUpon>
     </EmbeddedResource>
