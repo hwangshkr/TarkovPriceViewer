@@ -79,6 +79,7 @@ namespace TarkovPriceViewer
         private static LowLevelProc _proc_mouse = null;
         private static IntPtr hhook_keyboard = IntPtr.Zero;
         private static IntPtr hhook_mouse = IntPtr.Zero;
+        private static System.Windows.Forms.Timer hooktimer = null;
         private static System.Drawing.Point point = new System.Drawing.Point(0, 0);
         private static int nFlags = 0x0;
         private static Overlay overlay = new Overlay();
@@ -98,6 +99,7 @@ namespace TarkovPriceViewer
             InitializeComponent();
             SettingUI();
             SetHook();
+            SetHookTimer();
             overlay.Show();
         }
 
@@ -113,6 +115,8 @@ namespace TarkovPriceViewer
             week_price_box.Checked = Convert.ToBoolean(Program.settings["Show_Week_Price"]);
             sell_to_trader_box.Checked = Convert.ToBoolean(Program.settings["Sell_to_Trader"]);
             buy_from_trader_box.Checked = Convert.ToBoolean(Program.settings["Buy_From_Trader"]);
+            needs_box.Checked = Convert.ToBoolean(Program.settings["Needs"]);
+            barters_and_crafts_box.Checked = Convert.ToBoolean(Program.settings["Barters_and_Crafts"]);
             ShowOverlay_Button.Text = ((Keys)Int32.Parse(Program.settings["ShowOverlay_Key"])).ToString();
             HideOverlay_Button.Text = ((Keys)Int32.Parse(Program.settings["HideOverlay_Key"])).ToString();
             TransParent_Bar.Value = Int32.Parse(Program.settings["Overlay_Transparent"]);
@@ -125,7 +129,7 @@ namespace TarkovPriceViewer
             //not use
         }
 
-        public void SetHook()
+        private void SetHook()
         {
             try
             {
@@ -144,7 +148,24 @@ namespace TarkovPriceViewer
             }
         }
 
-        public void setMouseHook()
+        private void SetHookTimer()
+        {
+            if (hooktimer == null)
+            {
+                Debug.WriteLine("Start rehook Timer.");
+                hooktimer = new System.Windows.Forms.Timer();
+                hooktimer.Interval = 5000;
+                hooktimer.Tick += new EventHandler(HookTimer_Tick);
+                hooktimer.Start();
+            }
+        }
+
+        private void HookTimer_Tick(object sender, EventArgs e)
+        {
+            SetHook();
+        }
+
+        private void setMouseHook()
         {
             if (hhook_mouse == IntPtr.Zero)
             {
@@ -153,7 +174,7 @@ namespace TarkovPriceViewer
             }
         }
 
-        public void unsetMouseHook()
+        private void unsetMouseHook()
         {
             if (hhook_mouse != IntPtr.Zero)
             {
@@ -163,7 +184,7 @@ namespace TarkovPriceViewer
             }
         }
 
-        public void UnHook()
+        private void UnHook()
         {
             try
             {
@@ -181,7 +202,7 @@ namespace TarkovPriceViewer
             }
         }
 
-        public IntPtr hookKeyboardProc(int code, IntPtr wParam, IntPtr lParam)
+        private IntPtr hookKeyboardProc(int code, IntPtr wParam, IntPtr lParam)
         {
             try
             {
@@ -217,7 +238,7 @@ namespace TarkovPriceViewer
             return CallNextHookEx(hhook_keyboard, code, (int)wParam, lParam);
         }
 
-        public IntPtr hookMouseProc(int code, IntPtr wParam, IntPtr lParam)
+        private IntPtr hookMouseProc(int code, IntPtr wParam, IntPtr lParam)
         {
             try
             {
@@ -236,6 +257,8 @@ namespace TarkovPriceViewer
 
         private void CloseApp()
         {
+            hooktimer.Stop();
+            hooktimer.Dispose();
             UnHook();
             TrayIcon.Dispose();
             CloseItemInfo();
@@ -397,8 +420,8 @@ namespace TarkovPriceViewer
 #if DEBUG
                 if (contours.Length == 0)
                 {
-                    item = MatchItemName("Analog thermometer".ToLower().ToCharArray());
-                    //item = Program.itemlist[new Random().Next(Program.itemlist.Count - 1)];
+                    //item = MatchItemName("Analog thermometer".ToLower().ToCharArray());
+                    item = Program.itemlist[new Random().Next(Program.itemlist.Count - 1)];
                 }
 #endif
                 if (!cts.IsCancellationRequested)
@@ -564,7 +587,20 @@ namespace TarkovPriceViewer
                                 }
                             }
                             Debug.WriteLine(Program.wiki + item.wiki_address);
-                            doc.LoadHtml(wc.DownloadString(Program.wiki + item.wiki_address));
+                            try
+                            {
+                                doc.LoadHtml(wc.DownloadString(Program.wiki + item.wiki_address));
+                            }
+                            catch (WebException ex)
+                            {
+                                Debug.WriteLine(ex.Message);
+                                if (ex.Status == WebExceptionStatus.ProtocolError && ex.Response != null
+                                    && (ex.Response as HttpWebResponse).StatusCode == HttpStatusCode.NotFound)
+                                {
+                                    Debug.WriteLine(Program.wiki + item.name_display2.Replace(" ", "_"));
+                                    doc.LoadHtml(wc.DownloadString(Program.wiki + item.name_display2.Replace(" ", "_")));
+                                }
+                            }
                             node_tm = doc.DocumentNode.SelectSingleNode("//div[@class='mw-parser-output']");
                             if (node_tm != null)
                             {
@@ -620,13 +656,13 @@ namespace TarkovPriceViewer
                                         }
                                         if (!craftsb.ToString().Trim().Equals(""))
                                         {
-                                            item.Crafts = craftsb.ToString().Trim();
+                                            item.bartersandcrafts = craftsb.ToString().Trim();
                                         }
                                     }
                                 }
                                 if (!sb.ToString().Trim().Equals(""))
                                 {
-                                    item.Needs = sb.ToString().Trim();
+                                    item.needs = sb.ToString().Trim();
                                 }
                             }
                         }
@@ -811,6 +847,16 @@ namespace TarkovPriceViewer
         private void buy_from_trader_box_CheckedChanged(object sender, EventArgs e)
         {
             Program.settings["Buy_From_Trader"] = (sender as CheckBox).Checked.ToString();
+        }
+
+        private void needs_box_CheckedChanged(object sender, EventArgs e)
+        {
+            Program.settings["Needs"] = (sender as CheckBox).Checked.ToString();
+        }
+
+        private void barters_and_crafts_box_CheckedChanged(object sender, EventArgs e)
+        {
+            Program.settings["Barters_and_Crafts"] = (sender as CheckBox).Checked.ToString();
         }
     }
 }

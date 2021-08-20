@@ -28,7 +28,7 @@ namespace TarkovPriceViewer
         public static readonly char euro = '€';
         public static readonly char[] splitcur = new char[] { rouble, dollar, euro };
         public static readonly Regex inraid_filter = new Regex(@"in raid");
-        public static readonly Regex money_filter = new Regex(@"[\d,]+[₽\$€]");
+        public static readonly Regex money_filter = new Regex(@"([\d,]+[₽\$€]|[₽\$€][\d,]+)");
 
         /// <summary>
         /// 해당 애플리케이션의 주 진입점입니다.
@@ -110,7 +110,7 @@ namespace TarkovPriceViewer
                 }
                 String st;
                 settings.Remove("Version");//force
-                settings.Add("Version", "v1.04");//force
+                settings.Add("Version", "v1.05");//force
                 if (!settings.TryGetValue("MinimizetoTrayWhenStartup", out st))
                 {
                     settings.Add("MinimizetoTrayWhenStartup", "false");
@@ -137,11 +137,11 @@ namespace TarkovPriceViewer
                 }
                 if (!settings.TryGetValue("Show_Day_Price", out st))
                 {
-                    settings.Add("Show_Day_Price", "false");
+                    settings.Add("Show_Day_Price", "true");
                 }
                 if (!settings.TryGetValue("Show_Week_Price", out st))
                 {
-                    settings.Add("Show_Week_Price", "false");
+                    settings.Add("Show_Week_Price", "true");
                 }
                 if (!settings.TryGetValue("Sell_to_Trader", out st))
                 {
@@ -149,7 +149,15 @@ namespace TarkovPriceViewer
                 }
                 if (!settings.TryGetValue("Buy_From_Trader", out st))
                 {
-                    settings.Add("Buy_From_Trader", "false");
+                    settings.Add("Buy_From_Trader", "true");
+                }
+                if (!settings.TryGetValue("Needs", out st))
+                {
+                    settings.Add("Needs", "true");
+                }
+                if (!settings.TryGetValue("Barters_and_Crafts", out st))
+                {
+                    settings.Add("Barters_and_Crafts", "true");
                 }
             }
             catch (Exception e)

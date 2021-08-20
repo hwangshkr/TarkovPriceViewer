@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Diagnostics;
 using System.Drawing;
 using System.Runtime.InteropServices;
 using System.Text;
@@ -74,15 +75,15 @@ namespace TarkovPriceViewer
                         if (Convert.ToBoolean(Program.settings["Buy_From_Trader"]) && item.buy_from_trader != null)
                         {
                             sb.Append(String.Format("\nBuy From Trader : {0}", item.buy_from_trader));
-                            sb.Append(String.Format("\nBuy From Trader Price : {0}\n", item.buy_from_trader_price));
+                            sb.Append(String.Format("\nBuy From Trader Price : {0}\n", item.buy_from_trader_price.Replace(" ", "").Replace(@"~", @" ≈")));
                         }
-                        if (item.Needs != null)
+                        if (Convert.ToBoolean(Program.settings["Needs"]) && item.needs != null)
                         {
-                            sb.Append(String.Format("\nNeeds :\n{0}\n", item.Needs));
+                            sb.Append(String.Format("\nNeeds :\n{0}\n", item.needs));
                         }
-                        if (item.Crafts != null)
+                        if (Convert.ToBoolean(Program.settings["Barters_and_Crafts"]) && item.bartersandcrafts != null)
                         {
-                            sb.Append(String.Format("\nCrafts :\n{0}\n", item.Crafts));
+                            sb.Append(String.Format("\nBarters & Crafts :\n{0}\n", item.bartersandcrafts));
                         }
                         iteminfo_text.Text = sb.ToString().Trim();
                         setTextColors(item);
@@ -135,8 +136,8 @@ namespace TarkovPriceViewer
             {
                 if (!cts.IsCancellationRequested)
                 {
-                    iteminfo_panel.Location = point;
                     iteminfo_text.Text = Program.loading;
+                    iteminfo_panel.Location = point;
                     iteminfo_panel.Visible = true;
                 }
             };

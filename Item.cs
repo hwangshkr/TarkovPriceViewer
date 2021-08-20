@@ -18,8 +18,8 @@ namespace TarkovPriceViewer
         public String sell_to_trader_price;
         public String buy_from_trader;
         public String buy_from_trader_price;
-        public String Needs;
-        public String Crafts;
+        public String needs;
+        public String bartersandcrafts;
         public String last_updated;
         public DateTime last_fetch;
     }
