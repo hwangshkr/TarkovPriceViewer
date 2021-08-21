@@ -4,11 +4,11 @@ This program is for newbies. It is especially good to find out the market price 
 Most of the information for this program (names, prices, wiki links, etc.) was provided by the Tarkov Market, and some information (Needs, etc.) was provided by the Tarkov Wiki.
 
 # How to use
-<img width="50%" src="https://user-images.githubusercontent.com/32073152/130196558-f851dfbf-6b3b-4b41-a8e3-a14c9fa3b112.gif"/>
+<img width="50%" src="https://user-images.githubusercontent.com/32073152/130308975-2a380c87-f0d1-4e9e-91e6-cc2381d5d2c0.gif"/>
 When the name appears as in the image, press the shortcut key (default: F9). By default, it disappears when you move the mouse, and this can be removed from the settings. It disappears even if you press the shortcut key (default: F10).
 </br>
 </br>
-<img width="50%" src="https://user-images.githubusercontent.com/32073152/126155317-688c2055-cb1f-4552-98a0-3fd708e8ddeb.png"/>
+<img width="30%" src="https://user-images.githubusercontent.com/32073152/130308984-fd2b6def-589a-493f-905d-791ab53754b7.png"/>
 This program can also be used for comparing the price of parts in Edit Preset.
 </br>
 </br>
