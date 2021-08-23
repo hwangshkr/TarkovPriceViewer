@@ -20,7 +20,23 @@ namespace TarkovPriceViewer
         public String buy_from_trader_price;
         public String needs;
         public String bartersandcrafts;
+        public String recoil;
+        public String accuracy;
+        public String ergo;
         public String last_updated;
         public DateTime last_fetch;
+
+        public String[] Data()
+        {
+            return (new String[] {
+                (isname2 ? name_display2 : name_display)
+                , (recoil != null ? recoil : "")
+                , (accuracy != null ? accuracy : "")
+                , (ergo != null ? ergo : "")
+                , (price_last != null ? price_last : "")
+                , (buy_from_trader_price != null ? buy_from_trader_price.Replace(" ", "").Replace(@"~", @" ≈") : "")
+                , (buy_from_trader != null ? buy_from_trader : "")
+            });
+        }
     }
 }

@@ -27,37 +27,6 @@ namespace TarkovPriceViewer
             {
                 if (e.KeyCode != Keys.Escape)
                 {
-                    /*StringBuilder sb = new StringBuilder();
-                    if ((Control.ModifierKeys & Keys.Shift) == Keys.Shift)
-                    {
-                        if (sb.Length > 0)
-                        {
-                            sb.Append("+");
-                        }
-                        sb.Append(Keys.Shift.ToString());
-                    }
-                    if ((Control.ModifierKeys & Keys.Alt) == Keys.Alt)
-                    {
-                        if (sb.Length > 0)
-                        {
-                            sb.Append("+");
-                        }
-                        sb.Append(Keys.Alt.ToString());
-                    }
-                    if ((Control.ModifierKeys & Keys.Control) == Keys.Control)
-                    {
-                        if (sb.Length > 0)
-                        {
-                            sb.Append("+");
-                        }
-                        sb.Append(Keys.Control.ToString());
-                    }
-                    if (sb.Length > 0)
-                    {
-                        sb.Append("+");
-                    }
-                    sb.Append(e.KeyCode.ToString());
-                    Program.ShowOverlay_Key = sb.ToString();*/
                     switch (button)
                     {
                         case 1:
@@ -65,6 +34,9 @@ namespace TarkovPriceViewer
                             break;
                         case 2:
                             Program.settings["HideOverlay_Key"] = ((int)e.KeyCode).ToString();
+                            break;
+                        case 3:
+                            Program.settings["CompareOverlay_Key"] = ((int)e.KeyCode).ToString();
                             break;
                     }
                     if (Owner != null)

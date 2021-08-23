@@ -75,6 +75,7 @@ namespace TarkovPriceViewer
         private static readonly int WH_MOUSE_LL = 14;
         private static readonly int WM_MOUSEMOVE = 0x200;
         private static bool isinfoclosed = true;
+        private static bool iscompareclosed = true;
         private static LowLevelProc _proc_keyboard = null;
         private static LowLevelProc _proc_mouse = null;
         private static IntPtr hhook_keyboard = IntPtr.Zero;
@@ -84,7 +85,8 @@ namespace TarkovPriceViewer
         private static int nFlags = 0x0;
         private static Overlay overlay = new Overlay();
         private static long presstime = 0;
-        private static CancellationTokenSource cts = new CancellationTokenSource();
+        private static CancellationTokenSource cts_info = new CancellationTokenSource();
+        private static CancellationTokenSource cts_compare = new CancellationTokenSource();
         private static Control press_key_control = null;
         private static Scalar linecolor = new Scalar(90, 89, 82);
 
@@ -110,6 +112,7 @@ namespace TarkovPriceViewer
             Version.Text = Program.settings["Version"];
             MinimizetoTrayWhenStartup.Checked = Convert.ToBoolean(Program.settings["MinimizetoTrayWhenStartup"]);
             CloseOverlayWhenMouseMoved.Checked = Convert.ToBoolean(Program.settings["CloseOverlayWhenMouseMoved"]);
+            RandomItem.Checked = Convert.ToBoolean(Program.settings["RandomItem"]);
             last_price_box.Checked = Convert.ToBoolean(Program.settings["Show_Last_Price"]);
             day_price_box.Checked = Convert.ToBoolean(Program.settings["Show_Day_Price"]);
             week_price_box.Checked = Convert.ToBoolean(Program.settings["Show_Week_Price"]);
@@ -119,6 +122,7 @@ namespace TarkovPriceViewer
             barters_and_crafts_box.Checked = Convert.ToBoolean(Program.settings["Barters_and_Crafts"]);
             ShowOverlay_Button.Text = ((Keys)Int32.Parse(Program.settings["ShowOverlay_Key"])).ToString();
             HideOverlay_Button.Text = ((Keys)Int32.Parse(Program.settings["HideOverlay_Key"])).ToString();
+            CompareOverlay_Button.Text = ((Keys)Int32.Parse(Program.settings["CompareOverlay_Key"])).ToString();
             TransParent_Bar.Value = Int32.Parse(Program.settings["Overlay_Transparent"]);
             TransParent_Text.Text = Program.settings["Overlay_Transparent"];
             TrayIcon.Visible = true;
@@ -222,12 +226,28 @@ namespace TarkovPriceViewer
                             Debug.WriteLine("key pressed in 0.5 seconds.");
                         }
                         presstime = CurrentTime;
-                    } else if (vkCode == Int32.Parse(Program.settings["HideOverlay_Key"])
+                    }
+                    else if (vkCode == Int32.Parse(Program.settings["CompareOverlay_Key"]))
+                    {
+                        long CurrentTime = DateTime.Now.Ticks;
+                        if (CurrentTime - presstime > 5000000)
+                        {
+                            point = Control.MousePosition;
+                            LoadingItemCompare();
+                        }
+                        else
+                        {
+                            Debug.WriteLine("key pressed in 0.5 seconds.");
+                        }
+                        presstime = CurrentTime;
+                    }
+                    else if (vkCode == Int32.Parse(Program.settings["HideOverlay_Key"])
                         || vkCode == 9 //tab
                         || vkCode == 27 //esc
                         )
                     {
                         CloseItemInfo();
+                        CloseItemCompare();
                     }
                 }
             }
@@ -262,6 +282,7 @@ namespace TarkovPriceViewer
             UnHook();
             TrayIcon.Dispose();
             CloseItemInfo();
+            CloseItemCompare();
             Program.SaveSettings();
             Application.Exit();
         }
@@ -269,36 +290,80 @@ namespace TarkovPriceViewer
         public void LoadingItemInfo()
         {
             isinfoclosed = false;
-            cts.Cancel();
-            cts = new CancellationTokenSource();
-            overlay.ShowLoadingInfo(point, cts.Token);
-            Task task = Task.Factory.StartNew(() => FindItemTask(cts.Token));
+            cts_info.Cancel();
+            cts_info = new CancellationTokenSource();
+            overlay.ShowLoadingInfo(point, cts_info.Token);
+            Task task = Task.Factory.StartNew(() => FindItemTask(true, cts_info.Token));
+        }
+
+        public void LoadingItemCompare()
+        {
+            if (iscompareclosed)
+            {
+                iscompareclosed = false;
+                cts_compare.Cancel();
+                cts_compare = new CancellationTokenSource();
+            }
+            overlay.ShowLoadingCompare(point, cts_compare.Token);
+            Task task = Task.Factory.StartNew(() => FindItemTask(false, cts_compare.Token));
         }
 
         public void CloseItemInfo()
         {
             isinfoclosed = true;
-            cts.Cancel();
+            cts_info.Cancel();
             overlay.HideInfo();
         }
 
-        private int FindItemTask(CancellationToken cts)
+        public void CloseItemCompare()
         {
-            Bitmap fullimage = CaptureScreen(CheckisTarkov());
-            if (fullimage != null)
+            iscompareclosed = true;
+            cts_compare.Cancel();
+            overlay.HideCompare();
+        }
+
+        private int FindItemTask(bool isiteminfo, CancellationToken cts_one)
+        {
+            if (Convert.ToBoolean(Program.settings["RandomItem"]))
             {
-                if (!cts.IsCancellationRequested)
+                if (!cts_one.IsCancellationRequested)
                 {
-                    FindItem(fullimage, cts);
+                    Item item = Program.itemlist[new Random().Next(Program.itemlist.Count - 1)];
+                    FindItemInfo(item);
+                    if (isiteminfo)
+                    {
+                        overlay.ShowInfo(item, cts_one);
+                    }
+                    else
+                    {
+                        overlay.ShowCompare(item, cts_one);
+                    }
                 }
-            }
-            else
+            } else
             {
-                if (!cts.IsCancellationRequested)
+                Bitmap fullimage = CaptureScreen(CheckisTarkov());
+                if (fullimage != null)
                 {
-                    overlay.ShowInfo(null, cts);
+                    if (!cts_one.IsCancellationRequested)
+                    {
+                        FindItem(isiteminfo, fullimage, cts_one);
+                    }
                 }
-                Debug.WriteLine("image null");
+                else
+                {
+                    if (!cts_one.IsCancellationRequested)
+                    {
+                        if (isiteminfo)
+                        {
+                            overlay.ShowInfo(null, cts_one);
+                        }
+                        else
+                        {
+                            overlay.ShowCompare(null, cts_one);
+                        }
+                    }
+                    Debug.WriteLine("image null");
+                }
             }
             return 0;
         }
@@ -387,7 +452,7 @@ namespace TarkovPriceViewer
             return text;
         }
 
-        private void FindItem(Bitmap fullimage, CancellationToken cts)
+        private void FindItem(bool isiteminfo, Bitmap fullimage, CancellationToken cts_one)
         {
             Item item = new Item();
             using (Mat ScreenMat_original = BitmapConverter.ToMat(fullimage))
@@ -398,7 +463,7 @@ namespace TarkovPriceViewer
                 rac_img.FindContours(out contours, out HierarchyIndex[] hierarchy, RetrievalModes.List, ContourApproximationModes.ApproxSimple);
                 foreach (OpenCvSharp.Point[] contour in contours)
                 {
-                    if (!cts.IsCancellationRequested)
+                    if (!cts_one.IsCancellationRequested)
                     {
                         OpenCvSharp.Rect rect2 = Cv2.BoundingRect(contour);
                         if (rect2.Width > 5 && rect2.Height > 10)
@@ -417,17 +482,17 @@ namespace TarkovPriceViewer
                         }
                     }
                 }
-#if DEBUG
-                if (contours.Length == 0)
-                {
-                    //item = MatchItemName("Analog thermometer".ToLower().ToCharArray());
-                    item = Program.itemlist[new Random().Next(Program.itemlist.Count - 1)];
-                }
-#endif
-                if (!cts.IsCancellationRequested)
+                if (!cts_one.IsCancellationRequested)
                 {
                     FindItemInfo(item);
-                    overlay.ShowInfo(item, cts);
+                    if (isiteminfo)
+                    {
+                        overlay.ShowInfo(item, cts_one);
+                    }
+                    else
+                    {
+                        overlay.ShowCompare(item, cts_one);
+                    }
                 }
             }
             fullimage.Dispose();
@@ -525,34 +590,35 @@ namespace TarkovPriceViewer
                             Debug.WriteLine(Program.tarkovmarket + item.market_address);
                             doc.LoadHtml(wc.DownloadString(Program.tarkovmarket + item.market_address));
                             HtmlAgilityPack.HtmlNode node_tm = doc.DocumentNode.SelectSingleNode("//div[@class='w-100']");
+                            HtmlAgilityPack.HtmlNode sub_node_tm = null;
                             HtmlAgilityPack.HtmlNodeCollection nodes = null;
                             HtmlAgilityPack.HtmlNodeCollection subnodes = null;
                             if (node_tm != null)
                             {
                                 nodes = node_tm.SelectNodes(".//div[@class='blk-item']");
-                                node_tm = node_tm.SelectSingleNode(".//div[@class='updated-block']");
-                                if (node_tm != null)
+                                sub_node_tm = node_tm.SelectSingleNode(".//div[@class='updated-block']");
+                                if (sub_node_tm != null)
                                 {
-                                    item.last_updated = node_tm.InnerText.Trim();
+                                    item.last_updated = sub_node_tm.InnerText.Trim();
                                 }
                                 if (nodes != null)
                                 {
                                     foreach (HtmlAgilityPack.HtmlNode node in nodes)
                                     {
-                                        node_tm = node.FirstChild;
-                                        if (node_tm != null)
+                                        sub_node_tm = node.FirstChild;
+                                        if (sub_node_tm != null)
                                         {
-                                            if (node_tm.HasClass("title"))
+                                            if (sub_node_tm.HasClass("title"))
                                             {
-                                                if (node_tm.InnerText.Trim().Equals("Price"))
+                                                if (sub_node_tm.InnerText.Trim().Equals("Price"))
                                                 {
-                                                    node_tm = node.SelectSingleNode(".//div[@class='c-price last alt']");
-                                                    if (node_tm != null)
+                                                    sub_node_tm = node.SelectSingleNode(".//div[@class='c-price last alt']");
+                                                    if (sub_node_tm != null)
                                                     {
-                                                        item.price_last = node_tm.InnerText.Trim();
+                                                        item.price_last = sub_node_tm.InnerText.Trim();
                                                     }
                                                 }
-                                                else if (node_tm.InnerText.Trim().Equals("Average price"))
+                                                else if (sub_node_tm.InnerText.Trim().Equals("Average price"))
                                                 {
                                                     subnodes = node.SelectNodes(".//span[@class='c-price alt']");
                                                     if (subnodes != null && subnodes.Count >= 2)
@@ -562,23 +628,23 @@ namespace TarkovPriceViewer
                                                     }
                                                 }
                                             }
-                                            else if (node_tm.HasClass("bold"))
+                                            else if (sub_node_tm.HasClass("bold"))
                                             {
-                                                if (node_tm.InnerText.Trim().Contains("LL"))
+                                                if (sub_node_tm.InnerText.Trim().Contains("LL"))
                                                 {
-                                                    item.buy_from_trader = node_tm.InnerText.Trim();
-                                                    node_tm = node.SelectSingleNode(".//div[@class='c-price alt']");
-                                                    if (node_tm != null)
+                                                    item.buy_from_trader = sub_node_tm.InnerText.Trim();
+                                                    sub_node_tm = node.SelectSingleNode(".//div[@class='c-price alt']");
+                                                    if (sub_node_tm != null)
                                                     {
-                                                        item.buy_from_trader_price = node_tm.InnerText.Trim();
+                                                        item.buy_from_trader_price = sub_node_tm.InnerText.Trim();
                                                     }
                                                 } else
                                                 {
-                                                    item.sell_to_trader = node_tm.InnerText.Trim();
-                                                    node_tm = node.SelectSingleNode(".//div[@class='c-price alt']");
-                                                    if (node_tm != null)
+                                                    item.sell_to_trader = sub_node_tm.InnerText.Trim();
+                                                    sub_node_tm = node.SelectSingleNode(".//div[@class='c-price alt']");
+                                                    if (sub_node_tm != null)
                                                     {
-                                                        item.sell_to_trader_price = node_tm.InnerText.Trim();
+                                                        item.sell_to_trader_price = sub_node_tm.InnerText.Trim();
                                                     }
                                                 }
                                             }
@@ -616,10 +682,46 @@ namespace TarkovPriceViewer
                                         }
                                     }
                                 }
-                                node_tm = node_tm.SelectSingleNode(".//table[@class='wikitable']");
-                                if (node_tm != null)
+                                sub_node_tm = node_tm.SelectSingleNode(".//td[@class='va-infobox-cont']");
+                                if (sub_node_tm != null)
                                 {
-                                    nodes = node_tm.SelectNodes(".//tr");
+                                    nodes = sub_node_tm.SelectNodes(".//table[@class='va-infobox-group']");
+                                    if (nodes != null)
+                                    {
+                                        foreach (HtmlAgilityPack.HtmlNode node in nodes)
+                                        {
+                                            HtmlAgilityPack.HtmlNode temp_node = node.SelectSingleNode(".//th[@class='va-infobox-header']");
+                                            if (temp_node != null && temp_node.InnerText.Trim().Equals("Performance"))
+                                            {
+                                                HtmlAgilityPack.HtmlNodeCollection temp_node_list = sub_node_tm.SelectNodes(".//td[@class='va-infobox-label']");
+                                                HtmlAgilityPack.HtmlNodeCollection temp_node_list2 = sub_node_tm.SelectNodes(".//td[@class='va-infobox-content']");
+                                                if (temp_node_list != null && temp_node_list2 != null && temp_node_list.Count == temp_node_list2.Count)
+                                                {
+                                                    for (int n = 0; n < temp_node_list.Count; n++)
+                                                    {
+                                                        if (temp_node_list[n].InnerText.Trim().Contains("Recoil"))
+                                                        {
+                                                            item.recoil = temp_node_list2[n].InnerText.Trim();
+                                                        }
+                                                        else if (temp_node_list[n].InnerText.Trim().Contains("Ergonomics"))
+                                                        {
+                                                            item.ergo = temp_node_list2[n].InnerText.Trim();
+                                                        }
+                                                        else if (temp_node_list[n].InnerText.Trim().Contains("Accuracy"))
+                                                        {
+                                                            item.accuracy = temp_node_list2[n].InnerText.Trim();
+                                                        }
+                                                    }
+                                                }
+                                                break;
+                                            }
+                                        }
+                                    }
+                                }
+                                sub_node_tm = node_tm.SelectSingleNode(".//table[@class='wikitable']");
+                                if (sub_node_tm != null)
+                                {
+                                    nodes = sub_node_tm.SelectNodes(".//tr");
                                     if (nodes != null)
                                     {
                                         StringBuilder craftsb = new StringBuilder();
@@ -758,6 +860,10 @@ namespace TarkovPriceViewer
             {
                 selected = 2;
             }
+            else if (press_key_control == CompareOverlay_Button)
+            {
+                selected = 3;
+            }
             if (selected != 0)
             {
                 KeyPressCheck kpc = new KeyPressCheck(selected);
@@ -857,6 +963,16 @@ namespace TarkovPriceViewer
         private void barters_and_crafts_box_CheckedChanged(object sender, EventArgs e)
         {
             Program.settings["Barters_and_Crafts"] = (sender as CheckBox).Checked.ToString();
+        }
+
+        private void Exit_Button_Click(object sender, EventArgs e)
+        {
+            CloseApp();
+        }
+
+        private void RandomItem_CheckedChanged(object sender, EventArgs e)
+        {
+            Program.settings["RandomItem"] = (sender as CheckBox).Checked.ToString();
         }
     }
 }

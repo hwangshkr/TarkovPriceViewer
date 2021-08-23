@@ -18,6 +18,7 @@ namespace TarkovPriceViewer
         public static readonly String loading = "Loading...";
         public static readonly String notfound = "Item Name Not Found.";
         public static readonly String noflea = "Item not Found on Flea.";
+        public static readonly String presscomparekey = "Please Press Compare Key.";
         public static readonly String wiki = "https://escapefromtarkov.fandom.com/wiki/";
         public static readonly String tarkovmarket = "https://tarkov-market.com/item/";
         public static readonly String official = "https://www.escapefromtarkov.com/";
@@ -110,7 +111,7 @@ namespace TarkovPriceViewer
                 }
                 String st;
                 settings.Remove("Version");//force
-                settings.Add("Version", "v1.05");//force
+                settings.Add("Version", "v1.06");//force
                 if (!settings.TryGetValue("MinimizetoTrayWhenStartup", out st))
                 {
                     settings.Add("MinimizetoTrayWhenStartup", "false");
@@ -119,6 +120,10 @@ namespace TarkovPriceViewer
                 {
                     settings.Add("CloseOverlayWhenMouseMoved", "true");
                 }
+                if (!settings.TryGetValue("RandomItem", out st))
+                {
+                    settings.Add("RandomItem", "false");//false
+                }
                 if (!settings.TryGetValue("ShowOverlay_Key", out st))
                 {
                     settings.Add("ShowOverlay_Key", "120");
@@ -126,6 +131,10 @@ namespace TarkovPriceViewer
                 if (!settings.TryGetValue("HideOverlay_Key", out st))
                 {
                     settings.Add("HideOverlay_Key", "121");
+                }
+                if (!settings.TryGetValue("CompareOverlay_Key", out st))
+                {
+                    settings.Add("CompareOverlay_Key", "119");
                 }
                 if (!settings.TryGetValue("Overlay_Transparent", out st))
                 {
