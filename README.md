@@ -14,6 +14,8 @@ This program can also be used for comparing the price of parts in Edit Preset.
 </br>
 If you got errors, please check you installed .NET Framework 4.7.2 (https://dotnet.microsoft.com/download/dotnet-framework/net472).
 
+<img width="30%" src="https://user-images.githubusercontent.com/32073152/130531327-c4fc365b-141c-4b21-b367-0ad65155bfb9.gif"/>
+
 # Notice - User
 1. It cannot be used in full screen. Borderless windowed mode is recommended.
 2. Since this information is fetched through parsing from the relevant sites, the information of this program will not be updated unless the information of the relevant sites is updated (especially, the information may be very different right after initialization).
