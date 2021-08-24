@@ -15,6 +15,7 @@ namespace TarkovPriceViewer
         public static Dictionary<String, String> settings = new Dictionary<String, String>();
         public static readonly List<Item> itemlist = new List<Item>();
         public static readonly List<Ballistic> blist = new List<Ballistic>();
+        public static readonly String[] BEColor = new String[] { "#B3242580", "#DD333380", "#EB6C0D80", "#AC660080", "#FB9C0E80", "#00640080", "#00990080" };
         public static readonly String setting_path = @"settings.json";
         public static readonly String appname = "EscapeFromTarkov";
         public static readonly String loading = "Loading...";
