@@ -53,7 +53,6 @@ namespace TarkovPriceViewer
             comparetable.Columns.Add("Flea", typeof(string));
             comparetable.Columns.Add("NPC", typeof(string));
             comparetable.Columns.Add("LL", typeof(string));
-            comparetable.Columns.Add(" ", typeof(string));
             ItemCompareGrid.Visible = false;
             ItemCompareGrid.DataSource = comparetable;
             ItemCompareGrid.ClearSelection();
@@ -62,7 +61,7 @@ namespace TarkovPriceViewer
 
         public void ResizeGrid()
         {
-            ItemCompareGrid.ClientSize = new Size(ItemCompareGrid.Columns.GetColumnsWidth(DataGridViewElementStates.None),
+            ItemCompareGrid.ClientSize = new Size(ItemCompareGrid.Columns.GetColumnsWidth(DataGridViewElementStates.None) + 10,
                 ItemCompareGrid.Rows.GetRowsHeight(DataGridViewElementStates.None) + 20);
             ItemCompareGrid.Refresh();
         }
@@ -137,8 +136,8 @@ namespace TarkovPriceViewer
                         itemcompare_text.Text = String.Format("{0}", Program.presscomparekey);
                     }
                     comparetable.Rows.Add(item.Data());
-                    ResizeGrid();
                     ItemCompareGrid.Visible = true;
+                    ResizeGrid();
                 }
             };
             Invoke(show);
