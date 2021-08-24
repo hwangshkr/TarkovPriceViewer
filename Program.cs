@@ -4,6 +4,7 @@ using System.Diagnostics;
 using System.IO;
 using System.Text.Json;
 using System.Text.RegularExpressions;
+using System.Threading.Tasks;
 using System.Windows.Forms;
 
 namespace TarkovPriceViewer
@@ -13,6 +14,7 @@ namespace TarkovPriceViewer
         private static MainForm main = null;
         public static Dictionary<String, String> settings = new Dictionary<String, String>();
         public static readonly List<Item> itemlist = new List<Item>();
+        public static readonly List<Ballistic> blist = new List<Ballistic>();
         public static readonly String setting_path = @"settings.json";
         public static readonly String appname = "EscapeFromTarkov";
         public static readonly String loading = "Loading...";
@@ -54,6 +56,7 @@ namespace TarkovPriceViewer
                     Debug.WriteLine(ex.Message);
                 }
             }
+            Task task = Task.Factory.StartNew(() => getBallistics());
             LoadSettings();
             getItemList();
             main = new MainForm();
@@ -185,6 +188,82 @@ namespace TarkovPriceViewer
                 }
                 string jsonString = JsonSerializer.Serialize<Dictionary<String, String>>(settings);
                 File.WriteAllText(setting_path, jsonString);
+            }
+            catch (Exception e)
+            {
+                Debug.WriteLine(e.Message);
+            }
+        }
+
+        private static void getBallistics()
+        {
+            try
+            {
+                using (TPVWebClient wc = new TPVWebClient())
+                {
+                    HtmlAgilityPack.HtmlDocument doc = new HtmlAgilityPack.HtmlDocument();
+                    Debug.WriteLine(Program.wiki + "Ballistics");
+                    doc.LoadHtml(wc.DownloadString(Program.wiki + "Ballistics"));
+                    HtmlAgilityPack.HtmlNode node_tm = doc.DocumentNode.SelectSingleNode("//table[@id='trkballtable']");
+                    HtmlAgilityPack.HtmlNodeCollection nodes = null;
+                    HtmlAgilityPack.HtmlNodeCollection sub_nodes = null;
+                    if (node_tm != null)
+                    {
+                        node_tm = node_tm.SelectSingleNode(".//tbody");
+                        if (node_tm != null)
+                        {
+                            nodes = node_tm.SelectNodes(".//tr");
+                            if (nodes != null)
+                            {
+                                foreach (HtmlAgilityPack.HtmlNode node in nodes)
+                                {
+                                    sub_nodes = node.SelectNodes(".//td");
+                                    if (sub_nodes != null && sub_nodes.Count >= 15)
+                                    {
+                                        int first = sub_nodes[0].GetAttributeValue("rowspan", 1) == 1 ? 0 : 1;
+                                        String name = sub_nodes[first].InnerText.Trim();
+                                        String special = null;
+                                        if (name.EndsWith("S T"))
+                                        {
+                                            name = name.Replace("(S T)$", "");
+                                            special = "ST";
+                                        }
+                                        if (name.EndsWith("T"))
+                                        {
+                                            name = name.Replace("T$", "");
+                                            special = "T";
+                                        }
+                                        if (name.EndsWith("S"))
+                                        {
+                                            name = name.Replace("S$", "");
+                                            special = "S";
+                                        }
+                                        name = name.Replace("*", "").Trim();
+                                        Ballistic b = new Ballistic(
+                                            name
+                                            , sub_nodes[first++].InnerText.Trim()
+                                            , sub_nodes[first++].InnerText.Trim()
+                                            , sub_nodes[first++].InnerText.Trim()
+                                            , sub_nodes[first++].InnerText.Trim()
+                                            , sub_nodes[first++].InnerText.Trim()
+                                            , sub_nodes[first++].InnerText.Trim()
+                                            , sub_nodes[first++].InnerText.Trim()
+                                            , sub_nodes[first++].InnerText.Trim()
+                                            , sub_nodes[first++].InnerText.Trim()
+                                            , sub_nodes[first++].InnerText.Trim()
+                                            , sub_nodes[first++].InnerText.Trim()
+                                            , sub_nodes[first++].InnerText.Trim()
+                                            , sub_nodes[first++].InnerText.Trim()
+                                            , sub_nodes[first++].InnerText.Trim()
+                                            , special
+                                            );
+                                        blist.Add(b);
+                                    }
+                                }
+                            }
+                        }
+                    }
+                }
             }
             catch (Exception e)
             {

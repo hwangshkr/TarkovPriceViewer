@@ -139,6 +139,7 @@
     </Reference>
   </ItemGroup>
   <ItemGroup>
+    <Compile Include="Ballistic.cs" />
     <Compile Include="KeyPressCheck.cs">
       <SubType>Form</SubType>
     </Compile>
