@@ -218,30 +218,21 @@ namespace TarkovPriceViewer
                         if (vkCode == Int32.Parse(Program.settings["ShowOverlay_Key"]))
                         {
                             long CurrentTime = DateTime.Now.Ticks;
-                            if (CurrentTime - presstime > 5000000)
+                            if (CurrentTime - presstime > 2000000)
                             {
                                 point = Control.MousePosition;
                                 LoadingItemInfo();
                             }
                             else
                             {
-                                Debug.WriteLine("key pressed in 0.5 seconds.");
+                                Debug.WriteLine("key pressed in 0.2 seconds.");
                             }
                             presstime = CurrentTime;
                         }
                         else if (vkCode == Int32.Parse(Program.settings["CompareOverlay_Key"]))
                         {
-                            long CurrentTime = DateTime.Now.Ticks;
-                            if (CurrentTime - presstime > 5000000)
-                            {
-                                point = Control.MousePosition;
-                                LoadingItemCompare();
-                            }
-                            else
-                            {
-                                Debug.WriteLine("key pressed in 0.5 seconds.");
-                            }
-                            presstime = CurrentTime;
+                            point = Control.MousePosition;
+                            LoadingItemCompare();
                         }
                         else if (vkCode == Int32.Parse(Program.settings["HideOverlay_Key"])
                             || vkCode == 9 //tab
