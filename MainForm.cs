@@ -212,42 +212,45 @@ namespace TarkovPriceViewer
             {
                 if (code >= 0 && wParam == (IntPtr)WM_KEYUP)
                 {
-                    int vkCode = Marshal.ReadInt32(lParam);
-                    if (vkCode == Int32.Parse(Program.settings["ShowOverlay_Key"]))
+                    if (press_key_control == null)
                     {
-                        long CurrentTime = DateTime.Now.Ticks;
-                        if (CurrentTime - presstime > 5000000)
+                        int vkCode = Marshal.ReadInt32(lParam);
+                        if (vkCode == Int32.Parse(Program.settings["ShowOverlay_Key"]))
                         {
-                            point = Control.MousePosition;
-                            LoadingItemInfo();
+                            long CurrentTime = DateTime.Now.Ticks;
+                            if (CurrentTime - presstime > 5000000)
+                            {
+                                point = Control.MousePosition;
+                                LoadingItemInfo();
+                            }
+                            else
+                            {
+                                Debug.WriteLine("key pressed in 0.5 seconds.");
+                            }
+                            presstime = CurrentTime;
                         }
-                        else
+                        else if (vkCode == Int32.Parse(Program.settings["CompareOverlay_Key"]))
                         {
-                            Debug.WriteLine("key pressed in 0.5 seconds.");
+                            long CurrentTime = DateTime.Now.Ticks;
+                            if (CurrentTime - presstime > 5000000)
+                            {
+                                point = Control.MousePosition;
+                                LoadingItemCompare();
+                            }
+                            else
+                            {
+                                Debug.WriteLine("key pressed in 0.5 seconds.");
+                            }
+                            presstime = CurrentTime;
                         }
-                        presstime = CurrentTime;
-                    }
-                    else if (vkCode == Int32.Parse(Program.settings["CompareOverlay_Key"]))
-                    {
-                        long CurrentTime = DateTime.Now.Ticks;
-                        if (CurrentTime - presstime > 5000000)
+                        else if (vkCode == Int32.Parse(Program.settings["HideOverlay_Key"])
+                            || vkCode == 9 //tab
+                            || vkCode == 27 //esc
+                            )
                         {
-                            point = Control.MousePosition;
-                            LoadingItemCompare();
+                            CloseItemInfo();
+                            CloseItemCompare();
                         }
-                        else
-                        {
-                            Debug.WriteLine("key pressed in 0.5 seconds.");
-                        }
-                        presstime = CurrentTime;
-                    }
-                    else if (vkCode == Int32.Parse(Program.settings["HideOverlay_Key"])
-                        || vkCode == 9 //tab
-                        || vkCode == 27 //esc
-                        )
-                    {
-                        CloseItemInfo();
-                        CloseItemCompare();
                     }
                 }
             }
@@ -840,11 +843,14 @@ namespace TarkovPriceViewer
             }
         }
 
-        public void ChangePressKeyData(Keys keycode)
+        public void ChangePressKeyData(Keys? keycode)
         {
             if (press_key_control != null)
             {
-                press_key_control.Text = keycode.ToString();
+                if (keycode != null)
+                {
+                    press_key_control.Text = keycode.ToString();
+                }
                 press_key_control = null;
             }
         }

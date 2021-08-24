@@ -21,7 +21,15 @@ namespace TarkovPriceViewer
             InitializeComponent();
         }
 
-        private void KeyPressCheck_KeyDown(object sender, KeyEventArgs e)
+        private void KeyPressCheck_FormClosed(object sender, FormClosedEventArgs e)
+        {
+            if (Owner != null)
+            {
+                ((MainForm)Owner).ChangePressKeyData(null);
+            }
+        }
+
+        private void KeyPressCheck_KeyUp(object sender, KeyEventArgs e)
         {
             if (e.KeyCode != Keys.ShiftKey && e.KeyCode != Keys.Menu && e.KeyCode != Keys.ControlKey)
             {
