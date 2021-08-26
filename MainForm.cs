@@ -685,29 +685,56 @@ namespace TarkovPriceViewer
                                         foreach (HtmlAgilityPack.HtmlNode node in nodes)
                                         {
                                             HtmlAgilityPack.HtmlNode temp_node = node.SelectSingleNode(".//th[@class='va-infobox-header']");
-                                            if (temp_node != null && temp_node.InnerText.Trim().Equals("Performance"))
+                                            if (temp_node != null)
                                             {
-                                                HtmlAgilityPack.HtmlNodeCollection temp_node_list = sub_node_tm.SelectNodes(".//td[@class='va-infobox-label']");
-                                                HtmlAgilityPack.HtmlNodeCollection temp_node_list2 = sub_node_tm.SelectNodes(".//td[@class='va-infobox-content']");
-                                                if (temp_node_list != null && temp_node_list2 != null && temp_node_list.Count == temp_node_list2.Count)
+                                                if (temp_node.InnerText.Trim().Equals("General data"))
                                                 {
-                                                    for (int n = 0; n < temp_node_list.Count; n++)
+                                                    HtmlAgilityPack.HtmlNodeCollection temp_node_list = sub_node_tm.SelectNodes(".//tr");
+                                                    if (temp_node_list != null)
                                                     {
-                                                        if (temp_node_list[n].InnerText.Trim().Contains("Recoil"))
+                                                        for (int n = 0; n < temp_node_list.Count; n++)
                                                         {
-                                                            item.recoil = temp_node_list2[n].InnerText.Trim();
-                                                        }
-                                                        else if (temp_node_list[n].InnerText.Trim().Contains("Ergonomics"))
-                                                        {
-                                                            item.ergo = temp_node_list2[n].InnerText.Trim();
-                                                        }
-                                                        else if (temp_node_list[n].InnerText.Trim().Contains("Accuracy"))
-                                                        {
-                                                            item.accuracy = temp_node_list2[n].InnerText.Trim();
+                                                            HtmlAgilityPack.HtmlNode temp_node2 = node.SelectSingleNode(".//td[@class='va-infobox-label']");
+                                                            if (temp_node2 != null && temp_node2.InnerHtml.Trim().Equals("Type"))
+                                                            {
+                                                                temp_node2 = node.SelectSingleNode(".//td[@class='va-infobox-content']");
+                                                                if (temp_node2 != null)
+                                                                {
+                                                                    item.type = temp_node2.InnerHtml.Trim();
+                                                                    if (item.type.Equals("Round") || item.type.Equals("Slug")
+                                                                        || item.type.Equals("Buckshot") || item.type.Equals("Grenade launcher cartridge"))
+                                                                    {
+                                                                        item.ballistic = Program.blist.Find(x => (x.Name.Equals(item.name_display) || x.Name.Equals(item.name_display2)));
+                                                                    }
+                                                                }
+                                                                break;
+                                                            }
                                                         }
                                                     }
+                                                } else if (temp_node.InnerText.Trim().Equals("Performance"))
+                                                {
+                                                    HtmlAgilityPack.HtmlNodeCollection temp_node_list = sub_node_tm.SelectNodes(".//td[@class='va-infobox-label']");
+                                                    HtmlAgilityPack.HtmlNodeCollection temp_node_list2 = sub_node_tm.SelectNodes(".//td[@class='va-infobox-content']");
+                                                    if (temp_node_list != null && temp_node_list2 != null && temp_node_list.Count == temp_node_list2.Count)
+                                                    {
+                                                        for (int n = 0; n < temp_node_list.Count; n++)
+                                                        {
+                                                            if (temp_node_list[n].InnerText.Trim().Contains("Recoil"))
+                                                            {
+                                                                item.recoil = temp_node_list2[n].InnerText.Trim();
+                                                            }
+                                                            else if (temp_node_list[n].InnerText.Trim().Contains("Ergonomics"))
+                                                            {
+                                                                item.ergo = temp_node_list2[n].InnerText.Trim();
+                                                            }
+                                                            else if (temp_node_list[n].InnerText.Trim().Contains("Accuracy"))
+                                                            {
+                                                                item.accuracy = temp_node_list2[n].InnerText.Trim();
+                                                            }
+                                                        }
+                                                    }
+                                                    break;
                                                 }
-                                                break;
                                             }
                                         }
                                     }

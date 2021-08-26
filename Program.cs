@@ -222,7 +222,7 @@ namespace TarkovPriceViewer
                                     if (sub_nodes != null && sub_nodes.Count >= 15)
                                     {
                                         int first = sub_nodes[0].GetAttributeValue("rowspan", 1) == 1 ? 0 : 1;
-                                        String name = sub_nodes[first].InnerText.Trim();
+                                        String name = sub_nodes[first++].InnerText.Trim();
                                         String special = null;
                                         if (name.EndsWith("S T"))
                                         {

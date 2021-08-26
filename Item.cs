@@ -20,6 +20,8 @@ namespace TarkovPriceViewer
         public String buy_from_trader_price;
         public String needs;
         public String bartersandcrafts;
+        public String type;
+        public Ballistic ballistic = null;
         public String recoil;
         public String accuracy;
         public String ergo;
