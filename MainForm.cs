@@ -323,6 +323,7 @@ namespace TarkovPriceViewer
                 if (!cts_one.IsCancellationRequested)
                 {
                     Item item = Program.itemlist[new Random().Next(Program.itemlist.Count - 1)];
+                    //item = MatchItemName("9x19mm Pst gzh".ToLower().Trim().ToCharArray());
                     FindItemInfo(item);
                     if (isiteminfo)
                     {

@@ -25,7 +25,7 @@ namespace TarkovPriceViewer
         public String BE5;
         public String BE6;
 
-        public String Special;
+        public String Special;//subsonic or tracer
 
         public Ballistic(string name, string damage, string pP, string aD,
             string accuracy, string recoil, string fC, string bL, string bH,
@@ -47,6 +47,19 @@ namespace TarkovPriceViewer
             BE5 = bE5;
             BE6 = bE6;
             Special = special;
+        }
+
+        public String[] Data()
+        {
+            return (new String[] {
+                Damage
+                , BE1
+                , BE2
+                , BE3
+                , BE4
+                , BE5
+                , BE6
+            });
         }
     }
 }

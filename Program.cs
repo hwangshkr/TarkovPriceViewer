@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Diagnostics;
+using System.Drawing;
 using System.IO;
 using System.Text.Json;
 using System.Text.RegularExpressions;
@@ -15,7 +16,13 @@ namespace TarkovPriceViewer
         public static Dictionary<String, String> settings = new Dictionary<String, String>();
         public static readonly List<Item> itemlist = new List<Item>();
         public static readonly List<Ballistic> blist = new List<Ballistic>();
-        public static readonly String[] BEColor = new String[] { "#B3242580", "#DD333380", "#EB6C0D80", "#AC660080", "#FB9C0E80", "#00640080", "#00990080" };
+        public static readonly Color[] BEColor = new Color[] { ColorTranslator.FromHtml("#B32425"),
+            ColorTranslator.FromHtml("#DD3333"),
+            ColorTranslator.FromHtml("#EB6C0D"),
+            ColorTranslator.FromHtml("#AC6600"),
+            ColorTranslator.FromHtml("#FB9C0E"),
+            ColorTranslator.FromHtml("#006400"),
+            ColorTranslator.FromHtml("#009900") };
         public static readonly String setting_path = @"settings.json";
         public static readonly String appname = "EscapeFromTarkov";
         public static readonly String loading = "Loading...";
@@ -70,7 +77,7 @@ namespace TarkovPriceViewer
             }
         }
 
-        static void getItemList()
+        private static void getItemList()
         {
             String[] textValue = null;
             if (File.Exists(@"Resources\itemlist.txt"))
@@ -95,7 +102,7 @@ namespace TarkovPriceViewer
             Debug.WriteLine("itemlist Count : " + itemlist.Count);
         }
 
-        static void LoadSettings()
+        public static void LoadSettings()
         {
             try
             {
@@ -222,6 +229,10 @@ namespace TarkovPriceViewer
                                     if (sub_nodes != null && sub_nodes.Count >= 15)
                                     {
                                         int first = sub_nodes[0].GetAttributeValue("rowspan", 1) == 1 ? 0 : 1;
+                                        if (sub_nodes[0].InnerText.Trim().Equals("40x46 mm"))
+                                        {
+                                            first = 1;
+                                        }
                                         String name = sub_nodes[first++].InnerText.Trim();
                                         String special = null;
                                         if (name.EndsWith("S T"))
@@ -240,9 +251,26 @@ namespace TarkovPriceViewer
                                             special = "S";
                                         }
                                         name = name.Replace("*", "").Trim();
+                                        String damage = sub_nodes[first++].InnerText.Trim();
+                                        if (damage.Contains("x"))
+                                        {
+                                            String[] temp_d = damage.Split('x');
+                                            int mul = 1;
+                                            try
+                                            {
+                                                foreach (String d in temp_d)
+                                                {
+                                                    mul *= Int32.Parse(d);
+                                                }
+                                            } catch (Exception ex)
+                                            {
+                                                Debug.WriteLine(ex.Message);
+                                            }
+                                            damage += " = " + mul;
+                                        }
                                         Ballistic b = new Ballistic(
                                             name
-                                            , sub_nodes[first++].InnerText.Trim()
+                                            , damage
                                             , sub_nodes[first++].InnerText.Trim()
                                             , sub_nodes[first++].InnerText.Trim()
                                             , sub_nodes[first++].InnerText.Trim()

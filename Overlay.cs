@@ -22,6 +22,7 @@ namespace TarkovPriceViewer
         private static readonly int WS_EX_TOOLWINDOW = 0x00000080;
         private static readonly int WS_EX_LAYERED = 0x80000;
         private static readonly int WS_EX_TRANSPARENT = 0x20;
+        private static readonly DataTable balltable = new DataTable();
         private static readonly DataTable comparetable = new DataTable();
         private static int compare_size = 0;
 
@@ -34,6 +35,7 @@ namespace TarkovPriceViewer
             SetWindowLong(this.Handle, GWL_EXSTYLE, style | WS_EX_LAYERED | WS_EX_TRANSPARENT | WS_EX_TOOLWINDOW);
             settingFormPos();
             initializeCompareData();
+            initializeBallistics();
             iteminfo_panel.Visible = false;
             itemcompare_panel.Visible = false;
         }
@@ -56,14 +58,43 @@ namespace TarkovPriceViewer
             ItemCompareGrid.Visible = false;
             ItemCompareGrid.DataSource = comparetable;
             ItemCompareGrid.ClearSelection();
-            ResizeGrid();
+            ResizeGrid(ItemCompareGrid);
         }
 
-        public void ResizeGrid()
+        public void initializeBallistics()
         {
-            ItemCompareGrid.ClientSize = new Size(ItemCompareGrid.Columns.GetColumnsWidth(DataGridViewElementStates.None) + 10,
-                ItemCompareGrid.Rows.GetRowsHeight(DataGridViewElementStates.None) + 20);
-            ItemCompareGrid.Refresh();
+            balltable.Columns.Add("Damage", typeof(string));
+            balltable.Columns.Add("1", typeof(string));
+            balltable.Columns.Add("2", typeof(string));
+            balltable.Columns.Add("3", typeof(string));
+            balltable.Columns.Add("4", typeof(string));
+            balltable.Columns.Add("5", typeof(string));
+            balltable.Columns.Add("6", typeof(string));
+            iteminfo_ball.Visible = false;
+            iteminfo_ball.DataSource = balltable;
+            iteminfo_ball.ClearSelection();
+            ResizeGrid(iteminfo_ball);
+        }
+
+        public void ResizeGrid(DataGridView view)
+        {
+            view.ClientSize = new Size(view.Columns.GetColumnsWidth(DataGridViewElementStates.None) + 10,
+                view.Rows.GetRowsHeight(DataGridViewElementStates.None) + 20);
+            view.Refresh();
+        }
+
+        public void SetBallisticsColor()
+        {
+            if (iteminfo_ball.Rows.Count > 0)
+            {
+                for (int i = 1; i < iteminfo_ball.Rows[0].Cells.Count; i++)//except damage
+                {
+                    int level = 0;
+                    Int32.TryParse((String)iteminfo_ball.Rows[0].Cells[i].Value, out level);
+                    iteminfo_ball.Rows[0].Cells[i].Style.BackColor = Program.BEColor[level];
+                }
+                iteminfo_ball.Refresh();
+            }
         }
 
         public void ShowInfo(Item item, CancellationToken cts_one)
@@ -116,6 +147,13 @@ namespace TarkovPriceViewer
                         }
                         iteminfo_text.Text = sb.ToString().Trim();
                         setTextColors(item);
+                        if (item.ballistic != null)
+                        {
+                            balltable.Rows.Add(item.ballistic.Data());
+                            iteminfo_ball.Visible = true;
+                            SetBallisticsColor();
+                            ResizeGrid(iteminfo_ball);
+                        }
                     }
                 }
             };
@@ -137,7 +175,7 @@ namespace TarkovPriceViewer
                     }
                     comparetable.Rows.Add(item.Data());
                     ItemCompareGrid.Visible = true;
-                    ResizeGrid();
+                    ResizeGrid(ItemCompareGrid);
                 }
             };
             Invoke(show);
@@ -186,6 +224,9 @@ namespace TarkovPriceViewer
             {
                 if (!cts_one.IsCancellationRequested)
                 {
+                    balltable.Rows.Clear();
+                    //ResizeGrid(iteminfo_ball);
+                    iteminfo_ball.Visible = false;
                     iteminfo_text.Text = Program.loading;
                     iteminfo_panel.Location = point;
                     iteminfo_panel.Visible = true;
@@ -204,7 +245,7 @@ namespace TarkovPriceViewer
                     {
                         compare_size = 0;
                         comparetable.Rows.Clear();
-                        ResizeGrid();
+                        ResizeGrid(ItemCompareGrid);
                         itemcompare_panel.Location = point;
                         itemcompare_panel.Visible = true;
                         itemcompare_text.Text = String.Format("{0}", Program.presscomparekey);
@@ -219,6 +260,7 @@ namespace TarkovPriceViewer
         {
             Action show = delegate ()
             {
+                iteminfo_ball.Visible = false;
                 iteminfo_panel.Visible = false;
             };
             Invoke(show);
@@ -271,6 +313,7 @@ namespace TarkovPriceViewer
 
         private void itemwindow_panel_SizeChanged(object sender, EventArgs e)
         {
+            iteminfo_ball.Location = new Point(iteminfo_text.Location.X, iteminfo_text.Location.Y + iteminfo_text.Height + 15);
             FixLocation(sender as Control);
         }
 
