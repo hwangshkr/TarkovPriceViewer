@@ -15,7 +15,7 @@ namespace TarkovPriceViewer
         private static MainForm main = null;
         public static Dictionary<String, String> settings = new Dictionary<String, String>();
         public static readonly List<Item> itemlist = new List<Item>();
-        public static readonly List<Ballistic> blist = new List<Ballistic>();
+        public static readonly Dictionary<String, Ballistic> blist = new Dictionary<String, Ballistic>();
         public static readonly Color[] BEColor = new Color[] { ColorTranslator.FromHtml("#B32425"),
             ColorTranslator.FromHtml("#DD3333"),
             ColorTranslator.FromHtml("#EB6C0D"),
@@ -122,7 +122,7 @@ namespace TarkovPriceViewer
                 }
                 String st;
                 settings.Remove("Version");//force
-                settings.Add("Version", "v1.07");//force
+                settings.Add("Version", "v1.08");//force
                 if (!settings.TryGetValue("MinimizetoTrayWhenStartup", out st))
                 {
                     settings.Add("MinimizetoTrayWhenStartup", "false");
@@ -179,6 +179,14 @@ namespace TarkovPriceViewer
                 {
                     settings.Add("Barters_and_Crafts", "true");
                 }
+                if (!settings.TryGetValue("Compare_Sort", out st))
+                {
+                    settings.Add("Compare_Sort", "4");
+                }
+                if (!settings.TryGetValue("Compare_Sort_Direction", out st))
+                {
+                    settings.Add("Compare_Sort_Direction", "0");
+                }
             }
             catch (Exception e)
             {
@@ -195,7 +203,7 @@ namespace TarkovPriceViewer
                     File.Create(setting_path).Dispose();
                 }
                 string jsonString = JsonSerializer.Serialize<Dictionary<String, String>>(settings);
-                File.WriteAllText(setting_path, jsonString);
+                File.WriteAllText(setting_path, jsonString.Replace(",", ",\n"));
             }
             catch (Exception e)
             {
@@ -223,8 +231,14 @@ namespace TarkovPriceViewer
                             nodes = node_tm.SelectNodes(".//tr");
                             if (nodes != null)
                             {
+                                blist.Clear();
+                                List<Ballistic> sub_blist = new List<Ballistic>();
                                 foreach (HtmlAgilityPack.HtmlNode node in nodes)
                                 {
+                                    if (!node.GetAttributeValue("id", "").Equals(""))
+                                    {
+                                        sub_blist = new List<Ballistic>();
+                                    }
                                     sub_nodes = node.SelectNodes(".//td");
                                     if (sub_nodes != null && sub_nodes.Count >= 15)
                                     {
@@ -237,17 +251,17 @@ namespace TarkovPriceViewer
                                         String special = null;
                                         if (name.EndsWith("S T"))
                                         {
-                                            name = name.Replace("(S T)$", "");
+                                            name = new Regex("(S T)$").Replace(name, "");
                                             special = "ST";
                                         }
                                         if (name.EndsWith("T"))
                                         {
-                                            name = name.Replace("T$", "");
+                                            name = new Regex("T$").Replace(name, "");
                                             special = "T";
                                         }
                                         if (name.EndsWith("S"))
                                         {
-                                            name = name.Replace("S$", "");
+                                            name = new Regex("S$").Replace(name, "");
                                             special = "S";
                                         }
                                         name = name.Replace("*", "").Trim();
@@ -285,8 +299,10 @@ namespace TarkovPriceViewer
                                             , sub_nodes[first++].InnerText.Trim()
                                             , sub_nodes[first++].InnerText.Trim()
                                             , special
+                                            , sub_blist
                                             );
-                                        blist.Add(b);
+                                        sub_blist.Add(b);
+                                        blist.Add(name, b);
                                     }
                                 }
                             }

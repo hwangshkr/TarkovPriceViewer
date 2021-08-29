@@ -72,7 +72,7 @@ RB-AK key	RB-AK key	RB-AK key
 Machinery key	Machinery key	Machinery key
 RB-ORB2 key	RB-ORB2 key	RB-ORB2 key
 Key to Goshan cash register	Key to Goshan cash register	Goshan cash register key
-RB-PS81 key	RB-PS81 key	RB-PS81 key
+RB-PSV1 key	RB-PS81 key	RB-PSV1 key
 East wing room 216 key	East wing room 216 key	Health Resort east wing room 216 key
 RB-RS key	RB-RS key	RB-RS key
 RB-TB key	RB-TB key	RB-TB key
@@ -85,7 +85,7 @@ RB-ORB1 key	RB-ORB1 key	RB-ORB1 key
 Marked key	Marked key	Dorm room 314 marked key
 East wing room 222 key	East wing room 222 key	Health Resort east wing room 222 key
 Lab. key. Arsenal storage room	Lab. key. Arsenal storage room	TerraGroup Labs Arsenal storage room key
-RB-PS82 key	RB-PS82 key	RB-PS82 key
+RB-PSV2 key	RB-PS82 key	RB-PSV2 key
 Health resort management office safe key	Health resort management office safe key	Health Resort management office safe key
 Shturman key	Shturman key	Shturman's stash key
 Lab. key. Testing area (weap.)	Lab. key. Testing area (weap.)	TerraGroup Labs Weapons testing area key
@@ -100,7 +100,7 @@ RB-AO key	RB-AO key	RB-AO key
 Health resort utility room key	Health resort utility room key	Health Resort universal utility room key
 Office 104 West wing key	Office 104 West wing key	Health Resort west wing office room 104 key
 Lab. key. Manager office	Lab. key. Manager office	TerraGroup Labs Manager office room key
-Office 112 West wing key	Office 112 West wing key	Health Resort west wing office room 112 key
+Health Resort west wing office room 112 key	Office 112 West wing key	Health Resort west wing office room 112 key
 Dorm guard desk key	Dorm guard desk key	Dorm guard desk key
 Dorm room 214 Key	Dorm room 214 Key	Dorm room 214 key
 Dorm room 114 Key	Dorm room 114 Key	Dorm room 114 key
@@ -153,7 +153,7 @@ Strike Cigarettes	Strike Cigarettes	Strike Cigarettes
 Energy-saving lamp	Energy-saving lamp	Energy-saving lamp
 Zibbo lighter	Zibbo lighter	Zibbo lighter
 Bolts	Bolts	Bolts
-Screw nut	Screw nut	Screw nut
+Screw nut	Screw nut	Screw nuts
 Expeditionary fuel tank	Expeditionary fuel tank	Expeditionary fuel tank
 Paracord	Paracord	Paracord
 Dogtag USEC	Dogtag USEC	Dogtag USEC
@@ -164,9 +164,9 @@ Key to pharmacy	Key to pharmacy	NecrusPharm pharmacy key
 Key to utility room of power substation	Key to utility room of power substation	ULTRA power substation utility cabin key
 Key to utility room of OLI outlet	Key to utility room of OLI outlet	OLI outlet utility room key
 Key to OLI administrator office	Key to OLI administrator office	OLI administration office key
-East wing room 310 key	East wing room 310 key	Health Resort east wing room 310 key
+Health Resort east wing room 310 key	East wing room 310 key	Health Resort east wing room 310 key
 West wing room 325 key	West wing room 325 key	Health Resort west wing room 325 key
-West wing room 303 key	West wing room 303 key	Health Resort west wing room 303 key
+Health Resort west wing room 303 key	West wing room 303 key	Health Resort west wing room 303 key
 Maska 1Sch face shield (Killa)	Maska 1Sch face shield (Killa)	Maska-1Shch face shield (Killa)
 Altyn face shield	Altyn face shield	Altyn face shield
 Kiver face shield	Kiver face shield	Kiver face shield
@@ -226,7 +226,7 @@ Key to OLI cash register	Key to OLI cash register	OLI cash register key
 Condensed milk	Condensed milk	Condensed milk
 Key ZB-014	Key ZB-014	ZB-014 key
 Old firesteel	Old firesteel	Old firesteel
-Coffee Majaica	Coffee Majaica	Majaica coffee
+Majaica Coffee	Coffee Majaica	Majaica coffee
 Gold skull ring	Gold skull ring	Gold skull ring
 Weather station safe key	Weather station safe key	Weather station safe key
 Broken LCD	Broken LCD	Broken LCD
@@ -290,7 +290,7 @@ Weapon parts	Weapon parts	Weapon parts
 Military thermal vision module Iridium	Military thermal vision module Iridium	Iridium military thermal vision module
 Paid AntiRoach	Paid AntiRoach	PAID AntiRoach spray
 UHF RFID Reader	UHF RFID Reader	UHF RFID Reader
-Technical documentation	Technical documentation	Vehicle manual
+Vehicle manual	Technical documentation	Vehicle manual
 Key to HEP station storage	Key to HEP station storage	HEP station storage room key
 Light bulb	Light bulb	Light bulb
 Car key	Car key	Folding car key
@@ -301,7 +301,7 @@ Spark plug	Spark plug	Spark plug
 A set of tools	A set of tools	Toolset
 Wilston cigarettes	Wilston cigarettes	Wilston cigarettes
 Horse figurine	Horse figurine	Horse figurine
-Regenerative stimulant injector eTG-change	Regenerative stimulant injector eTG-change	eTG-change regenerative stimulant injector
+ETG-change regenerative stimulant injector	Regenerative stimulant injector eTG-change	eTG-change regenerative stimulant injector
 Dorm room 103 Key	Dorm room 103 Key	Dorm room 103 key
 Ox bleach	Ox bleach	Ox bleach
 Dorm room 108 Key	Dorm room 108 Key	Dorm room 108 key
@@ -346,7 +346,7 @@ Round pliers	Round pliers	Round pliers
 Military power filter	Military power filter	Military power filter
 Pressure gauge	Pressure gauge	Pressure gauge
 Analog thermometer	Analog thermometer	Analog thermometer
-6x Scope	Valday PS-320 1x 6x Scope	Valday PS-320 1x/6x scope
+Valday PS-320 1x/6x Scope	Valday PS-320 1x 6x Scope	Valday PS-320 1x/6x scope
 Makeshift 7.62x25 TT silencer	Makeshift 7.62x25 ТТ silencer	TT 7.62x25 makeshift sound suppressor
 VSS 9x39 integral barrel-suppressor	VSS 9x39 integral barrel-suppressor	VSS Vintorez 9x39 integral barrel-suppressor
 AAC 762 SDN-6 7.62x51 Sound Suppressor	AAC 762 SDN-6 7.62x51 Sound Suppressor	AAC 762 SDN-6 7.62x51 sound suppressor
@@ -361,7 +361,7 @@ Gemtech SFN-57 5.7x28mm silencer	Gemtech SFN-57 5.7x28mm silencer	Gemtech SFN-57
 B&T MP9 9x19mm sound suppressor	B&T MP9 9x19mm sound suppressor	MP9 9x19 sound suppressor
 KAC PRS QDC 7.62x51 Sound Suppressor	KAC PRS QDC 7.62x51 Sound Suppressor	KAC PRS/QDC 7.62x51 sound suppressor
 Rotor 43 7.62x54 muzzle brake	Rotor 43 7.62x54 muzzle brake	Rotor 43 7.62x54R muzzle brake
-suppressor	TGP-A 5.45x39 muzzle device suppressor	AK 5.45x39 TGP-A muzzle device/suppressor
+TGP-A 5.45x39 muzzle device/suppressor	TGP-A 5.45x39 muzzle device suppressor	AK 5.45x39 TGP-A muzzle device/suppressor
 Rotor 43 5.56x45 muzzle brake	Rotor 43 5.56x45 muzzle brake	Rotor 43 5.56x45 muzzle brake
 KAC QDSS NT-4 Black 5.56x45 silencer	KAC QDSS NT-4 Black 5.56x45 silencer	KAC QDSS NT-4 5.56x45 sound suppressor (Black)
 PP-91-01 Kedr-B 9x18PM suppressor	PP-91-01 Kedr-B 9x18PM suppressor	PP-91-01 Kedr-B 9x18PM sound suppressor
@@ -377,7 +377,7 @@ Trijicon ACOG 3.5x35 scope	Trijicon ACOG 3.5x35 scope	Trijicon ACOG 3.5x35 scope
 Sig BRAVO4 4X30 Scope	Sig BRAVO4 4X30 Scope	SIG Sauer BRAVO4 4X30 Scope
 Primary Arms Compact prism scope 2.5x	Primary Arms Compact prism scope 2.5x	Primary Arms Compact prism scope 2.5x
 Leupold Mark 4 HAMR 4x24mm DeltaPoint hybrid assault scope	Leupold Mark 4 HAMR 4x24mm DeltaPoint hybrid assault scope	Leupold Mark 4 HAMR 4x24mm DeltaPoint hybrid assault scope
-4x Scope FDE	ELCAN SpecterDR 1x 4x Scope FDE	ELCAN SpecterDR 1x/4x scope (Flat Dark Earth)
+ELCAN SpecterDR 1x/4x Scope FDE	ELCAN SpecterDR 1x 4x Scope FDE	ELCAN SpecterDR 1x/4x scope (Flat Dark Earth)
 Optical scope March Tactical 3-24x42 FFP	Optical scope March Tactical 3-24x42 FFP	March Tactical 3-24x42 FFP optical scope
 Leupold Mark 4 LR 6.5-20x50 riflescope	Leupold Mark 4 LR 6.5-20x50 riflescope	Leupold Mark 4 LR 6.5-20x50 riflescope
 PU 3.5x riflescope	PU 3.5x riflescope	PU 3.5x riflescope
@@ -387,7 +387,7 @@ NPZ USP-1 4x scope	NPZ USP-1 4x scope	NPZ USP-1 4x scope
 KMZ 1P59 3-10x riflescope	KMZ 1P59 3-10x riflescope	KMZ 1P59 3-10x riflescope
 NcSTAR ADO P4 Sniper 3-9x42 riflescope	NcSTAR ADO P4 Sniper 3-9x42 riflescope	NcSTAR ADO P4 Sniper 3-9x42 riflescope
 VOMZ Pilad 4x32 riflescope	VOMZ Pilad 4х32 riflescope	VOMZ Pilad 4x32 riflescope
-PVS-14 Night Vision Monocular	AN PVS-14 Night Vision Monocular	AN/PVS-14 Night Vision Monocular
+AN/PVS-14 Night Vision Monocular	AN PVS-14 Night Vision Monocular	AN/PVS-14 Night Vision Monocular
 Armasight N-15 Night Vision	Armasight N-15 Night Vision	Armasight N-15 Night Vision Goggles
 PNV-10T Night Vision	PNV-10T Night Vision	PNV-10T Night Vision Goggles
 Vulcan MG night scope 3.5x	Vulcan MG night scope 3.5x	Armasight Vulcan MG 3.5x night vision scope
@@ -447,7 +447,7 @@ Scav Vest	Scav Vest	Scav Vest
 Peltor Tactical Sport headset	Peltor Tactical Sport headset	Peltor Tactical Sport headset
 GSSh-01 active headset	GSSh-01 active headset	GSSh-01 active headset
 Peltor ComTac 2 headset	Peltor ComTac 2 headset	Peltor ComTac 2 headset
-L active headphones	MSA Sordin Supreme PRO-X L active headphones	MSA Sordin Supreme PRO-X/L active headset
+MSA Sordin Supreme PRO-X/L active headphones	MSA Sordin Supreme PRO-X L active headphones	MSA Sordin Supreme PRO-X/L active headset
 Ops-Core FAST RAC Headset	Ops-Core FAST RAC Headset	Ops-Core FAST RAC Headset
 ZSh-1-2M helmet (black)	ZSh-1-2M helmet (black)	ZSh-1-2M helmet (Black)
 6B47 Ratnik-BSh Helmet	6B47 Ratnik-BSh Helmet	6B47 Ratnik-BSh helmet
@@ -455,7 +455,7 @@ AS VAL 9x39 integral barrel-suppressor	AS VAL 9x39 integral barrel-suppressor	AS
 Fischer Development FD917 suppressor	Fischer Development FD917 suppressor	Glock 9x19 Fischer Development FD917 sound suppressor
 Hexagon SKS 7.62x39 sound suppressor	Hexagon SKS 7.62x39 sound suppressor	SKS Hexagon 7.62x39 sound suppressor
 Police cap	Police cap	Police cap
-ANA Tactical Alpha chest rig	ANA Tactical Alpha chest rig	Ana Tactical Alpha chest rig
+ANA Tactical Alpha chest rig	ANA Tactical Alpha chest rig	ANA Tactical Alpha chest rig
 Pilgrim tourist backpack	Pilgrim tourist backpack	Pilgrim tourist backpack
 Ushanka ear-flap cap	Ushanka ear-flap cap	Ushanka ear flap hat
 Baseball cap	Baseball cap	Baseball cap
@@ -478,7 +478,7 @@ FORT Redut-T5 body armor	FORT Redut-T5 body armor	FORT Redut-T5 body armor
 Ops-Core Fast MT SUPER HIGH CUT Helmet Tan	Ops-Core Fast MT SUPER HIGH CUT Helmet Tan	Ops-Core FAST MT Super High Cut helmet (Tan)
 Surefire SOCOM556-MONSTER 5.56x45 silencer	Surefire SOCOM556-MONSTER 5.56x45 silencer	Surefire SOCOM556-MONSTER 5.56x45 sound suppressor
 SilencerCo Osprey 9 9x19mm sound suppressor	SilencerCo Osprey 9 9x19mm sound suppressor	SilencerCo Osprey 9 9x19mm sound suppressor
-6B43 Zabralo-Sh 6A Armor	6B43 Zabralo-Sh 6A Armor	6B43 Zabralo-Sh 6A Armor
+6B43 Zabralo-Sh 6A Armor	6B43 Zabralo-Sh 6A Armor	6B43 Zabralo-Sh 6A body armor
 Silencer APB 9x18PM	Silencer APB 9x18PM	APB 9x18PM sound suppressor
 Team Wendy EXFIL Ballistic Helmet Black	Team Wendy EXFIL Ballistic Helmet Black	Team Wendy EXFIL Ballistic Helmet (Black)
 Bramit silencer for a Mosin rifle	Bramit silencer for a Mosin rifle	Mosin 7.62x54R Bramit sound suppressor
@@ -552,7 +552,7 @@ IOTV Gen4 armor (assault kit)	IOTV Gen4 armor (assault kit)	IOTV Gen4 body armor
 SSO "Attack 2" raid backpack	SSO "Attack 2" raid backpack	SSO "Attack 2" raid backpack
 IOTV Gen4 armor (full protection)	IOTV Gen4 armor (full protection)	IOTV Gen4 body armor (full protection)
 3V G Paratus 3-Day Operator's Tactical Backpack	3V G Paratus 3-Day Operator's Tactical Backpack	3V G Paratus 3-Day Operator's Tactical backpack
-Ana tactical Beta 2 battle backpack	Ana tactical Beta 2 battle backpack	Ana Tactical Beta 2 Battle backpack
+Ana tactical Beta 2 battle backpack	Ana tactical Beta 2 battle backpack	ANA Tactical Beta 2 Battle backpack
 Duffle bag	Duffle bag	Duffle bag
 Wartech Berkut VV-102 backpack	Wartech Berkut VV-102 backpack	WARTECH Berkut BB-102 backpack
 6B47 Helmet with cover (flora digital)	6B47 Helmet with cover (flora digital)	6B47 Ratnik-BSh helmet with cover (Digital Flora)
@@ -567,7 +567,7 @@ SHPM Firefighter's helmet	SHPM Firefighter's helmet	ShPM Firefighter helmet
 Vulkan-5 (LShZ-5) heavy helmet	Vulkan-5 (LShZ-5) heavy helmet	Vulkan-5 (LShZ-5) heavy helmet
 Flat screwdriver	Flat screwdriver	Flat screwdriver
 Shemagh	Shemagh	Shemagh (Green)
-4x Scope	ELCAN SpecterDR 1x 4x Scope	ELCAN SpecterDR 1x/4x Scope
+ELCAN SpecterDR 1x/4x Scope	ELCAN SpecterDR 1x 4x Scope	ELCAN SpecterDR 1x/4x Scope
 Ops-Core Fast MT SUPER HIGH CUT Helmet	Ops-Core Fast MT SUPER HIGH CUT Helmet	Ops-Core FAST MT Super High Cut helmet (Black)
 Highcom Striker ULACH IIIA helmet	Highcom Striker ULACH IIIA tan helmet	Highcom Striker ULACH IIIA helmet (Coyote Tan)
 Trijicon ACOG TA01NSN 4x32 scope	Trijicon ACOG TA01NSN 4x32 scope	Trijicon ACOG TA01NSN 4x32 scope (Black)
@@ -605,9 +605,9 @@ ADAR 2-15 .223 Carbine	adar 2-15 .223 carbine not func	ADAR 2-15 5.56x45 carbine
 Lone Star TX-15 DML Rifle	lone star tx-15 dml rifle not func	Lone Star TX-15 DML 5.56x45 carbine
 Simonov Semi-Automatic Carbine SKS 7.62x39	simonov semi-automatic carbine sks 7.62x39	Simonov SKS 7.62x39 semi-automatic carbine
 Simonov Semi-Automatic Carbine SKS 7.62x39 Hunting Rifle Version	simonov semi-automatic carbine sks 7.62x39 hunting rifle	Simonov OP-SKS 7.62x39 semi-automatic carbine (Hunting Rifle Version)
- VPO-209 366TKM carbine	vepr akm   vpo-209 366tkm carbine	Molot VPO-209 .366 TKM carbine
-VPO-101 7.62x51 carbine	vepr hunter vpo-101 7.62x51 carbine	VPO-101 Vepr Hunter 7.62x51 carbine
- VPO-136 7.62x39 carbine	vepr km   vpo-136 7.62x39 carbine	Molot VPO-136 Vepr KM 7.62x39 carbine
+Vepr AKM / VPO-209 366TKM carbine	vepr akm   vpo-209 366tkm carbine	Molot VPO-209 .366 TKM carbine
+Vepr Hunter/VPO-101 7.62x51 carbine	vepr hunter vpo-101 7.62x51 carbine	VPO-101 Vepr Hunter 7.62x51 carbine
+Vepr KM / VPO-136 7.62x39 carbine	vepr km   vpo-136 7.62x39 carbine	Molot VPO-136 Vepr KM 7.62x39 carbine
 DVL-10 Saboteur sniper rifle	dvl-10 saboteur sniper rifle	LOBAEV Arms DVL-10 Saboteur .308 bolt-action sniper rifle
 Mosin bolt-action infantry rifle	mosin bolt-action infantry rifle	Mosin 7.62x54R bolt-action infantry rifle
 Mosin bolt-action sniper rifle	mosin bolt-action sniper rifle	Mosin 7.62x54R bolt-action sniper rifle
@@ -651,7 +651,7 @@ FN Five-seveN MK2 FDE Frame 5.7x28 pistol	fn five-seven mk2 fde frame 5.7x28 pis
 MP-133 12ga shotgun	mp-133 12ga shotgun	MP-133 12ga pump-action shotgun
 MP-153 12ga semi-automatic shotgun	mp-153 12ga semi-automatic shotgun	MP-153 12ga semi-automatic shotgun
 Remington Model 870 12ga shotgun	remington model 870 12ga shotgun	Remington Model 870 12ga pump-action shotgun
-76 shotgun	saiga 12ga ver. 10 12 76 shotgun	Saiga 12ga ver.10 12/76 semi-automatic shotgun
+Saiga 12ga ver. 10 12/76 shotgun	saiga 12ga ver. 10 12 76 shotgun	Saiga 12ga ver.10 12/76 semi-automatic shotgun
 TOZ-106 bolt-action shotgun	toz-106 bolt-action shotgun	TOZ-106 20ga bolt-action shotgun
 B&T MP9 9x19 submachinegun	b&t mp9 9x19 submachinegun	B&T MP9 9x19 submachine gun
 FN P90 5.7x28 submachinegun	fn p90 5.7x28 submachinegun	FN P90 5.7x28 submachine gun
@@ -676,7 +676,7 @@ Zarya stun grenade	zarya stun grenade	Zarya stun grenade
 4.6x30mm AP SX	4.6x30mm ap sx	4.6x30mm AP SX
 5.45x39 mm 7N39 "Igolnik"	5.45x39 mm 7n39 igolnik	5.45x39mm PPBS gs "Igolnik"
 5.45x39 mm BS	5.45x39 mm bs	5.45x39mm BS gs
-7.62x39 mm BP	7.62x39 mm bp	7.62x39mm BP gzh
+7.62x39mm BP gzh	7.62x39 mm bp	7.62x39mm BP gzh
 7.62x51 mm M61	7.62x51 mm m61	7.62x51mm M61
 9x39 mm 7N9 SPP	9x39 mm 7n9 spp	9x39mm SPP gs
 7.62x54R 7N37	7.62x54r 7n37	7.62x54R BS
@@ -721,11 +721,11 @@ Zarya stun grenade	zarya stun grenade	Zarya stun grenade
 9x39 mm SP-5	9x39 mm sp-5	9x39 mm SP5 gs
 9x21 mm SP10	9x21 mm sp10	9x21mm PS gzh
 7.62x54R LPS Gzh	7.62x54r lps gzh	7.62x54R LPS gzh
-70 AP-20 Slug	12 70 ap-20 slug	12/70 AP-20 Slug
+12/70 AP-20 Slug	12 70 ap-20 slug	12/70 AP-20 Slug
 4.6x30mm Action SX	4.6x30mm action sx	4.6x30mm Action SX
-7.62x51 mm BPZ FMJ	7.62x51 mm bpz fmj	7.62x51mm FMJ
+7.62x51 mm BPZ FMJ	7.62x51 mm bpz fmj	7.62x51mm BCP FMJ
 5.56x45 mm 55 FMJ	5.56x45 mm 55 fmj	5.56x45mm FMJ
-7.62x51 mm TPZ SP	7.62x51 mm tpz sp	7.62x51mm SP
+7.62x51 mm TPZ SP	7.62x51 mm tpz sp	7.62x51mm TCW SP
 7.62x39 mm PS	7.62x39 mm ps	7.62x39mm PS gzh
 5.45x39 mm SP	5.45x39 mm sp	5.45x39mm SP
 12.7x55 mm PS12A	12.7x55 mm ps12a	12.7x55 mm PS12A
@@ -738,14 +738,14 @@ Zarya stun grenade	zarya stun grenade	Zarya stun grenade
 7.62x25mm TT LRNPC	7.62x25mm tt lrnpc	7.62x25mm TT LRNPC
 7.62x25mm TT Pst gzh	7.62x25mm tt pst gzh	7.62x25mm TT Pst gzh
 9x18 mm PM SP8 gzh	9x18 mm pm sp8 gzh	9x18mm PM SP8 gzh
-70 HP Slug Copper Sabot Premier	12 70 hp slug copper sabot premier	12/70 Copper Sabot Premier HP Slug
-70 Devastator Slug	20 70 devastator slug	20/70 Devastator Slug
+12/70 HP Slug Copper Sabot Premier	12 70 hp slug copper sabot premier	12/70 Copper Sabot Premier HP Slug
+20/70 Devastator Slug	20 70 devastator slug	20/70 Devastator Slug
 7.62x25mm TT PT gzh	7.62x25mm tt pt gzh	7.62x25mm TT PT gzh
 .366 TKM Geksa	.366 tkm geksa	.366 TKM Geksa
 9x19 mm Green Tracer	9x19 mm green tracer	9x19mm T gzh
 9x18 mm PM 9 BZT gzh	9x18 mm pm 9 bzt gzh	9x18mm PM BZhT gzh
 9x19 mm Pst gzh	9x19 mm pst gzh	9x19mm Pst gzh
-70 HP Slug "SuperFormance"	12 70 hp slug superformance	12/70 SuperFormance HP Slug
+12/70 HP Slug "SuperFormance"	12 70 hp slug superformance	12/70 SuperFormance HP Slug
 7.62x25mm TT P gl	7.62x25mm tt p gl	7.62x25mm TT P gl
 7.62x39 mm T45M	7.62x39 mm t45m	7.62x39mm T-45M1 gzh
 12x70 shell with .50 BMG bullet	12x70 shell with .50 bmg bullet	12/70 shell with .50 BMG bullet
@@ -760,29 +760,29 @@ Zarya stun grenade	zarya stun grenade	Zarya stun grenade
 9x19 mm PSO gzh	9x19 mm pso gzh	9x19mm PSO gzh
 9x18 mm PM Pst gzh	9x18 mm pm pst gzh	9x18mm PM Pst gzh
 9x18 mm PM PPT gzh	9x18 mm pm ppt gzh	9x18mm PM PPT gzh
-70 Star Slug	20 70 star slug	20/70 Star Slug
+20/70 Star Slug	20 70 star slug	20/70 Star Slug
 5.45x39 mm HP	5.45x39 mm hp	5.45x39mm HP
-70 FTX Custom LIte Slug	12 70 ftx custom lite slug	12/70 FTX Custom Lite Slug
+12/70 FTX Custom LIte Slug	12 70 ftx custom lite slug	12/70 FTX Custom Lite Slug
 9x18 mm PM PRS gs	9x18 mm pm prs gs	9x18mm PM PRS gs
-70 Flechette	12 70 flechette	12/70 Flechette
-70 8.5 mm "Magnum" Buckshot	12 70 8.5 mm magnum buckshot	12/70 8.5mm "Magnum" Buckshot
+12/70 Flechette	12 70 flechette	12/70 Flechette
+12/70 8.5 mm "Magnum" Buckshot	12 70 8.5 mm magnum buckshot	12/70 8.5mm "Magnum" Buckshot
 5.45x39 mm T	5.45x39 mm t	5.45x39mm T gs
 .366 TKM FMJ	.366 tkm fmj	.366 TKM FMJ
-70 "Poleva-6u" Slug	12 70 poleva-6u slug	12/70 "Poleva-6u" Slug
+12/70 "Poleva-6u" Slug	12 70 poleva-6u slug	12/70 "Poleva-6u" Slug
 9x18 mm PM PS gs PPO	9x18 mm pm ps gs ppo	9x18mm PM PS gs PPO
-70 Dual Sabot Slug	12 70 dual sabot slug	12/70 Dual Sabot Slug
-70 Grizzly 40 Slug	12 70 grizzly 40 slug	12/70 Grizzly 40 Slug
-70 Slug Poleva-6u	20 70 slug poleva-6u	20/70 "Poleva-6u" slug
-70 Slug "Poleva-3"	20 70 slug poleva-3	20/70 "Poleva-3" slug
+12/70 Dual Sabot Slug	12 70 dual sabot slug	12/70 Dual Sabot Slug
+12/70 Grizzly 40 Slug	12 70 grizzly 40 slug	12/70 Grizzly 40 Slug
+20/70 Slug Poleva-6u	20 70 slug poleva-6u	20/70 "Poleva-6u" slug
+20/70 Slug "Poleva-3"	20 70 slug poleva-3	20/70 "Poleva-3" slug
 5.45x39 mm PRS	5.45x39 mm prs	5.45x39mm PRS gs
-70 "Poleva-3" Slug	12 70 poleva-3 slug	12/70 "Poleva-3" Slug
+12/70 "Poleva-3" Slug	12 70 poleva-3 slug	12/70 "Poleva-3" Slug
 12x70 6.5 mm "Express" Buckshot	12x70 6.5 mm express buckshot	12/70 6.5mm Express buckshot
-70 7.3mm Buckshot	20 70 7.3mm buckshot	20/70 7.3mm Buckshot
-70 5.25mm Buckshot	12 70 5.25mm buckshot	12/70 5.25mm Buckshot
+20/70 7.3mm Buckshot	20 70 7.3mm buckshot	20/70 7.3mm Buckshot
+12/70 5.25mm Buckshot	12 70 5.25mm buckshot	12/70 5.25mm Buckshot
 12x70 Led slug	12x70 led slug	12/70 Lead slug
-70 6.2mm Buckshot	20 70 6.2mm buckshot	20/70 6.2mm Buckshot
+20/70 6.2mm Buckshot	20 70 6.2mm buckshot	20/70 6.2mm Buckshot
 12x70 7mm Buckshot	12x70 7mm buckshot	12/70 7mm buckshot
-70 5.6mm Buckshot	20 70 5.6mm buckshot	20/70 5.6mm Buckshot
+20/70 5.6mm Buckshot	20 70 5.6mm buckshot	20/70 5.6mm Buckshot
 9x18 mm PM 9 P gzh	9x18 mm pm 9 p gzh	9x18mm PM P gzh
 20x70 7.5mm Buckshot	20x70 7.5mm buckshot	20/70 7.5mm Buckshot
 X-47 AK 7.62x39 50 rnd magazine	x-47 ak 7.62x39 50 rnd magazine	AK 7.62x39 X-47 50-round drum magazine
@@ -796,11 +796,11 @@ F5 MPX Drum mag 50-round 9x19 magazine	f5 mpx drum mag 50-round 9x19 magazine	MP
 ProMag AALVX 35 7.62x39 35-round SKS magazine.	promag aalvx 35 7.62x39 35-round sks magazine.	SKS 7.62x39 ProMag AALVX 35-round magazine
 12.7x55 magazine for ASh-12, 20-round capacity	12.7x55 magazine for ash-12, 20-round capacity	ASh-12 12.7x55 20-round magazine
 60-round 6L31 5.45x39 magazine for AK-74 and compatibles	60-round 6l31 5.45x39 magazine for ak-74 and compatibles	AK-74 5.45x39 6L31 60-round magazine
-PPSH 9x18PM 84-round drum mag for PM	pm ppsh 9x18pm 84-round drum mag for pm	PM 9x18PM 84-round makeshift drum magazine
+PM/PPSH 9x18PM 84-round drum mag for PM	pm ppsh 9x18pm 84-round drum mag for pm	PM 9x18PM 84-round makeshift drum magazine
 Five-seveN 20-Round 5.7x28 magazine	five-seven 20-round 5.7x28 magazine	FN Five-seveN 5.7x28 20-round magazine
 X-14 M14 50 round 7.62x51 magazine	x-14 m14 50 round 7.62x51 magazine	M14 7.62x51 X-14 50-round drum magazine
-SA-58 7.62x51 50 rnd magazine	x-fal fal sa-58 7.62x51 50 rnd magazine	SA-58/FAL 7.62x51 X-FAL 50-round drum magazine
-76 magazine for SOK-12 and compatible weapons	maxrounds powermag 20-round 12 76 magazine for sok-12 and compatible weapons	SOK-12 12/76 MaxRounds Powermag 20-round magazine
+X-FAL FAL/SA-58 7.62x51 50 rnd magazine	x-fal fal sa-58 7.62x51 50 rnd magazine	SA-58/FAL 7.62x51 X-FAL 50-round drum magazine
+MaxRounds Powermag 20-round 12/76 magazine for SOK-12 and compatible weapons	maxrounds powermag 20-round 12 76 magazine for sok-12 and compatible weapons	SOK-12 12/76 MaxRounds Powermag 20-round magazine
 Standard MP7 40-round 4.6x30 magazine	standard mp7 40-round 4.6x30 magazine	MP7 4.6x30 40-round magazine
 FN magazine for P90, 50-round capacity	fn magazine for p90, 50-round capacity	FN P90 5.7x28 50-round magazine
 20-round SVD 7.62x54 magazine	20-round svd 7.62x54 magazine	SVD 7.62x54R 20-round magazine
@@ -824,7 +824,7 @@ Molot magazine for AK and compatibles, 75-round capacity	molot magazine for ak a
 HK Polymer mag 30 5.56x45 STANAG 30-round magazine	hk polymer mag 30 5.56x45 stanag 30-round magazine	5.56x45 HK 30 STANAG polymer 30-round magazine
 SGMT Drum mag for Glock 9x19, 50 rounds capacity	sgmt drum mag for glock 9x19, 50 rounds capacity	Glock 9x19 SGMT 50-round drum magazine
 12.7x55 magazine for ASh-12, 10-round capacity	12.7x55 magazine for ash-12, 10-round capacity	ASh-12 12.7x55 10-round magazine
-LR GEN M3 20 7.62x51 20 rnd	pmag sr lr gen m3 20 7.62x51 20 rnd	7.62x51 Magpul PMAG SR-LR GEN M3 20 20-round magazine
+PMAG SR/LR GEN M3 20 7.62x51 20 rnd	pmag sr lr gen m3 20 7.62x51 20 rnd	7.62x51 Magpul PMAG SR-LR GEN M3 20 20-round magazine
 12-round .308 MDT AICS M700 magazine	12-round .308 mdt aics m700 magazine	Remington M700 .308 MDT AICS 12-round magazine
 Arsenal CWP 30-round 5.56x45 magazine for SLR-106 and compatible weapons	arsenal cwp 30-round 5.56x45 magazine for slr-106 and compatible weapons	AK-101/SLR-106 5.56x45 Circle 10 30-round magazine
 20-round 6L25 9x39 VSS magazine	20-round 6l25 9x39 vss magazine	VSS 9x39 6L25 20-round magazine
@@ -840,10 +840,10 @@ ProMag SKS-A5 7.62x39 20-round SKS magazine	promag sks-a5 7.62x39 20-round sks m
 MPX with TTI Base pad +11 41-round 9x19 magazine	mpx with tti base pad  11 41-round 9x19 magazine	MPX 9x19 41-round magazine
 Magpul PMAG .308 AC 10-round M700 magazine	magpul pmag .308 ac 10-round m700 magazine	Remington M700 .308 Magpul PMAG AC 10-round magazine
 10-round .308 AICS M700 magazine	10-round .308 aics m700 magazine	Remington M700 .308 AICS 10-round magazine
-SA-58 7.62x51 30 rnd	fal sa-58 7.62x51 30 rnd	SA-58/FAL 7.62x51 30-round magazine
+FAL/SA-58 7.62x51 30 rnd	fal sa-58 7.62x51 30 rnd	SA-58/FAL 7.62x51 30-round magazine
 TROY Battlemag 5.56x45 STANAG 30-round magazine	troy battlemag 5.56x45 stanag 30-round magazine	5.56x45 TROY BattleMag STANAG 30-round magazine
 MP-153 8-rd magazine extension	mp-153 8-rd magazine extension	MP-153 8-shell magazine extension
-L1A1 7.62x51 30 rnd magazine	british fal l1a1 7.62x51 30 rnd magazine	SA-58/FAL 7.62x51 British 30-round magazine
+British FAL/L1A1 7.62x51 30 rnd magazine	british fal l1a1 7.62x51 30 rnd magazine	SA-58/FAL 7.62x51 British 30-round magazine
 P226 magazine	p226 magazine	P226 9x19 15-round magazine
 10-round 6L24 9x39 VSS magazine	10-round 6l24 9x39 vss magazine	VSS 9x39 6L24 10-round magazine
 5-round .308 T-5000 magazine	5-round .308 t-5000 magazine	Orsis T-5000M .308 5-round magazine
@@ -865,15 +865,15 @@ Standard 9x18PM 30-round magazine for PP-91	standard 9x18pm 30-round magazine fo
 10 rnds. SKS internal box magazine 7.62x39	10 rnds. sks internal box magazine 7.62x39	SKS 7.62x39 10-round internal box magazine
 10-round .308 M700 magazine	10-round .308 m700 magazine	Remington M700 .308 Wyatt's Outdoor 10-round magazine
 PMAG GEN M3 10 5.56x45 STANAG 10-round magazine	pmag gen m3 10 5.56x45 stanag 10-round magazine	5.56x45 Magpul PMAG GEN M3 10 STANAG 10-round magazine
-AKM GEN M3 7.62x39 magazine for AK and compatibles, 30-round capacity	pmag 30 ak akm gen m3 7.62x39 magazine for ak and compatibles, 30-round capacity	AK 7.62x39 Magpul PMAG 30 GEN M3 30-round magazine
+PMAG 30 AK/AKM GEN M3 7.62x39 magazine for AK and compatibles, 30-round capacity	pmag 30 ak akm gen m3 7.62x39 magazine for ak and compatibles, 30-round capacity	AK 7.62x39 Magpul PMAG 30 GEN M3 30-round magazine
 M1A 20 round 7.62x51 magazine	m1a 20 round 7.62x51 magazine	M1A 7.62x51 20-round magazine
-SA-58 "MMW" 7.62x51 20 rnd plastic mag	fal sa-58 mmw 7.62x51 20 rnd plastic mag	SA-58/FAL 7.62x51 "MMW" plastic 20-round magazine
+FAL/SA-58 "MMW" 7.62x51 20 rnd plastic mag	fal sa-58 mmw 7.62x51 20 rnd plastic mag	SA-58/FAL 7.62x51 "MMW" plastic 20-round magazine
 MP-443 9x19 18-round magazine	mp-443 9x19 18-round magazine	MP-443 9x19 18-round magazine
 HK PM Gen.2 5.56x45 STANAG 30-round magazine	hk pm gen.2 5.56x45 stanag 30-round magazine	5.56x45 HK PM Gen.2 STANAG 30-round magazine
 SR1-MP magazine	sr1-mp magazine	SR-1MP 9x21 18-round magazine
 5-shot MC 20-01 Sb.3 20ga magazine for TOZ-106	5-shot mc 20-01 sb.3 20ga magazine for toz-106	TOZ-106 20ga MC 20-01 Sb.3 5-shot magazine
 7.62x51 metal magazine for VPO-101 and compatibles, 5-round capacity	7.62x51 metal magazine for vpo-101 and compatibles, 5-round capacity	VPO-101 Vepr Hunter 7.62x51 5-round magazine
-SA-58 7.62x51 10 rnd	fal sa-58 7.62x51 10 rnd	SA-58/FAL 7.62x51 10-round magazine
+FAL/SA-58 7.62x51 10 rnd	fal sa-58 7.62x51 10 rnd	SA-58/FAL 7.62x51 10-round magazine
 Pmag 30 AK74 GEN M3 5.45x39 magazine for AK and compatibles, 30-round capacity	pmag 30 ak74 gen m3 5.45x39 magazine for ak and compatibles, 30-round capacity	AK-74 5.45x39 Magpul PMAG 30 GEN M3 30-round magazine
 30-round 5.45x39 magazine for AK-12 and compatibles	30-round 5.45x39 magazine for ak-12 and compatibles	AK-12 5.45x39 30-round magazine
 Standard MPX 30-round 9x19 magazine	standard mpx 30-round 9x19 magazine	MPX 9x19 30-round magazine
@@ -893,12 +893,12 @@ TT-105 7.62x25 TT Magazine	tt-105 7.62x25 tt magazine	TT 7.62x25 tt-105 8-round 
 90-93 9x18PM Magazine, for 8 PM rounds	90-93 9x18pm magazine, for 8 pm rounds	PM 9x18PM 90-93 8-round magazine
 PUFGUN SG-919 20 20-round 9x19 magazine for PP-19-01	pufgun sg-919 20 20-round 9x19 magazine for  pp-19-01	PP-19-01 Vityaz-SN 9x19 PUFGUN SG-919 20 20-round magazine
 Standard APS 9x18PM 20-round magazine	standard aps 9x18pm 20-round magazine	APS 9x18PM 20-round magazine
-SA-58 7.62x51 20 rnd	fal sa-58 7.62x51 20 rnd	SA-58/FAL 7.62x51 20-round magazine
+FAL/SA-58 7.62x51 20 rnd	fal sa-58 7.62x51 20 rnd	SA-58/FAL 7.62x51 20-round magazine
 6L20 30-round 5.45x39 magazine for AK-74 and compatible weapons	6l20 30-round 5.45x39 magazine for ak-74 and compatible weapons	AK-74 5.45x39 6L20 30-round magazine
 MP-153 5-rd magazine extension	mp-153 5-rd magazine extension	MP-153 12ga 5-shell magazine extension
 10-round Saiga 545 5.45x39 magazine for AK-74 and compatibles	10-round saiga 545 5.45x39 magazine for ak-74 and compatibles	AK-74/Saiga 5.45x39 10-round magazine
 Molot 6P2.Sb-11 7.62x39 magazine for AK and compatibles, 40-round capacity	molot 6p2.sb-11 7.62x39 magazine for ak and compatibles, 40-round capacity	AK 7.62x39 Molot 40-round magazine (6P2.Sb-11)
-76 magazine for SOK-12 and compatible weapons	sb.5 5-round 12 76 magazine for sok-12 and compatible weapons	SOK-12 12/76 sb.5 5-round magazine
+Sb.5 5-round 12/76 magazine for SOK-12 and compatible weapons	sb.5 5-round 12 76 magazine for sok-12 and compatible weapons	SOK-12 12/76 sb.5 5-round magazine
 8-shell MP-133x8 12ga magazine	8-shell mp-133x8 12ga magazine	MP-133 12ga 8-shell magazine
 6-shell MP-133x6 12ga magazine	6-shell mp-133x6 12ga magazine	MP-133 12ga 6-shell magazine
 Colt AR-15 5.56x45 STANAG 30-round magazine	colt ar-15 5.56x45 stanag 30-round magazine	5.56x45 Colt AR-15 STANAG 30-round magazine
@@ -912,14 +912,14 @@ Izhmash 7.62x39 AKMS aluminium magazine for AK and compatibles, 30-round capacit
 Izhmash 7.62x39 AK aluminium magazine for AK and compatibles, 10-round capacity	izhmash 7.62x39 ak aluminium magazine for ak and compatibles, 10-round capacity	AK 7.62x39 aluminium 10-round magazine
 LA-5 tactical device	la-5 tactical device	LA-5B/PEQ tactical device
 Zenit Perst-3 tactical device	zenit perst-3 tactical device	Zenit Perst-3 tactical device
-PEQ-15 tactical device	an peq-15 tactical device	AN/PEQ-15 tactical device
+AN/PEQ-15 tactical device	an peq-15 tactical device	AN/PEQ-15 tactical device
 Steiner Dbal PL tactical flashlight	steiner dbal pl tactical flashlight	Steiner DBAL-PL tactical laser device
-TAC 2 tactical flashlight	las tac 2 tactical flashlight	Steiner LAS/TAC 2 tactical flashlight
+LAS/TAC 2 tactical flashlight	las tac 2 tactical flashlight	Steiner LAS/TAC 2 tactical flashlight
 2U "Kleh" tactical flashlight	2u kleh tactical flashlight	Zenit Klesch-2U tactical flashlight
 2IRS Klesch flashlight + laser designator	2irs klesch flashlight   laser designator	Zenit 2IRS Klesch flashlight   laser designator
 Surefire XC1 tactical flashlight	surefire xc1 tactical flashlight	SureFire XC1 tactical flashlight
 Glock Tactical GL21 flashlight with laser	glock tactical gl21 flashlight with laser	Glock GTL 21 tactical flashlight with laser
-PEQ-2 tactical device	an peq-2 tactical device	AN/PEQ-2 tactical device
+AN/PEQ-2 tactical device	an peq-2 tactical device	AN/PEQ-2 tactical device
 Holosun LS321 Tactical device	holosun ls321 tactical device	Holosun LS321 Tactical device
 DLP "Tactical Precision" LAM Module for TT Pistol	dlp tactical precision lam module for tt pistol	TT DLP Tactical Precision LAM module
 2P Klesch flashlight + laser designator	2p klesch flashlight   laser designator	Zenit 2P Klesch flashlight   laser designator
@@ -1016,7 +1016,7 @@ DI ECS FDE pistol grip for AR-15 based systems	di ecs fde pistol grip for ar-15 
 Wooden Sig Sauer Elite pistol grip for P226	wooden sig sauer elite pistol grip for p226	P226 Elite Wooden pistol grip
 Wooden Izhmash AKM pistol grip for AK	wooden izhmash akm pistol grip for ak	AKM wooden pistol grip
 AS VAL Pistol grip	as val pistol grip	AS VAL pistol grip
-Standard TT side grips	standard tt side grips	TT standard side grips
+Standard TT side grips	standard tt side grips	TT side grips
 Black polymer Sig Sauer pistol grip for P226	black polymer sig sauer pistol grip for p226	P226 polymer pistol grip (Black)
 Emperor scorpion Sig Sauer pistol grip for P226	emperor scorpion sig sauer pistol grip for p226	P226 Emperor Scorpion pistol grip
 Pistol grip SIG MPX	pistol grip sig mpx	MPX pistol grip
@@ -1064,7 +1064,7 @@ TWS Dog leg rail dust cover for AK	tws dog leg rail dust cover for ak	AK TWS Dog
 M9A3 9x19 pistol slide	m9a3 9x19 pistol slide	M9A3 9x19 pistol slide
 Polymer80 PS9 Glock slide	polymer80 ps9 glock slide	Glock Polymer80 PS9 pistol slide
 Zev Tech Hex Gen3 slide	zev tech hex gen3 slide	Glock ZEV Tech HEX Gen3 pistol slide
-Fab Defence PDC dust cover for АК-74	fab defence pdc dust cover for ак-74	AK-74 FAB Defense PDC dust cover
+Fab Defence PDC dust cover for AK-74	fab defence pdc dust cover for ак-74	AK-74 FAB Defense PDC dust cover
 Upper receiver B&T 9x19 for MP9-N SMG	upper receiver b&t 9x19 for mp9-n smg	MP9-N 9x19 upper receiver
 P226 Axelson tactical Mk.25 pistol slide	p226 axelson tactical mk.25 pistol slide	P226 Axelson tactical Mk.25 pistol slide
 Upper receiver HK 416A5 5.56x45 for 416A5	upper receiver hk 416a5 5.56x45 for 416a5	HK 416A5 5.56x45 upper receiver
@@ -1081,7 +1081,7 @@ Glock 9x19 Moto Cut slide	glock 9x19 moto cut slide	Glock 9x19 Moto Cut pistol s
 Glock Alpha Wolf Custom slide	glock alpha wolf custom slide	Glock 9x19 Alpha Wolf custom pistol slide
 Glock Alpha Wolf slide	glock alpha wolf slide	Glock Alpha Wolf pistol slide
 P226 Sig Emperor scorpion pistol slide	p226 sig emperor scorpion pistol slide	P226 Emperor Scorpion pistol slide
-AKademia Bastion dust cover for АК	akademia bastion dust cover for ак	AK AKademia Bastion dust cover
+AKademia Bastion dust cover for AK	akademia bastion dust cover for ак	AK AKademia Bastion dust cover
 Upper receiver of the first generation SIG MPX	upper receiver of the first generation sig mpx	MPX GEN1 upper receiver
 Izhmash SVDS dust cover	izhmash svds dust cover	SVDS dust cover
 Upper receiver ADAR 2-15 5.56x45 for 2-15 assault rifle	upper receiver adar 2-15 5.56x45 for 2-15 assault rifle	ADAR 2-15 5.56x45 upper receiver
@@ -1099,7 +1099,7 @@ FN Upper receiver for PS90	fn upper receiver for ps90	FN PS90 upper receiver
 VSS Vintorez dust cover	vss vintorez dust cover	VSS Vintorez dust cover
 AS VAL Dust cover	as val dust cover	AS VAL dust cover
 Regular dust cover for FAL	regular dust cover for fal	SA-58/FAL standard dust cover
-Izhmash АK-74M dust cover (6P34 0-1)	izhmash аk-74m dust cover (6p34 0-1)	AK-74M dust cover (6P34 0-1)
+Izhmash AK-74M dust cover (6P34 0-1)	izhmash аk-74m dust cover (6p34 0-1)	AK-74M dust cover (6P34 0-1)
 Molot AKM type dust cover	molot akm type dust cover	AKM Molot dust cover
 Izhmash AK-74 dust cover (6P1 0-1)	izhmash ak-74 dust cover (6p1 0-1)	AK-74 dust cover (6P20 0-1)
 AKS-74U Dust cover (6P26 Sb.7)	aks-74u dust cover (6p26 sb.7)	AKS-74U dust cover (6P26 Sb.7)
@@ -1143,17 +1143,17 @@ Colt M4 Front sight	colt m4 front sight	M4A1 front sight
 VPO-101 Gas tube	vpo-101 gas tube	VPO-101 Vepr Hunter gas tube
 UltiMAK M1-B gas tube for AK	ultimak m1-b gas tube for ak	AK UltiMAK M1-B gas tube & handguard
 KAC QDC Flash supressor kit 7.62x51 flash hider	kac qdc flash supressor kit 7.62x51 flash hider	KAC QDC 7.62x51 flash suppressor kit
-SAI Jail Break 5.56x45 for AR-15	sai jail break 5.56x45 for ar-15	AR-15 SAI JailBrake 5.56x45 muzzle device
+AR-15 SAI JailBrake 5.56x45 muzzle device	sai jail break 5.56x45 for ar-15	AR-15 SAI JailBrake 5.56x45 muzzle device
 Muzzlebrake Precision Armament M-11 7.62x51 for AR-10	muzzlebrake precision armament m-11 7.62x51 for ar-10	AR-10 Precision Armanent M11 7.62x51 muzzle brake
 Fortis Red Brake 7.62x51 muzzle brake for AR-10	fortis red brake 7.62x51 muzzle brake for ar-10	AR-10 Fortis RED Brake 7.62x51 muzzle brake
 Desert Tech .308 Flash hider	desert tech .308 flashhider	Desert Tech .308 flash hider
 Muzzle brake Keeno Arms SHREWD 7.62x51 for AR-10	muzzlebrake keeno arms shrewd 7.62x51 for ar-10	AR-10 Keeno Arms SHREWD 7.62x51 muzzle brake
-Lantac Drakon 7.62x39 muzzle brake & compensator for AK	lantac drakon 7.62x39 muzzlebrake & compensator for ak	AK 7.62x39 Lantac Dragon muzzle brake & compensator
+Lantac Dragon 7.62x39 muzzle brake & compensator for AK	lantac drakon 7.62x39 muzzlebrake & compensator for ak	AK 7.62x39 Lantac Dragon muzzle brake & compensator
 JP Enterprises tactical compensator 7.62x51 muzzlebrake & compensator for M14	jp enterprises tactical compensator 7.62x51 muzzlebrake & compensator for m14	M14 JP Enterprises 7.62x51 tactical muzzle brake & compensator
 Witt Machine muzzle brake for Mosin rifle	witt machine muzzlebrake for mosin rifle	Mosin Witt Machine muzzle brake
 Lantac Dragon 7.62x51 muzzle brake	lantac dragon 7.62x51 muzzlebrake	Lantac Dragon 7.62x51 muzzle brake
 Bulletec ST-6012 5.56x45 Flash hider for AR-15	bulletec st-6012 5.56x45 flashhider for ar-15	AR-15 Bulletec ST-6012 5.56x45 muzzle brake
-compensator	izhmash 9x19 pp-19-01 muzzle brake compensator	PP-19-01 Vityaz-SN 9x19 muzzle brake/compensator
+Izhmash 9x19 PP-19-01 muzzle brake/compensator	izhmash 9x19 pp-19-01 muzzle brake compensator	PP-19-01 Vityaz-SN 9x19 muzzle brake/compensator
 Daniel Defense Wave Muzzle Brake 7.62x51	daniel defence wave muzzle brake 7.62x51	Daniel Defense WAVE 7.62x51 muzzle brake
 Lantac "Blast mitigation device" 7.62x51	lantac blast mitigation device 7.62x51	Lantac BMD 7.62x51 Blast Mitigation Device
 Venom Antidote muzzle brake & compensator for AK	venom antidote muzzlebrake & compensator for ak	AK 7.62x39 Venom Tactical Antidote muzzle brake & compensator
@@ -1179,11 +1179,11 @@ Carbine brake for SIG MPX by TACCOM	carbine brake for sig mpx by taccom	MPX TACC
 Surefire SF3P 5.56x45 Flash hider for AR-15	surefire sf3p 5.56x45 flashhider for ar-15	AR-15 Surefire SF3P 5.56x45 Flash hider
 KAC QD Compensator 5.56x45	kac qd compensator 5.56x45	KAC QDC 5.56x45 flash suppressor kit
 DS Arms "3 prong trident" 7.62x51 Flash hider for SA-58	ds arms 3 prong trident 7.62x51 flashhider for sa-58	SA-58 7.62x51 3 prong trident flash hider
-Izhmash 5.45x39 АK-105 muzzlebrake & compensator (6P44 0-20)	izhmash 5.45x39 аk-105 muzzlebrake & compensator (6p44 0-20)	AK-105 5.45x39 muzzle brake & compensator (6P44 0-20)
+Izhmash 5.45x39 AK-105 muzzlebrake & compensator (6P44 0-20)	izhmash 5.45x39 аk-105 muzzlebrake & compensator (6p44 0-20)	AK-105 5.45x39 muzzle brake & compensator (6P44 0-20)
 Izhmash 5.56x45 АK-102 muzzlebrake & compensator (6P44 0-20)	izhmash 5.56x45 аk-102 muzzlebrake & compensator (6p44 0-20)	AK-102 5.56x45 muzzle brake & compensator (6P44 0-20)
-Thunder Beast 223CB Muzzle Brake 5.56x45	thunder beast 223cb muzzle brake 5.56x45	Thunder Beast Arms 223CB 5.56x45 muzzle brake
+Thunder Beast 223CB Muzzle brake 5.56x45	thunder beast 223cb muzzle brake 5.56x45	Thunder Beast Arms 223CB 5.56x45 muzzle brake
 TROY Claymore 5.56x45 muzzle brake for AR-15	troy claymore 5.56x45 muzzle brakefor ar-15	AR-15 TROY Claymore 5.56x45 muzzle brake
-Izhmash 7.62x39 АK-104 muzzlebrake & compensator (6P46 0-20)	izhmash 7.62x39 аk-104 muzzlebrake & compensator (6p46 0-20)	AK-104 7.62x39 muzzle brake & compensator (6P46 0-20)
+Izhmash 7.62x39 AK-104 muzzlebrake & compensator (6P46 0-20)	izhmash 7.62x39 аk-104 muzzlebrake & compensator (6p46 0-20)	AK-104 7.62x39 muzzle brake & compensator (6P46 0-20)
 AAC Blackout 51T 5.56x45 flash-hider	aac blackout 51t 5.56x45 flash-hider	AAC Blackout 51T 5.56x45 flash hider
 Phantom 7.62x51 muzzle brake & compensator for M14	phantom 7.62x51 muzzlebrake & compensator for m14	M14 Yankee Hill Phantom 7.62x51 muzzle brake & compensator
 Tacfire Tanker style muzzle brake for Mosin rifle	tacfire tanker style muzzlebrake for mosin rifle	Mosin Tacfire Tanker Style muzzle brake
@@ -1200,7 +1200,7 @@ Orsis T-5000M muzzle brake	orsis t-5000m muzzle break	Orsis T-5000M muzzle brake
 AAC Blackout 51T flash hider (7.62x51)	aac blackout 51t flash hider (7.62x51)	AAC Blackout 51T 7.62x51 flash hider
 Desert Tech 5.56x45 Flash hider	desert tech 5.56x45 flashhider	Desert Tech 5.56x45 flash hider
 Surefire WarComp 5.56x45 Flash hider for AR-15	surefire warcomp 5.56x45 flashhider for ar-15	AR-15 Surefire WarComp 5.56x45 Flash hider
-Izhmash 7.62x39 АK-103 muzzlebrake & compensator	izhmash 7.62x39 аk-103 muzzlebrake & compensator	AK-103 7.62x39 muzzle brake & compensator
+Izhmash 7.62x39 AK-103 muzzlebrake & compensator	izhmash 7.62x39 аk-103 muzzlebrake & compensator	AK-103 7.62x39 muzzle brake & compensator
 Decelerator 3 Port 9x19 Compensator	decelerator 3 port 9x19 compensator	Glock 9x19 CARVER Custom Decelerator 3 Port compensator
 National Match 7.62x51 muzzle brake & compensator for M1A	national match 7.62x51 muzzlebrake & compensator for m1a	M1A National Match 7.62x51 muzzle brake & compensator
 DVL-10 M2 muzzle brake	dvl-10 m2 muzzle break	DVL-10 M2 muzzle brake
@@ -1210,7 +1210,7 @@ HK A1 4.6x30 Flash hider for MP7	hk a1 4.6x30 flashhider for mp7	MP7A1 4.6x30 fl
 Spike tactical dynacomp 7.62x39 muzzle brake & compensator for AK	spike tactical dynacomp 7.62x39 muzzlebrake & compensator for ak	AK Spikes Tactical Dynacomp 7.62x39 muzzle brake & compensator
 Alpha Wolf Bullnose 9x19 Compensator	alpha wolf bullnose 9x19 compensator	Glock 9x19 Alpha Wolf bullnose compensator
 Noveske KX3 5.56x45 flash hider	noveske kx3 5.56x45 flashhider	Noveske KX3 5.56x45 flash hider
- VPO-136 muzzle brake & compensator	molot 7.62x39 vepr km   vpo-136 muzzlebrake & compensator	VPO-136 Vepr KM 7.62x39 muzzle brake & compensator
+Molot 7.62x39 Vepr KM / VPO-136 muzzle brake & compensator	molot 7.62x39 vepr km   vpo-136 muzzlebrake & compensator	VPO-136 Vepr KM 7.62x39 muzzle brake & compensator
 Lone Wolf Compensator 9 9x19	lone wolf compensator 9 9x19	Glock 9x19 Lone Wolf LWD-COMP9 compensator
 FN P90 5.7x28 flash hider	fn p90 5.7x28 flash hider	FN P90 5.7x28 flash hider
 DS Arms "Austrian Style" 7.62x51 muzzle brake for SA-58	ds arms austrian style 7.62x51 muzzle brake for sa-58	SA-58 7.62x51 Austrian style muzzle brake
@@ -1219,21 +1219,21 @@ ADAR 2-15.56x45 Flashhider	adar 2-15.56x45 flashhider	ADAR 2-15.56x45 flash hide
 SV-98 muzzle device	sv-98 muzzle device	SV-98 muzzle device
 Colt USGI A2 5.56x45 Flash hider for AR-15	colt usgi a2 5.56x45 flashhider for ar-15	AR-15 Colt USGI A2 5.56x45 flash hider
 Taktika Tula AK and AKM adapter	taktika tula ak and akm adapter	AK 7.62x39 Taktika Tula muzzle adapter
-Izhmash 5.45x39 АK-74M muzzle brake & compensator (6P20 0-20)	izhmash 5.45x39 аk-74m muzzlebrake & compensator (6p20 0-20)	AK-74M 5.45x39 muzzle brake & compensator (6P20 0-20)
+Izhmash 5.45x39 AK-74M muzzle brake & compensator (6P20 0-20)	izhmash 5.45x39 аk-74m muzzlebrake & compensator (6p20 0-20)	AK-74M 5.45x39 muzzle brake & compensator (6P20 0-20)
 A2 9x19 Flash hider for MPX	a2 9x19 flashhider for mpx	MPX A2 9x19 flash hider
 Izhmash 7.62x39 flash hider for AKML system	izhmash 7.62x39 flash hider for akml system	AKML 7.62x39 system Izhmash flash hider
 Izhmash 5.45x39 AK-74 muzzle brake & compensator (6P20 0-20)	izhmash 5.45x39 ak-74 muzzlebrake & compensator (6p20 0-20)	AK-74 5.45x39 muzzle brake & compensator (6P20 0-20)
 Izhmash 5.45x39 muzzle brake for AKS-74U (6P26 0-20)	izhmash 5.45x39 muzzle break for aks-74u (6p26 0-20)	AKS-74U 5.45x39 muzzle brake (6P26 0-20)
-VPO-209	thread protection for akm vpo-209	VPO-209 thread protector
+Thread protection for AKM/VPO-209	thread protection for akm vpo-209	VPO-209 thread protector
 Izhmash 7.62x39 AKM muzzle brake & compensator (6P1 0-14)	izhmash 7.62x39 akm muzzlebrake & compensator (6p1 0-14)	AKM 7.62x39 muzzle brake & compensator (6P1 0-14)
-compensator	izhmash 9x19 saiga-9 muzzle brake compensator	Saiga-9 9x19 muzzle brake/compensator
+Izhmash 9x19 Saiga-9 muzzle brake/compensator	izhmash 9x19 saiga-9 muzzle brake compensator	Saiga-9 9x19 muzzle brake/compensator
 Socom 16 7.62x51 muzzle brake & compensator for M1A (unthreaded)	socom 16 7.62x51 muzzlebrake & compensator for m1a (unthreaded)	M1A SOCOM 16 7.62x51 muzzle brake & compensator
 Socom 16 7.62x51 muzzle brake & compensator for M1A (threaded)	socom 16 7.62x51 muzzlebrake & compensator for m1a (threaded)	M1A Smith Enterprise SOCOM 16 7.62x51 threaded muzzle brake & compensator
 REAP-IR scope eyecup	reap-ir scope eyecup	Trijicon REAP-IR scope eyecup
-3.1	kac long panel for urx 3 3.1 fde	KAC URX 3/3.1 long panel
+KAC long panel for URX 3/3.1	kac long panel for urx 3 3.1 fde	KAC URX 3/3.1 long panel
 SV-98 anti-heat ribbon	sv-98 anti-heat ribbon	SV-98 anti-heat ribbon
-3.1	kac stopper panel for urx 3 3.1	KAC URX 3/3.1 stopper panel
-3.1	kac short panel for urx 3 3.1	KAC URX 3/3.1 short panel
+KAC stopper panel for URX 3/3.1	kac stopper panel for urx 3 3.1	KAC URX 3/3.1 stopper panel
+KAC short panel for URX 3/3.1	kac short panel for urx 3 3.1	KAC URX 3/3.1 short panel
 Vulcan MG scope eyecup	vulcan mg scope eyecup	Armasight Vulcan MG scope eyecup
 Heat shield for SV-98 silencer	heat shield for sv-98 silencer	SV-98 sound suppressor heat shield
 1P59 scope eyecup	1p59 scope eyecup	KMZ 1P59 scope eyecup
@@ -1295,7 +1295,7 @@ Remington Arms handguard for a R11 RSASS	remington arms handguard for a r11 rsas
 CAA HX-5 MP5 handguard	caa hx-5 mp5 handguard	MP5 CAA HX-5 handguard
 Stngr Vypr 10" M-LOK foregrip for AR15	stngr vypr 10 m-lok foregrip for ar15	AR-15 STNGR VYPR 10 inch M-LOK handguard
 Strike industries TRAX 1 foregrip	strike industries trax 1 foregrip	AK Strike Industries TRAX 1 handguard
-Daniel Defence RIS II 9.5 foregrip for AR-15-compatible systems	daniel defence ris ii 9.5 foregrip for ar-15-compatible systems	AR-15 Daniel Defense RIS II 9.5 handguard
+AR-15 Daniel Defense RIS II 9.5 handguard	daniel defence ris ii 9.5 foregrip for ar-15-compatible systems	AR-15 Daniel Defense RIS II 9.5 handguard
 Alfa Arms Goliaf AKS-74U Handguard	alfa arms goliaf aks-74u handguard	AKS-74U Alfa Arms Goliaf handguard
 Troy Industries 13" M-LOK foregrip for 416A5	troy industries 13 m-lok foregrip for 416a5	HK 416A5 TROY Industries M-LOK 13 inch handguard
 Vltor CASV FAS foregrip for FAL	vltor casv fas foregrip for fal	SA-58/FAL Vltor CASV FAS handguard
@@ -1320,7 +1320,7 @@ Magpul MOE SL carbine length M-LOK foregrip for AR15	magpul moe sl carbine lengt
 HK extended quadrail handguard for 416-compatible systems	hk extended quadrail handguard for 416-compatible systems	HK 416A5 Extended Quad Rail handguard
 HK quadrail handguard with a flip-up sight for 416-compatible systems	hk quadrail handguard with a flip-up sight for 416-compatible systems	HK 416A5 Quad Rail handguard with flip up front sight
 MP5 TL-99 Aluminum handguard	mp5 tl-99 aluminum handguard	MP5 TL-99 aluminum handguard
-B-11 AKS-74U Handguard	b-11 aks-74u handguard	AKS-74U Zenit B-11 handguard
+AKS-74U Zenit B-11 handguard	b-11 aks-74u handguard	AKS-74U Zenit B-11 handguard
 TDI AKM-L handguard for AK	tdi akm-l handguard for ak	AK TDI AKM-L handguard
 A*B Arms MOD X Gen.3 keymod handguard for M700	a*b arms mod x gen.3 keymod handguard for m700	Remington M700 AB Arms MOD*X GEN 3 KeyMod handguard
 SOK-12 aluminum handguard MTU002 Short Top	sok-12 aluminum handguard mtu002 short top	SOK-12 Leapers UTG PRO MTU002 Short Top aluminum handguard
@@ -1345,7 +1345,7 @@ Polymer AK-100 series foregrip	polymer ak-100 series foregrip	AK-100 series poly
 Fab Defence PR870 forestock	fab defence pr870 forestock	M870 FAB Defense PR870 forestock
 Polymer AK-74 foregrip (6P20 Sb.9)	polymer ak-74 foregrip (6p20 sb.9)	AK-74 polymer handguard (6P20 Sb.9)
 Wooden AK-74 handguard (6P1 Sb.6-1)	wooden ak-74 handguard (6p1 sb.6-1)	AK-74 wooden handguard (6P1 Sb.6-1)
- VPO-209 handguard	wooden akm   vpo-209 handguard	VPO-209 wooden handguard
+Wooden AKM / VPO-209 handguard	wooden akm   vpo-209 handguard	VPO-209 wooden handguard
 Wooden VPO-136 handguard	wooden vpo-136 handguard	VPO-136 Vepr KM wooden handguard
 Wooden AK-74 handguard (6P20 Sb.6)	wooden ak-74 handguard (6p20 sb.6)	AK-74 wooden handguard (6P20 Sb.6)
 Wooden AKS-74U Handguard (6P26 Sb.6)	wooden aks-74u handguard (6p26 sb.6)	AKS-74U wooden handguard (6P26 Sb.6)
@@ -1463,7 +1463,7 @@ UM Tactical UM3 Sight Mount	um tactical um3 sight mount	UM Tactical UM3 pistol s
 Aimtech Tiger Shark	aimtech tiger shark	Glock Aimtech Tiger Shark sight mount
 Short length rail for Hexagon	short length rail for hexagon	Hexagon short length rail
 B-3 mount combo	b-3 mount combo	VSS/VAL B-3 mount combo
-B-3 mount	b-3 mount	VSS/VAL B-3 ring mount
+B-3 mount	b-3 mount	VSS/VAL Zenit B-3 ring mount
 CASV 14 mount for M14	casv 14 mount for m14	M14 Vltor CASV-14 rail system
 Dovetail OP-SKS mount.	dovetail op-sks mount.	OP-SKS dovetail mount
 Aimpoint mount for the sights of Micro series	aimpoint mount for the sights of micro series	Aimpoint Micro Standard Mount
@@ -1506,15 +1506,15 @@ B-18 Mount	b-18 mount	AKS-74U Zenit B-18 Mount
 High profile mount for Trijicon RMR	high profile mount for trijicon rmr	Trijicon RMR high profile mount
 TOZ-106 scope mount	toz-106 scope mount	TOZ-106 scope mount
 NcStar MPR45 Backup mount	ncstar mpr45 backup mount	NcStar MPR45 Backup mount
-SIG MPX Gen1 Handguard 4 inch rail adapter	sig mpx gen1 handguard 4 inch rail adapter	MPX GEN1 handguard 4 inch rail adapter
+SIG MPX Gen1 Handguard 4 inch rail adapter	sig mpx gen1 handguard 4 inch rail adapter	MPX GEN1 handguard 4 inch rail
 30mm Scope mount	30mm scope mount	30mm Scope mount
-Strike industries keymod 6 inch guide	strike industries keymod 6 inch guide	Strike Industries KeyMod 6 inch rail
+Strike Industries KeyMod 6 inch rail	strike industries keymod 6 inch guide	Strike Industries KeyMod 6 inch rail
 B&T 3x rail mount for MP5	b&t 3x rail mount for mp5	MP5 B&T tri-rail receiver mount
-Vltor CASV keymod 4 inch guide	vltor casv keymod 4 inch guide	Vltor CASV KeyMod 4 inch rail
+Vltor CASV KeyMod 4 inch guide	vltor casv keymod 4 inch guide	Vltor CASV KeyMod 4 inch rail
 Dovetail mount for TOZ-106	dovetail mount for toz-106	TOZ-106 dovetail mount
 25 mm mount ring	25 mm mount ring	25mm mount ring
-153	stock adapter tactica tula 12003 for mp-133 153	MP-133/153 Taktika Tula 12003 stock adapter
-KAC URX 3 inch guide	kac urx 3 inch guide	KAC URX 3 3 inch rail
+Stock adapter Tactica Tula 12003 for MP-133/153	stock adapter tactica tula 12003 for mp-133 153	MP-133/153 Taktika Tula 12003 stock adapter
+KAC URX 3 3 inch rail	kac urx 3 inch guide	KAC URX 3 3 inch rail
 Vltor CASV keymod 2 inch guide	vltor casv keymod 2 inch guide	Vltor CASV KeyMod 2 inch rail
 Magpul M-LOK 4.1 inch guide	magpul m-lok 4.1 inch guide	Magpul M-LOK 4.1 inch rail
 Rotor 43 RIS mount for PP Kedr	rotor 43 ris mount for pp kedr	PP-91 Kedr Rotor 43 RIS mount
@@ -1547,7 +1547,7 @@ Scope mount for VPO-215	scope mount for vpo-215	VPO-215 scope rail mount
 PU 3.5x ring mount	pu 3.5x ring mount	PU 3.5x ring mount
 Strike industries bridge guide	strike industries bridge guide	Strike Industries TRAX bridge rail
 KMZ 1P69 Weaver mount	kmz 1p69 weaver mount	KMZ 1P69 Weaver mount
-B-8 mount	b-8 mount	MP-443 B-8 mount
+B-8 mount	b-8 mount	MP-443 Zenit B-8 mount
 B&T MP9 side rail	b&t mp9 side rail	MP9 side rail
 MTU-028SG rail for M870	mtu-028sg rail for m870	M870 Leapers UTG PRO MTU-028SG rail
 Sawn off Mosin rifle sniper stock	sawn off mosin rifle sniper stock	Mosin sawn-off sniper stock
@@ -1559,7 +1559,7 @@ Regular stock for HK MP7A1	regular stock for hk mp7a1	MP7A1 stock
 Zhukov-S for AK	zhukov-s for ak	AKM/AK-74 Magpul Zhukov-S stock
 LOBAEV Arms Stock	lobaev arms stock	DVL-10 stock
 HK A3 old stock model	hk a3 old stock model	MP5 A3 old model stock
-Regular stock for HK MP7A2	regular stock for hk mp7a2	MP7A2 standard stock
+Regular stock for HK MP7A2	regular stock for hk mp7a2	MP7A2 stock
 M1A Archangel stock	m1a archangel stock	M1A ProMag Archangel stock
 M700 MOD X Gen.3 stock	m700 mod x gen.3 stock	Remington M700 AB Arms MOD*X GEN 3 stock
 Recoil pad from Aim Sports for Mosin rifle	recoil pad from aim sports for mosin rifle	Mosin AIM Sports Recoil pad
@@ -1572,7 +1572,7 @@ Orsis T-5000M Stock	orsis t-5000m stock	Orsis T-5000M stock
 AT AICS polymer stock for M700	at aics polymer stock for m700	Remington M700 AT AICS polymer stock
 Fab Defence UAS Stock for SKS	fab defence uas stock for sks	SKS FAB Defense UAS stock
 Magpul PRO 700 chassis	magpul pro 700 chassis	Remington M700 Magpul Pro 700 chassis
-153	plastic pistol grip for mp-133 153	MP-133/153 plastic pistol grip
+Plastic pistol grip for MP-133/153	plastic pistol grip for mp-133 153	MP-133/153 plastic pistol grip
 HK A2 Stock	hk a2 stock	MP5 A2 stock
 HK E1 Stock for AR-15 and compatible	hk e1 stock for ar-15 and compatable	HK E1 stock
 ProMag Archangel OPFOR PRS Mosin rifle stock	promag archangel opfor prs mosin rifle stock	Mosin ProMag Archangel OPFOR PRS stock
@@ -1593,18 +1593,18 @@ SGA stock for M870	sga stock for m870	M870 Magpul SGA polymer stock
 Magpul CTR Carbine stock	magpul ctr carbine stock	Magpul CTR Carbine stock
 M14 M14ALCS(MOD. 0) stock	m14 m14alcs(mod. 0) stock	M14 SAGE International M14ALCS (MOD-0) handguard
 DSA Folding stock for SA-58	dsa folding stock for sa-58	SA-58 folding stock
-SI Viper Mod.1 Stock	si viper mod.1 stock	Strike Industries Viper Mod 1 stock
+Strike Industries Viper Mod 1 stock	si viper mod.1 stock	Strike Industries Viper Mod 1 stock
 Magpul Rubber Butt-Pad for Carbine stock series	magpul rubber butt-pad for carbine stock series	Magpul MOE Carbine stock series Rubber Butt-Pad
 IzhMash metal stock for AKS-74 (6P21 Sb.5)	izhmash metal stock for aks-74 (6p21 sb.5)	AKS-74 metal skeletonized stock (6P21 Sb.5)
-153	plastic stock for mp-133 153	MP-133/153 plastic stock
+Plastic stock for MP-133/153	plastic stock for mp-133 153	MP-133/153 plastic stock
 M14 M14ALCS(MOD. 0) stock (buttstock)	m14 m14alcs(mod. 0) stock (buttstock)	M14 SAGE International M14ALCS (MOD-0) stock
 F93 Pro Stock	f93 pro stock	ERGO F93 Pro stock
 DSA BRS stock for SA-58	dsa brs stock for sa-58	SA-58 BRS stock
-AKS-74U PT Lock	aks-74 aks-74u pt lock	AKS-74/AKS-74U Zenit PT Lock
+AKS-74/AKS-74U PT Lock	aks-74 aks-74u pt lock	AKS-74/AKS-74U Zenit PT Lock
 Double Star Ace Socom gen.4 stock for AR-15	double star ace socom gen.4 stock for ar-15	AR-15 DoubleStar ACE SOCOM Gen.4 stock
 Izhmash shoulder piece for AKMSN (6P4 Sb.1-19)	izhmash shoulder piece for akmsn (6p4 sb.1-19)	AKMSN shoulder piece (6P4 Sb.1-19)
 ATI Monte Carlo Mosin rifle stock	ati monte carlo mosin rifle stock	Mosin ATI Monte Carlo stock
-AK-74 PT Lock	akm ak-74 pt lock	AKM/AK-74 Zenit PT Lock
+AKM/AK-74 PT Lock	akm ak-74 pt lock	AKM/AK-74 Zenit PT Lock
 Buffer tube side folder adapter for M700	buffer tube side folder adapter for m700	Remington M700 AB Arms buffer tube side folder adapter
 Magpul PRS GEN2 FDE stock	magpul prs gen2 fde stock	Magpul PRS GEN2 stock (Flat Dark Earth)
 CAA AKTS AK-74 Buffer Tube for AK and compatible	caa akts ak-74 buffer tube for ak and compatible	AKM/AK-74 CAA AKTS AK buffer tube
@@ -1624,13 +1624,13 @@ FN Butt pad for P90	fn butt pad for p90	FN P90 butt pad
 Fab Defence GLR-16-S Stock	fab defence glr-16-s stock	FAB Defense GLR-16-S stock
 MOE Carbine stock	moe carbine stock	Magpul MOE Carbine stock (Black)
 Izhmash shoulder piece for AKMS (6P4 Sb.1-19)	izhmash shoulder piece for akms (6p4 sb.1-19)	AKMS shoulder piece (6P4 Sb.1-19)
-MPX stock	maxim defence cqb collapsing telescoping mcx mpx stock	MPX Maxim Defense CQB telescoping stock
+Maxim Defence CQB collapsing/telescoping MCX/MPX stock	maxim defence cqb collapsing telescoping mcx mpx stock	MPX Maxim Defense CQB telescoping stock
 Troy M7A1 PDW stock	troy m7a1 pdw stock	TROY M7A1 PDW stock (Black)
-AK100 PT Lock	ak74 ak100 pt lock	AK-74M/AK-100 Zenit PT Lock
-MPX stock	pmm ulss foldable mcx mpx stock	MPX PMM ULSS foldable stock
-MPX stock	early produced sig collapsing telescoping mcx mpx stock	MPX collapsing/telescoping stock
+AK74/AK100 PT Lock	ak74 ak100 pt lock	AK-74M/AK-100 Zenit PT Lock
+PMM "ULSS" foldable MCX/MPX stock	pmm ulss foldable mcx mpx stock	MPX PMM ULSS foldable stock
+Early produced SIG collapsing/telescoping MCX/MPX stock	early produced sig collapsing telescoping mcx mpx stock	MPX collapsing/telescoping stock
 LMT Sopmod stock	lmt sopmod stock	LMT SOPMOD stock
-Regular VPO-101 "Vepr Hunter" stock	regular vpo-101 vepr hunter stock	VPO-101 Vepr Hunter standard stock
+Regular VPO-101 "Vepr Hunter" stock	regular vpo-101 vepr hunter stock	VPO-101 Vepr Hunter stock
 HK "Enhanced Tube" buffer tube	hk enhanced tube buffer tube	HK Enhanced Tube buffer tube
 Wooden stock for Molot OP-SKS	wooden stock for molot op-sks	OP-SKS wooden stock
 HK Slim Line Stock	hk slim line stock	HK Slim Line Stock
@@ -1647,7 +1647,7 @@ Polymer stock DSA humpback for SA-58	polymer stock dsa humpback for sa-58	SA-58 
 Raptor grip for M870	raptor grip for m870	M870 Shockwave Raptor grip
 Izhmash wooden AKM stock (6P1 Sb.5)	izhmash wooden akm stock (6p1 sb.5)	AKM wooden stock (6P1 Sb.5)
 Mosin carbine stock	mosin carbine stock	Mosin carbine stock
-153	wooden stock for mp-133 153	MP-133/153 wooden stock
+Wooden stock for MP-133/153	wooden stock for mp-133 153	MP-133/153 wooden stock
 Molot wooden VPO-209 stock	molot wooden vpo-209 stock	VPO-209 wooden stock
 Izhmash polymer AK-74 stock (6P20 Sb.7)	izhmash polymer ak-74 stock (6p20 sb.7)	AK-74 polymer stock (6P20 Sb.7)
 Regular Mosin rifle stock	regular mosin rifle stock	Mosin rifle standard stock
@@ -1728,14 +1728,14 @@ Mosin frontsight	mosin frontsight	Mosin front sight
 UTG Low Profile A2 Frontsight AR-15	utg low profile a2 frontsight ar-15	AR-15 UTG Low Profile A2 front sight
 SVDS frontsight	svds frontsight	SVDS front sight
 AKMB system rear sight	akmb system rear sight	AKMB system rear sight
- VPO-209 Standard Rearsight	akm   vpo-209 standard rearsight	VPO-209 rear sight
+AKM / VPO-209 Standard Rearsight	akm   vpo-209 standard rearsight	VPO-209 rear sight
 Izhmash SOK-12 rear sight	izhmash sok-12 rear sight	SOK-12 rear sight
 DS Arms Holand Type Rearsight for SA-58	ds arms holand type rearsight for sa-58	SA-58 Holland type rear sight
 AK-74M Standard Rearsight (6P20 Sb.2)	ak-74m standard rearsight (6p20 sb.2)	AK-74M rear sight (6P20 Sb.2)
 AK-74 Standard Rearsight (6P1 Sb.2)	ak-74 standard rearsight (6p1 sb.2)	AK-74 rear sight (6P20 Sb.2)
 Sig Sauer Standard Frontsight	sig sauer standard frontsight	P226 front sight
 AKM Standard Rearsight (6P1 Sb.2-1)	akm standard rearsight (6p1 sb.2-1)	AKM rear sight (6P1 Sb.2-1)
-SKS Standard Rearsight	sks standard rearsight	SKS standard rear sight
+SKS Standard Rearsight	sks standard rearsight	SKS rear sight
 APB Rearsight	apb rearsight	APB rear sight
 APS Rearsight	aps rearsight	APS rear sight
 Glock ZEV Tech Front sight	glock zev tech front sight	Glock ZEV Tech front sight
@@ -1764,8 +1764,8 @@ Metal magazine for VPO-215 and compatibles, .366 TKM 4-round capacity	metal maga
 SI Advanced receiver extension buffer tube (anodized red)	si advanced receiver extension buffer tube (anodized red)	Strike Industries Advanced Receiver Extension buffer tube (Anodized Red)
 Magpul MBUS Gen.2 Frontsight FDE	magpul mbus gen.2 frontsight fde	Magpul MBUS Gen2 front flip-up sight (Flat Dark Earth)
 Magpul MBUS Gen.2 Rearsight FDE	magpul mbus gen.2 rearsight fde	Magpul MBUS Gen2 rear flip-up sight (Flat Dark Earth)
-3.1 FDE	kac stopper panel for urx 3 3.1 fde	KAC URX 3/3.1 stopper panel (Flat Dark Earth)
-3.1 FDE	kac short panel for urx 3 3.1 fde	KAC URX 3/3.1 short panel (Flat Dark Earth)
+KAC stopper panel for URX 3/3.1 FDE	kac stopper panel for urx 3 3.1 fde	KAC URX 3/3.1 stopper panel (Flat Dark Earth)
+KAC short panel for URX 3/3.1 FDE	kac short panel for urx 3 3.1 fde	KAC URX 3/3.1 short panel (Flat Dark Earth)
 ETMI-019 Mount	etmi-019 mount	ETMI-019 shotgun rail mount
 Medium length rail for Hexagon(Anodized Red)	medium length rail for hexagon(anodized red)	Hexagon medium length rail (Anodized Red)
 TDI AKM-L handguard for AK Anodized Red	tdi akm-l handguard for ak anodized red	AK TDI AKM-L handguard (Anodized Red)
@@ -1789,7 +1789,7 @@ Leatherman Multitool	leatherman multitool	Leatherman Multitool
 WIFI Camera	wifi camera	WI-FI Camera
 Signal Jammer	signal jammer	Signal Jammer
 MS2000 Marker	ms2000 marker	MS2000 Marker
-40 mm VOG-25	40 mm vog-25	40mm VOG-25
+40mm VOG-25	40 mm vog-25	40mm VOG-25
 Weapon safe key	weapon safe key	Weapon safe key
 120 pcs. 5.45x39 BT gs ammo pack	120 pcs. 5.45x39 bt gs ammo pack	5.45x39 BT gs 120 pcs. ammo pack
 120 pcs. 5.45x39 PP gs ammo pack	120 pcs. 5.45x39 pp gs ammo pack	5.45x39 PP gs 120 pcs. ammo pack
@@ -1808,7 +1808,7 @@ Weapon safe key	weapon safe key	Weapon safe key
 30 pcs. 5.45x39 PRS gs ammo pack	30 pcs. 5.45x39 prs gs ammo pack	5.45x39 PRS gs 30 pcs. ammo pack
 30 pcs. 5.45x39 PS gs ammo pack	30 pcs. 5.45x39 ps gs ammo pack	5.45x39 PS gs 30 pcs. ammo pack
 5 pcs. 12x70 DIPP ammo box	5 pcs. 12x70 dipp ammo box	12/70 RIP 5 shell ammo box
-7.62x39 PS ammo package	7.62x39 ps ammo package	7.62x39 PS 30 pcs. ammo pack
+7.62x39 PS ammo package	7.62x39 ps ammo package	7.62x39 PS gzh 30 pcs. ammo pack
 7.62x54 R SNB ammo	7.62x54 r snb ammo	7.62x54R SNB 30 pcs. ammo pack
 8 pcs pack of 9x39 7N12 BP ammo	8 pcs pack of 9x39 7n12 bp ammo	9x39 BP gs 8 pcs. ammo pack
 8 pcs pack of 9x39 7N9 SPP ammo	8 pcs pack of 9x39 7n9 spp ammo	9x39 SPP 8 pcs. ammo pack
@@ -1877,7 +1877,7 @@ Tac-Kek Heavy Trooper mask	tac-kek heavy trooper mask	Tac-Kek Heavy Trooper mask
 LBT-8005A Day Pack backpack	lbt-8005a day pack backpack	LBT-8005A Day Pack backpack
 LBT-1961A Load Bearing Chest Vest	lbt-1961a load bearing chest vest	LBT-1961A Load Bearing chest rig
 Midwest 14 inch M-LOK foregrip for MPX	midwest 14 inch m-lok foregrip for mpx	MPX Midwest Industries 14 inch M-LOK handguard
-Hexagon "DTKP MK.2" 7.62x39 sound suppressor	hexagon dtkp mk.2 7.62x39 sound suppressor	AK Hexagon DTKP MK.2 7.62x39 sound suppressor
+AK Hexagon DTKP MK.2 7.62x39 sound suppressor	hexagon dtkp mk.2 7.62x39 sound suppressor	AK Hexagon DTKP MK.2 7.62x39 sound suppressor
 30 pcs. 5.45x39 BP gs ammo pack	30 pcs. 5.45x39 bp gs ammo pack	5.45x39 BP gs 30 pcs. ammo pack
 30 pcs. 5.45x39 BT gs ammo pack	30 pcs. 5.45x39 bt gs ammo pack	5.45x39 BT gs 30 pcs. ammo pack
 20 pcs. 9x19 mm DIPP ammo box	20 pcs. 9x19 mm dipp ammo box	9x19mm RIP 20-round ammo box
@@ -1909,7 +1909,7 @@ CNC Warrior AK 5.56x45 mm muzzle device adapter	cnc warrior ak 5.56x45 mm muzzle
 Additional armor for the Bastion helmet	additional armor for the bastion helmet	Bastion helmet armor plate
 Diamond Age Bastion Helmet	diamond age bastion helmet	Diamond Age Bastion helmet
 Upper receiver B&T 9x19 for MP9 SMG	upper receiver b&t 9x19 for mp9 smg	MP9 9x19 upper receiver
-3.1 FDE	kac long panel for urx 3 3.1 fde	KAC URX 3/3.1 long panel (Flat Dark Earth)
+KAC long panel for URX 3/3.1 FDE	kac long panel for urx 3 3.1 fde	KAC URX 3/3.1 long panel (Flat Dark Earth)
 FN GL40 Mk.2 grenade launcher	fn gl40 mk.2 grenade launcher	FN40GL Mk2 grenade launcher
 M.U.L.E. stimulator	m.u.l.e. stimulator	M.U.L.E. stimulant injector
 Cocktail "Obdolbos"	cocktail obdolbos	"Obdolbos" cocktail injector
@@ -1943,7 +1943,7 @@ GP-34 underbarrel grenade launcher	gp-34 underbarrel grenade launcher	GP-34 unde
 LK 3F Transfer tourist backpack	lk 3f transfer tourist backpack	LK 3F Transfer tourist backpack
 Eberlestock F5 Switchblade backpack (dry earth)	eberlestock f5 switchblade backpack (dry earth)	Eberlestock F5 Switchblade backpack (Dry Earth)
 Eberlestock F4 Terminator load bearing backpack (tiger stripe)	eberlestock f4 terminator load bearing backpack (tiger stripe)	Eberlestock F4 Terminator load bearing backpack (Tiger Stripe)
-Spiritus Systems Bank Robber Chest Rig	direct action thunderbolt compact chest rig	Direct Action Thunderbolt compact chest rig
+Direct Action Thunderbolt compact chest rig	direct action thunderbolt compact chest rig	Direct Action Thunderbolt compact chest rig
 Kel-Tec RFB 7.62x51	kel-tec rfb 7.62x51 not func	Kel-Tec RFB 7.62x51 carbine
 Colt M45A1 .45 ACP pistol	colt m45a1 .45 acp pistol	Colt M45A1 .45 ACP pistol
 Mossberg 590A1 12ga shotgun	mossberg 590a1 12ga shotgun	Mossberg 590A1 12ga pump-action shotgun
@@ -1967,7 +1967,7 @@ Caiman Fixed Arm Visor	caiman fixed arm visor	Caiman Fixed Arm Visor
 Caiman Ballistic Guard Mandible	caiman ballistic guard mandible	Caiman Ballistic Mandible Guard
 Rys-T face shield	rys-t face shield	Rys-T face shield
 X47 Tactical Handguard for AK and compatible	x47 tactical handguard for ak and compatible	AK TDI X47 tactical handguard rail system
-Daniel Defence RIS II 9.5 foregrip for AR-15-compatible systems	daniel defence ris ii 9.5 fde foregrip for ar-15-compatible systems	AR-15 Daniel Defense RIS II 9.5 handguard (Flat Dark Earth)
+AR-15 Daniel Defense RIS II 9.5 handguard	daniel defence ris ii 9.5 fde foregrip for ar-15-compatible systems	AR-15 Daniel Defense RIS II 9.5 handguard (Flat Dark Earth)
 B-30 foregrip and rail mount B-31С	b-30 foregrip and rail mount b-31с	B-30 handguard with B-31S upper handguard rail
 M45A1 .45 ACP slide	m45a1 .45 acp slide	M45A1 .45 ACP slide
 Black beret	black beret	Beret (Black)
@@ -2008,8 +2008,8 @@ MP-153 forend cap	мp-153 forend cap	MP-153 12ga 4-shell forend cap
 30-round 6L23 5.45x39 magazine for AK-74 and compatibles	30-round 6l23 plum 5.45x39 magazine for ак-74 and compatibles	AK-74 5.45x39 6L23 30-round magazine (Plum)
 3-shell KS-23M 23mm magazine cap	3-shell ks-23m 23mm magazine cap	KS-23M 23x75 3-shell magazine cap
 Palm US AK30 7.62x39 magazine for AK and compatibles, 30-round capacity	palm us ak30 7.62x39 magazine for ak and compatibles, 30-round capacity (fde)	AK 7.62x39 Palm US AK30 30-round magazine (Flat Dark Earth)
-PMAG GEN M3 30 5.56x45 STANAG 30-round magazine	pmag gen m3 30 5.56x45 stanag 30-round magazine fde	5.56x45 Magpul PMAG GEN M3 30 STANAG 30-round magazine (Black)
-AKM GEN M3 7.62x39 magazine for AK and compatibles, 30-round capacity	pmag 30 ak akm gen m3 7.62x39 magazine for ak and compatibles, 30-round capacity (banana)	AK 7.62x39 Magpul PMAG 30 GEN M3 30-round magazine (Banana)
+PMAG GEN M3 30 5.56x45 STANAG 30-round magazine	pmag gen m3 30 5.56x45 stanag 30-round magazine fde	5.56x45 Magpul PMAG GEN M3 30 STANAG 30-round magazine (Flat Dark Earth)
+PMAG 30 AK/AKM GEN M3 7.62x39 magazine for AK and compatibles, 30-round capacity	pmag 30 ak akm gen m3 7.62x39 magazine for ak and compatibles, 30-round capacity (banana)	AK 7.62x39 Magpul PMAG 30 GEN M3 30-round magazine (Banana)
 8-shell M590A1 12ga magazine cap	8-shell m590a1 12ga magazine cap	M590A1 12ga 8-shell magazine cap
 M45A1 .45 ACP 7-round magazine	m45a1 .45 acp 7-round magazine	M45A1 .45 ACP 7-round magazine
 100 rounds belt	100 rounds belt	100 rounds belt
@@ -2034,14 +2034,14 @@ VPO-101 SVD style stock	vpo-101 svd style stock	VPO-101 Vepr Hunter SVD-style st
 20" barrel for M590 12ga	20 barrel for m590 12ga	M590A1 12ga 20 inch barrel
 Threaded barrel for M1911A1 .45 ACP	threaded barrel for m1911a1 .45 acp	M1911A1 .45 ACP threaded barrel
 National match barrel for M1911 .45 ACP	national match barrel for m1911 .45 acp	M1911A1 .45 ACP National Match barrel
-6B43 Zabralo-Sh 6A Armor	6b43 zabralo-sh 6a armor	6B43 Zabralo-Sh 6A Armor
+6B43 Zabralo-Sh 6A Armor	6b43 zabralo-sh 6a armor not func	6B43 Zabralo-Sh 6A body armor (0/85)
 Expeditionary fuel tank	expeditionary fuel tank	Expeditionary fuel tank (0/60)
-Aeroknox scorpius pistol grip for AK	aeroknox scorpius pistol grip for ak	AK Aeroknox Scorpius pistol grip
+AK Aeroknox Scorpius pistol grip	aeroknox scorpius pistol grip for ak	AK Aeroknox Scorpius pistol grip
 Sig Sauer pistol grip for P226	sig sauer fde pistol grip for p226 (combat)	P226 Combat pistol grip (Flat Dark Earth)
 Pachmayr "American legend grip 423 for M1911A1	pachmayr american legend grip #423 for m1911a1	M1911A1 Pachmayr American Legend grip #423
 Polymer pistol grip for KS-23M	polymer pistol grip for ks-23m	KS-23M polymer pistol grip
 Standart polymerpistol grip for M45A1	standart polymerpistol grip for m45a1	M45A1 polymer pistol grip
-Highcom Trooper TFO armor (multicam)	highcom trooper tfo armor (multicam) (0 70)	Highcom Trooper TFO armor (Multicam)
+Highcom Trooper TFO armor (multicam)	highcom trooper tfo armor (multicam) not func	Highcom Trooper TFO armor (Multicam) (0/85)
 Lone Star TX-15 DML Rifle	lone star tx-15 dml rifle	Lone Star TX-15 DML 5.56x45 carbine
 ADAR 2-15 .223 Carbine	adar 2-15 .223 carbine	ADAR 2-15 5.56x45 carbine
 DS Arms SA-58 7.62x51	ds arms sa-58 7.62x51	DS Arms SA-58 7.62x51 assault rifle
@@ -2068,7 +2068,7 @@ SilencerCo Omega 45k .45 ACP sound suppressor	silencerco omega 45k .45 acp sound
 Sig-Sauer "SRD" 7.62x51 Sound Suppressor	sig-sauer srd 7.62x51 sound suppressor	SIG Sauer SRD762Ti 7.62x51 sound suppressor
 Sig-Sauer SRD QD 7.62x51 Sound Suppressor	sig-sauer srd qd 7.62x51 sound suppressor	SIG Sauer SRD762-QD 7.62x51 sound suppressor
 SIG MCX Flip Up sight Rearsight	sig mcx flip up sight rearsight	MCX flip-up rear sight
-Cultist's knife	cultist's knife	Cultist's knife
+Cultist's knife	cultist's knife	Cultist knife
 Antidote xTG-12	antidote xtg-12	xTG-12 antidote injector
 Combat stimulant injector SJ9 TGLabs	combat stimulant injector sj9 tglabs	SJ9 TGLabs combat stimulant injector
 Magpul RVG grip FDE	magpul rvg grip fde	Magpul RVG foregrip (Flat Dark Earth)
@@ -2105,10 +2105,10 @@ Polymer stock for UMP	polymer stock for ump	HK UMP polymer stock
 KRISS Vector non folding stock adapter	kriss vector non folding stock adapter	KRISS Vector non-folding stock adapter
 Kriss Vector Pistol Sling Adapter	kriss vector pistol sling adapter	KRISS Vector Pistol Sling adapter
 KRISS Defiance DS150 stock	kriss defiance ds150 fde stock	KRISS Defiance DS150 stock (Flat Dark Earth)
-MPX stock	sig sauer thin lightweight mcx mpx stock	MCX thin lightweight stock
+SIG Sauer Thin lightweight MCX/MPX stock	sig sauer thin lightweight mcx mpx stock	MCX thin lightweight stock
 KRISS Defiance DS150 stock	kriss defiance ds150 stock	KRISS Defiance DS150 stock (Black)
 KRISSVector Gen.2 folding stock	krissvector gen.2 folding stock	KRISS Vector Gen.2 folding stock
-MPX stock	sig sauer telescoping mcx mpx stock	MCX telescoping stock
+SIG Sauer telescoping MCX/MPX stock	sig sauer telescoping mcx mpx stock	MCX telescoping stock
 171mm barrel for MCX and compatible .300 BLK	171mm barrel for mcx and compatible .300 blk	MCX .300 BLK 171mm barrel
 229mm barrel for MCX and compatible .300 BLK	229mm barrel for mcx and compatible .300 blk	MCX .300 BLK 229mm barrel
 24" barrel for Mk-18 .338 LM	24 barrel for mk-18 .338 lm	Mk-18 .338 LM 24 inch barrel
@@ -2138,7 +2138,7 @@ Smoke balaclava	smoke balaclava	Smoke balaclava
 120 pcs. 5.45x39 T gs ammo pack	120 pcs. 5.45x39 t gs ammo pack	5.45x39 T gs 120 pcs. ammo pack
 30 pcs. 5.45x39 SP ammo box	30 pcs. 5.45x39 sp ammo box	5.45x39 SP 30 pcs. ammo pack
 120 pcs. 5.45x39 BP gs ammo pack	120 pcs. 5.45x39 bp gs ammo pack	5.45x39 BP gs 120 pcs. ammo pack
-120 pcs. 5.45x39 BS gs ammo pack	120 pcs. 5.45x39 bs gs ammo pack	5.45x39 BS gs 120 pcs. ammo pack
+120 pcs. 5.45x39 BS gs ammo pack	120 pcs. 5.45x39 bs gs ammo pack	5.45x39 BP gs 120 pcs. ammo pack
 120 pcs. 5.45x39 BP gs ammo pack	120 pcs. 5.45x39 bp gs ammo pack 2	5.45x39 BP gs 120 pcs. ammo pack
 120 pcs. 5.45x39 BS gs ammo pack	120 pcs. 5.45x39 bs gs ammo pack 2	5.45x39 BS gs 120 pcs. ammo pack
 120 pcs. 5.45x39 T gs ammo pack	120 pcs. 5.45x39 t gs ammo pack 2	5.45x39 T gs 120 pcs. ammo pack
@@ -2153,9 +2153,9 @@ Rivals 2020 cap	rivals 2020 cap	Rivals 2020 cap
 Rivals 2020 beanie	rivals 2020 beanie	Rivals 2020 beanie
 Roubles	roubles	Roubles
 Metal fuel tank	metal fuel tank (0 100)	Metal fuel tank (0/100)
-MF-UNTAR armor vest	mf-untar armor vest (0 45)	MF-UNTAR body armor
-Altyn face shield	altyn face shield damaged	Altyn face shield
-BNTI Gzhel-K armor	bnti gzhel-k armor 0 65	BNTI Gzhel-K armor
+MF-UNTAR armor vest	mf-untar armor vest not func	MF-UNTAR body armor (0/50)
+Altyn face shield	altyn face shield not func	Altyn face shield (0/50)
+BNTI Gzhel-K armor	bnti gzhel-k armor not func	BNTI Gzhel-K armor (0/65)
 TP-200 TNT brick	tp-200 tnt brick	TP-200 TNT brick
 Can of thermite	can of thermite	Can of thermite
 Ratchet wrench	ratchet wrench	Ratchet wrench
@@ -2210,11 +2210,11 @@ STM 9 inch M-LOK handguard for AR-15	stm 9 inch m-lok handguard for ar-15	AR-15 
 DLG-123 pistol grip for AR-15 based systems	dlg-123 pistol grip for ar-15 based systems	AR-15 DLG-123 pistol grip
 PL-15 pistol slide	pl-15 pistol slide	PL-15 pistol slide
 Upper receiver for STM-9 9x19 carbine	upper receiver for stm-9 9x19 carbine	STM-9 9x19 upper receiver
- VPO-209 366TKM carbine	vepr akm   vpo-209 366tkm carbine not func	Molot VPO-209 .366 TKM carbine
+Vepr AKM / VPO-209 366TKM carbine	vepr akm   vpo-209 366tkm carbine not func	Molot VPO-209 .366 TKM carbine
 Simonov Semi-Automatic Carbine SKS 7.62x39 Hunting Rifle Version	simonov semi-automatic carbine sks 7.62x39 hunting rifle version not func	Simonov OP-SKS 7.62x39 semi-automatic carbine (Hunting Rifle Version)
 Simonov Semi-Automatic Carbine SKS 7.62x39	simonov semi-automatic carbine sks 7.62x39 not func	Simonov SKS 7.62x39 semi-automatic carbine
- VPO-136 7.62x39 carbine	vepr km   vpo-136 7.62x39 carbine not func	Molot VPO-136 Vepr KM 7.62x39 carbine
-VPO-101 7.62x51 carbine	vepr hunter vpo-101 7.62x51 carbine not func	VPO-101 Vepr Hunter 7.62x51 carbine
+Vepr KM / VPO-136 7.62x39 carbine	vepr km   vpo-136 7.62x39 carbine not func	Molot VPO-136 Vepr KM 7.62x39 carbine
+Vepr Hunter/VPO-101 7.62x51 carbine	vepr hunter vpo-101 7.62x51 carbine not func	VPO-101 Vepr Hunter 7.62x51 carbine
 AK-102 5.56x45 assault rifle	ak-102 5.56x45 assault rifle not func	AK-102 5.56x45 assault rifle
 AK-74N 5.45x39 assault rifle	ak-74n 5.45x39 assault rifle not func	AK-74N 5.45x39 assault rifle
 AKS-74N 5.45x39 assault rifle	aks-74n 5.45x39 assault rifle not func	AKS-74N 5.45x39 assault rifle
@@ -2274,7 +2274,7 @@ Remington Model 870 12ga shotgun	remington model 870 12ga shotgun not func	Remin
 MP-153 12ga semi-automatic shotgun	mp-153 12ga semi-automatic shotgun not func	MP-153 12ga semi-automatic shotgun
 MP-133 12ga shotgun	mp-133 12ga shotgun not func	MP-133 12ga pump-action shotgun
 TOZ KS-23M 23x75mm shotgun	toz ks-23m 23x75mm shotgun not func	TOZ KS-23M 23x75mm pump-action shotgun
-76 shotgun	saiga 12ga ver. 10 12 76 shotgun not func	Saiga 12ga ver.10 12/76 semi-automatic shotgun
+Saiga 12ga ver. 10 12/76 shotgun	saiga 12ga ver. 10 12 76 shotgun not func	Saiga 12ga ver.10 12/76 semi-automatic shotgun
 B&T MP9 9x19 submachinegun	b&t mp9 9x19 submachinegun not func	B&T MP9 9x19 submachine gun
 Submachinegun PP-19-01 Vityaz-SN 9x19	submachinegun pp-19-01 vityaz-sn 9x19 not func	PP-19-01 Vityaz-SN 9x19 submachine gun
 FN P90 5.7x28 submachinegun	fn p90 5.7x28 submachinegun not func	FN P90 5.7x28 submachine gun
@@ -2299,7 +2299,7 @@ LVNDMARK's rat poison	lvndmark's rat poison	LVNDMARK's rat poison
 CMMG Low Profile gas block	cmmg low profile gas block	CMMG Low Profile gas block
 SilencerCo ASR 51T 5.56x45 flash hider	silencerco asr 51t 5.56x45 flash hider	SilencerCo ASR 51T 5.56x45 flash hider
 AR-10 CMMG SV Brake 7.62x51 muzzle brake	ar-10 cmmg sv brake 7.62x51 muzzle brake	AR-10 CMMG SV Brake 7.62x51 muzzle brake
-ar-10 surefire procomp 7.62x51 muzzle brake	ar-10 surefire procomp 7.62x51 muzzle brake	AR-10 SureFire ProComp 7.62x51 muzzle brake
+AR-10 SureFire ProComp 7.62x51 muzzle brake	ar-10 surefire procomp 7.62x51 muzzle brake	AR-10 SureFire ProComp 7.62x51 muzzle brake
 SilencerCo SAKER ASR 556 5.56x45 sound suppressor	silencerco saker asr 556 5.56x45 sound suppressor	SilencerCo SAKER ASR 556 5.56x45 sound suppressor
 VOMZ PILAD Target Ring reflex sight	vomz pilad target ring reflex sight	VOMZ PILAD Target Ring reflex sight
 SIG Sauer ROMEO8T reflex sight	sig sauer romeo8t reflex sight	SIG Sauer ROMEO8T reflex sight
@@ -2318,23 +2318,22 @@ CMMG RipStock buttstock	cmmg ripstock buttstock	CMMG RipStock buttstock
 CMMG buffer tube	cmmg buffer tube	CMMG buffer tube
 MP-155 walnut stock	mp-155 walnut stock	MP-155 walnut stock
 MP-155 Ultima Polymer Stock	mp-155 ultima polymer stock	MP-155 Ultima polymer stock
-akm ak-74 promag archangel opfor aa47 buttstock	akm ak-74 promag archangel opfor aa47 buttstock	AKM/AK-74 ProMag Archangel OPFOR AA47 buttstock
+AKM/AK-74 ProMag Archangel OPFOR AA47 buttstock	akm ak-74 promag archangel opfor aa47 buttstock	AKM/AK-74 ProMag Archangel OPFOR AA47 buttstock
 MP-155 Ultima large recoil pad	mp-155 ultima large recoil pad	MP-155 Ultima large recoil pad
 mp-155 ultima medium recoil pad	mp-155 ultima medium recoil pad	MP-155 Ultima medium recoil pad
-mp-155 ultima small recoil pad	mp-155 ultima small recoil pad	MP-155 Ultima small recoil pad
+MP-155 Ultima small recoil pad	mp-155 ultima small recoil pad	MP-155 Ultima small recoil pad
 MP-155 510mm barrel	mp-155 510mm barrel	MP-155 510mm barrel
 Mk47 254mm barrel	mk47 254mm barrel	Mk47 254mm barrel
 Mk47 409mm barrel	mk47 409mm barrel	Mk47 409mm barrel
 SOK-12 Custom Guns Type-340 handguard	sok-12 custom guns type-340 handguard	SOK-12 Custom Guns Type-340 handguard
 AR-10 CMMG MK3 RML15 15 inch M-LOK handguard	ar-10 cmmg mk3 rml15 15 inch m-lok handguard	AR-10 CMMG MK3 RML15 15 inch M-LOK handguard
 AR-10 CMMG MK3 RML9 9 inch M-LOK handguard	ar-10 cmmg mk3 rml9 9 inch m-lok handguard	AR-10 CMMG MK3 RML9 9 inch M-LOK handguard
-ar-15 unique-ars wing & skull 12 inch handguard	ar-15 unique-ars wing & skull 12 inch handguard	AR-15 Unique-ARs Wing & Skull 12 inch handguard
+AR-15 Unique-ARs Wing & Skull 12 inch handguard	ar-15 unique-ars wing & skull 12 inch handguard	AR-15 Unique-ARs Wing & Skull 12 inch handguard
 MP-155 walnut forestock	mp-155 walnut forestock	MP-155 walnut forestock
-MP-155 Ultima polymer stock(forestock)	mp-155 ultima polymer stock handguard	MP-155 Ultima polymer stock (Handguard)
-ak custom arms ags-74 pro   sniper kit pistol grip	ak custom arms ags-74 pro   sniper kit pistol grip	AK Custom Arms AGS-74 PRO   Sniper Kit pistol grip
+MP-155 Ultima polymer stock(forestock)	mp-155 ultima polymer stock handguard	MP-155 Ultima polymer stock
+AK Custom Arms AGS-74 PRO + Sniper Kit pistol grip	ak custom arms ags-74 pro   sniper kit pistol grip	AK Custom Arms AGS-74 PRO   Sniper Kit pistol grip
 MP-155 Ultima pistol grip	mp-155 ultima pistol grip	MP-155 Ultima pistol grip
 Mk47 Resolute 7.62x39 upper receiver	mk47 resolute 7.62x39 upper receiver	Mk47 Resolute 7.62x39 upper receiver
-mystery ranch terraplane backpack	mystery ranch terraplane backpack	Mystery Ranch Terraplane backpack
 Hazard4 Pillbox backpack	hazard4 pillbox backpack	Hazard4 Pillbox backpack
 Hazard 4 Drawbridge backpack	hazard 4 drawbridge backpack	Hazard 4 Drawbridge backpack
 Waist pouch	waist pouch	Waist pouch

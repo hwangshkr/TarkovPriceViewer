@@ -125,6 +125,14 @@ namespace TarkovPriceViewer
             CompareOverlay_Button.Text = ((Keys)Int32.Parse(Program.settings["CompareOverlay_Key"])).ToString();
             TransParent_Bar.Value = Int32.Parse(Program.settings["Overlay_Transparent"]);
             TransParent_Text.Text = Program.settings["Overlay_Transparent"];
+
+            string[] data = { "Name", "Recoil", "Accuracy", "Ergo", "Flea", "NPC", "LL" };
+            CompareSort.Items.AddRange(data);
+            CompareSort.SelectedIndex = Int32.Parse(Program.settings["Compare_Sort"]);
+            string[] data2 = { "ASC", "DESC" };
+            CompareSortDirection.Items.AddRange(data2);
+            CompareSortDirection.SelectedIndex = Int32.Parse(Program.settings["Compare_Sort_Direction"]);
+
             TrayIcon.Visible = true;
         }
 
@@ -705,7 +713,10 @@ namespace TarkovPriceViewer
                                                                     if (item.type.Equals("Round") || item.type.Equals("Slug")
                                                                         || item.type.Equals("Buckshot") || item.type.Equals("Grenade launcher cartridge"))
                                                                     {
-                                                                        item.ballistic = Program.blist.Find(x => (x.Name.Equals(item.name_display) || x.Name.Equals(item.name_display2)));
+                                                                        if (!Program.blist.TryGetValue(item.name_display, out item.ballistic))
+                                                                        {
+                                                                            Program.blist.TryGetValue(item.name_display2, out item.ballistic);
+                                                                        }
                                                                     }
                                                                 }
                                                                 break;
@@ -998,6 +1009,18 @@ namespace TarkovPriceViewer
         private void RandomItem_CheckedChanged(object sender, EventArgs e)
         {
             Program.settings["RandomItem"] = (sender as CheckBox).Checked.ToString();
+        }
+
+        private void CompareSort_SelectedIndexChanged(object sender, EventArgs e)
+        {
+            Program.settings["Compare_Sort"] = (sender as ComboBox).SelectedIndex.ToString();
+            overlay.SortCompareView();
+        }
+
+        private void CompareSortDirection_SelectedIndexChanged(object sender, EventArgs e)
+        {
+            Program.settings["Compare_Sort_Direction"] = (sender as ComboBox).SelectedIndex.ToString();
+            overlay.SortCompareView();
         }
     }
 }

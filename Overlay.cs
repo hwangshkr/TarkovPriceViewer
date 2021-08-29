@@ -22,8 +22,6 @@ namespace TarkovPriceViewer
         private static readonly int WS_EX_TOOLWINDOW = 0x00000080;
         private static readonly int WS_EX_LAYERED = 0x80000;
         private static readonly int WS_EX_TRANSPARENT = 0x20;
-        private static readonly DataTable balltable = new DataTable();
-        private static readonly DataTable comparetable = new DataTable();
         private static int compare_size = 0;
 
         public Overlay()
@@ -48,32 +46,45 @@ namespace TarkovPriceViewer
 
         public void initializeCompareData()
         {
-            comparetable.Columns.Add("Name", typeof(string));
-            comparetable.Columns.Add("Recoil", typeof(string));
-            comparetable.Columns.Add("Accuracy", typeof(string));
-            comparetable.Columns.Add("Ergo", typeof(string));
-            comparetable.Columns.Add("Flea", typeof(string));
-            comparetable.Columns.Add("NPC", typeof(string));
-            comparetable.Columns.Add("LL", typeof(string));
+            ItemCompareGrid.ColumnCount = 7;
+            ItemCompareGrid.Columns[0].Name = "Name";
+            ItemCompareGrid.Columns[1].Name = "Recoil";
+            ItemCompareGrid.Columns[2].Name = "Accuracy";
+            ItemCompareGrid.Columns[3].Name = "Ergo";
+            ItemCompareGrid.Columns[4].Name = "Flea";
+            ItemCompareGrid.Columns[5].Name = "NPC";
+            ItemCompareGrid.Columns[6].Name = "LL";
             ItemCompareGrid.Visible = false;
-            ItemCompareGrid.DataSource = comparetable;
             ItemCompareGrid.ClearSelection();
+            ItemCompareGrid.SortCompare += new DataGridViewSortCompareEventHandler(ItemCompareGrid_SortCompare);
             ResizeGrid(ItemCompareGrid);
         }
 
         public void initializeBallistics()
         {
-            balltable.Columns.Add("Damage", typeof(string));
-            balltable.Columns.Add("1", typeof(string));
-            balltable.Columns.Add("2", typeof(string));
-            balltable.Columns.Add("3", typeof(string));
-            balltable.Columns.Add("4", typeof(string));
-            balltable.Columns.Add("5", typeof(string));
-            balltable.Columns.Add("6", typeof(string));
+            iteminfo_ball.ColumnCount = 8;
+            iteminfo_ball.Columns[0].Name = "Name";
+            iteminfo_ball.Columns[1].Name = "Damage";
+            iteminfo_ball.Columns[2].Name = "1";
+            iteminfo_ball.Columns[3].Name = "2";
+            iteminfo_ball.Columns[4].Name = "3";
+            iteminfo_ball.Columns[5].Name = "4";
+            iteminfo_ball.Columns[6].Name = "5";
+            iteminfo_ball.Columns[7].Name = "6";
             iteminfo_ball.Visible = false;
-            iteminfo_ball.DataSource = balltable;
             iteminfo_ball.ClearSelection();
             ResizeGrid(iteminfo_ball);
+        }
+
+        private void ItemCompareGrid_SortCompare(object sender, DataGridViewSortCompareEventArgs e)
+        {
+            if (e.Column.Index == 0 || e.Column.Index == 5 || e.Column.Index == 6) return;
+            int s1 = 0;
+            Int32.TryParse(String.Join("", e.CellValue1.ToString().Replace(",", "").Split(Program.splitcur)), out s1);
+            int s2 = 0;
+            Int32.TryParse(String.Join("", e.CellValue2.ToString().Replace(",", "").Split(Program.splitcur)), out s2);
+            e.SortResult = s1.CompareTo(s2);
+            e.Handled = true;
         }
 
         public void ResizeGrid(DataGridView view)
@@ -83,18 +94,34 @@ namespace TarkovPriceViewer
             view.Refresh();
         }
 
-        public void SetBallisticsColor()
+        public void SetBallisticsColor(Item item)
         {
-            if (iteminfo_ball.Rows.Count > 0)
+            for (int b = 0; b < iteminfo_ball.Rows.Count; b++)
             {
-                for (int i = 1; i < iteminfo_ball.Rows[0].Cells.Count; i++)//except damage
+                for (int i = 0; i < iteminfo_ball.Rows[b].Cells.Count; i++)
                 {
-                    int level = 0;
-                    Int32.TryParse((String)iteminfo_ball.Rows[0].Cells[i].Value, out level);
-                    iteminfo_ball.Rows[0].Cells[i].Style.BackColor = Program.BEColor[level];
+                    if (i == 0)
+                    {
+                        if (iteminfo_ball.Rows[b].Cells[i].Value.Equals(item.name_display) || iteminfo_ball.Rows[b].Cells[i].Value.Equals(item.name_display2))
+                        {
+                            iteminfo_ball.Rows[b].Cells[i].Style.ForeColor = Color.Gold;
+                        }
+                    } else if (i != 1)
+                    {
+                        try
+                        {
+                            int level = 0;
+                            Int32.TryParse((String)iteminfo_ball.Rows[b].Cells[i].Value, out level);
+                            iteminfo_ball.Rows[b].Cells[i].Style.BackColor = Program.BEColor[level];
+                        }
+                        catch (Exception e)
+                        {
+                            Debug.WriteLine(e.Message);
+                        }
+                    }
                 }
-                iteminfo_ball.Refresh();
             }
+            iteminfo_ball.Refresh();
         }
 
         public void ShowInfo(Item item, CancellationToken cts_one)
@@ -149,9 +176,12 @@ namespace TarkovPriceViewer
                         setTextColors(item);
                         if (item.ballistic != null)
                         {
-                            balltable.Rows.Add(item.ballistic.Data());
+                            foreach (Ballistic b in item.ballistic.Calibarlist)
+                            {
+                                iteminfo_ball.Rows.Add(b.Data());
+                            }
                             iteminfo_ball.Visible = true;
-                            SetBallisticsColor();
+                            SetBallisticsColor(item);
                             ResizeGrid(iteminfo_ball);
                         }
                     }
@@ -173,10 +203,23 @@ namespace TarkovPriceViewer
                     {
                         itemcompare_text.Text = String.Format("{0}", Program.presscomparekey);
                     }
-                    comparetable.Rows.Add(item.Data());
-                    ItemCompareGrid.Visible = true;
-                    ResizeGrid(ItemCompareGrid);
+                    if (item != null && item.market_address != null)
+                    {
+                        ItemCompareGrid.Rows.Add(item.Data());
+                        SortCompareView();
+                        ItemCompareGrid.Visible = true;
+                        ResizeGrid(ItemCompareGrid);
+                    }
                 }
+            };
+            Invoke(show);
+        }
+
+        public void SortCompareView()
+        {
+            Action show = delegate ()
+            {
+                ItemCompareGrid.Sort(ItemCompareGrid.Columns[Int32.Parse(Program.settings["Compare_Sort"])], (ListSortDirection)Int32.Parse(Program.settings["Compare_Sort_Direction"]));
             };
             Invoke(show);
         }
@@ -224,7 +267,7 @@ namespace TarkovPriceViewer
             {
                 if (!cts_one.IsCancellationRequested)
                 {
-                    balltable.Rows.Clear();
+                    iteminfo_ball.Rows.Clear();
                     //ResizeGrid(iteminfo_ball);
                     iteminfo_ball.Visible = false;
                     iteminfo_text.Text = Program.loading;
@@ -244,7 +287,7 @@ namespace TarkovPriceViewer
                     if (!itemcompare_panel.Visible)
                     {
                         compare_size = 0;
-                        comparetable.Rows.Clear();
+                        ItemCompareGrid.Rows.Clear();
                         ResizeGrid(ItemCompareGrid);
                         itemcompare_panel.Location = point;
                         itemcompare_panel.Visible = true;
