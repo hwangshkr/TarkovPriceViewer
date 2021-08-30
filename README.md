@@ -9,8 +9,17 @@ When the name appears as in the image, press the shortcut key (default: F9). By 
 </br>
 </br>
 <img src="https://user-images.githubusercontent.com/32073152/130593787-f0979114-46cf-47cb-93f3-2f364195e7e9.gif"/>
-This program can also be used for comparing the price of parts in Edit Preset.
-This is the experiential function since version 1.06. You can compare some options of items with the shortcut key (default: F8).
+This program can also be used for comparing the price of parts in Edit Preset.</br>
+This is the experiential function since version 1.06. You can compare some options of items with the shortcut key (default: F8).</br>
+Sorting function is added since Version 1.08.</br>
+</br>
+</br>
+<img src="https://user-images.githubusercontent.com/32073152/131343945-99a673df-877b-4059-a674-85ea6df966cf.png"/>
+Ballistics is added since Version 1.08.
+</br>
+</br>
+<img src="https://user-images.githubusercontent.com/32073152/131344302-57be08bb-b6f1-449a-a653-20544db68630.png"/>
+You can set some values for the functions.
 </br>
 </br>
 If you got errors, please check you installed .NET Framework 4.7.2 (https://dotnet.microsoft.com/download/dotnet-framework/net472).
