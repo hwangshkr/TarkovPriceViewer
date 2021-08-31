@@ -55,7 +55,8 @@ namespace TarkovPriceViewer
         public String[] Data()
         {
             return (new String[] {
-                Name
+                Special
+                , Name
                 , Damage
                 , BE1
                 , BE2

@@ -222,33 +222,40 @@ namespace TarkovPriceViewer
                 {
                     if (press_key_control == null)
                     {
-                        int vkCode = Marshal.ReadInt32(lParam);
-                        if (vkCode == Int32.Parse(Program.settings["ShowOverlay_Key"]))
+                        if (Program.finishloadingballistics)
                         {
-                            long CurrentTime = DateTime.Now.Ticks;
-                            if (CurrentTime - presstime > 2000000)
+                            int vkCode = Marshal.ReadInt32(lParam);
+                            if (vkCode == Int32.Parse(Program.settings["ShowOverlay_Key"]))
+                            {
+                                long CurrentTime = DateTime.Now.Ticks;
+                                if (CurrentTime - presstime > 2000000)
+                                {
+                                    point = Control.MousePosition;
+                                    LoadingItemInfo();
+                                }
+                                else
+                                {
+                                    Debug.WriteLine("key pressed in 0.2 seconds.");
+                                }
+                                presstime = CurrentTime;
+                            }
+                            else if (vkCode == Int32.Parse(Program.settings["CompareOverlay_Key"]))
                             {
                                 point = Control.MousePosition;
-                                LoadingItemInfo();
+                                LoadingItemCompare();
                             }
-                            else
+                            else if (vkCode == Int32.Parse(Program.settings["HideOverlay_Key"])
+                                || vkCode == 9 //tab
+                                || vkCode == 27 //esc
+                                )
                             {
-                                Debug.WriteLine("key pressed in 0.2 seconds.");
+                                CloseItemInfo();
+                                CloseItemCompare();
                             }
-                            presstime = CurrentTime;
-                        }
-                        else if (vkCode == Int32.Parse(Program.settings["CompareOverlay_Key"]))
+                        } else
                         {
                             point = Control.MousePosition;
-                            LoadingItemCompare();
-                        }
-                        else if (vkCode == Int32.Parse(Program.settings["HideOverlay_Key"])
-                            || vkCode == 9 //tab
-                            || vkCode == 27 //esc
-                            )
-                        {
-                            CloseItemInfo();
-                            CloseItemCompare();
+                            overlay.ShowWaitBallistics(point);
                         }
                     }
                 }
@@ -331,7 +338,7 @@ namespace TarkovPriceViewer
                 if (!cts_one.IsCancellationRequested)
                 {
                     Item item = Program.itemlist[new Random().Next(Program.itemlist.Count - 1)];
-                    //item = MatchItemName("9x19mm Pst gzh".ToLower().Trim().ToCharArray());
+                    //item = MatchItemName("7.62x54r_7n37".ToLower().Trim().ToCharArray());
                     FindItemInfo(item);
                     if (isiteminfo)
                     {

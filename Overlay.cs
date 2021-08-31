@@ -62,15 +62,16 @@ namespace TarkovPriceViewer
 
         public void initializeBallistics()
         {
-            iteminfo_ball.ColumnCount = 8;
-            iteminfo_ball.Columns[0].Name = "Name";
-            iteminfo_ball.Columns[1].Name = "Damage";
-            iteminfo_ball.Columns[2].Name = "1";
-            iteminfo_ball.Columns[3].Name = "2";
-            iteminfo_ball.Columns[4].Name = "3";
-            iteminfo_ball.Columns[5].Name = "4";
-            iteminfo_ball.Columns[6].Name = "5";
-            iteminfo_ball.Columns[7].Name = "6";
+            iteminfo_ball.ColumnCount = 9;
+            iteminfo_ball.Columns[0].Name = "Type";
+            iteminfo_ball.Columns[1].Name = "Name";
+            iteminfo_ball.Columns[2].Name = "Damage";
+            iteminfo_ball.Columns[3].Name = "1";
+            iteminfo_ball.Columns[4].Name = "2";
+            iteminfo_ball.Columns[5].Name = "3";
+            iteminfo_ball.Columns[6].Name = "4";
+            iteminfo_ball.Columns[7].Name = "5";
+            iteminfo_ball.Columns[8].Name = "6";
             iteminfo_ball.Visible = false;
             iteminfo_ball.ClearSelection();
             ResizeGrid(iteminfo_ball);
@@ -106,7 +107,7 @@ namespace TarkovPriceViewer
                         {
                             iteminfo_ball.Rows[b].Cells[i].Style.ForeColor = Color.Gold;
                         }
-                    } else if (i != 1)
+                    } else if (i >= 3)
                     {
                         try
                         {
@@ -268,12 +269,24 @@ namespace TarkovPriceViewer
                 if (!cts_one.IsCancellationRequested)
                 {
                     iteminfo_ball.Rows.Clear();
-                    //ResizeGrid(iteminfo_ball);
                     iteminfo_ball.Visible = false;
                     iteminfo_text.Text = Program.loading;
                     iteminfo_panel.Location = point;
                     iteminfo_panel.Visible = true;
                 }
+            };
+            Invoke(show);
+        }
+
+        public void ShowWaitBallistics(Point point)
+        {
+            Action show = delegate ()
+            {
+                iteminfo_ball.Rows.Clear();
+                iteminfo_ball.Visible = false;
+                iteminfo_text.Text = Program.notfinishloading;
+                iteminfo_panel.Location = point;
+                iteminfo_panel.Visible = true;
             };
             Invoke(show);
         }

@@ -5,6 +5,7 @@ using System.Drawing;
 using System.IO;
 using System.Text.Json;
 using System.Text.RegularExpressions;
+using System.Threading;
 using System.Threading.Tasks;
 using System.Windows.Forms;
 
@@ -28,7 +29,9 @@ namespace TarkovPriceViewer
         public static readonly String loading = "Loading...";
         public static readonly String notfound = "Item Name Not Found.";
         public static readonly String noflea = "Item not Found on Flea.";
+        public static readonly String notfinishloading = "Wait for Loading Data. Please Check Your Internet, and Check Tarkov Wiki Site.";
         public static readonly String presscomparekey = "Please Press Compare Key.";
+        public static bool finishloadingballistics = false;
         public static readonly String wiki = "https://escapefromtarkov.fandom.com/wiki/";
         public static readonly String tarkovmarket = "https://tarkov-market.com/item/";
         public static readonly String official = "https://www.escapefromtarkov.com/";
@@ -122,7 +125,7 @@ namespace TarkovPriceViewer
                 }
                 String st;
                 settings.Remove("Version");//force
-                settings.Add("Version", "v1.08");//force
+                settings.Add("Version", "v1.09");//force
                 if (!settings.TryGetValue("MinimizetoTrayWhenStartup", out st))
                 {
                     settings.Add("MinimizetoTrayWhenStartup", "false");
@@ -213,107 +216,114 @@ namespace TarkovPriceViewer
 
         private static void getBallistics()
         {
-            try
+            while (!finishloadingballistics)
             {
-                using (TPVWebClient wc = new TPVWebClient())
+                try
                 {
-                    HtmlAgilityPack.HtmlDocument doc = new HtmlAgilityPack.HtmlDocument();
-                    Debug.WriteLine(Program.wiki + "Ballistics");
-                    doc.LoadHtml(wc.DownloadString(Program.wiki + "Ballistics"));
-                    HtmlAgilityPack.HtmlNode node_tm = doc.DocumentNode.SelectSingleNode("//table[@id='trkballtable']");
-                    HtmlAgilityPack.HtmlNodeCollection nodes = null;
-                    HtmlAgilityPack.HtmlNodeCollection sub_nodes = null;
-                    if (node_tm != null)
+                    using (TPVWebClient wc = new TPVWebClient())
                     {
-                        node_tm = node_tm.SelectSingleNode(".//tbody");
+                        HtmlAgilityPack.HtmlDocument doc = new HtmlAgilityPack.HtmlDocument();
+                        Debug.WriteLine(Program.wiki + "Ballistics");
+                        doc.LoadHtml(wc.DownloadString(Program.wiki + "Ballistics"));
+                        HtmlAgilityPack.HtmlNode node_tm = doc.DocumentNode.SelectSingleNode("//table[@id='trkballtable']");
+                        HtmlAgilityPack.HtmlNodeCollection nodes = null;
+                        HtmlAgilityPack.HtmlNodeCollection sub_nodes = null;
                         if (node_tm != null)
                         {
-                            nodes = node_tm.SelectNodes(".//tr");
-                            if (nodes != null)
+                            node_tm = node_tm.SelectSingleNode(".//tbody");
+                            if (node_tm != null)
                             {
-                                blist.Clear();
-                                List<Ballistic> sub_blist = new List<Ballistic>();
-                                foreach (HtmlAgilityPack.HtmlNode node in nodes)
+                                nodes = node_tm.SelectNodes(".//tr");
+                                if (nodes != null)
                                 {
-                                    if (!node.GetAttributeValue("id", "").Equals(""))
+                                    blist.Clear();
+                                    List<Ballistic> sub_blist = new List<Ballistic>();
+                                    foreach (HtmlAgilityPack.HtmlNode node in nodes)
                                     {
-                                        sub_blist = new List<Ballistic>();
-                                    }
-                                    sub_nodes = node.SelectNodes(".//td");
-                                    if (sub_nodes != null && sub_nodes.Count >= 15)
-                                    {
-                                        int first = sub_nodes[0].GetAttributeValue("rowspan", 1) == 1 ? 0 : 1;
-                                        if (sub_nodes[0].InnerText.Trim().Equals("40x46 mm"))
+                                        if (!node.GetAttributeValue("id", "").Equals(""))
                                         {
-                                            first = 1;
+                                            sub_blist = new List<Ballistic>();
                                         }
-                                        String name = sub_nodes[first++].InnerText.Trim();
-                                        String special = null;
-                                        if (name.EndsWith("S T"))
+                                        sub_nodes = node.SelectNodes(".//td");
+                                        if (sub_nodes != null && sub_nodes.Count >= 15)
                                         {
-                                            name = new Regex("(S T)$").Replace(name, "");
-                                            special = "ST";
-                                        }
-                                        if (name.EndsWith("T"))
-                                        {
-                                            name = new Regex("T$").Replace(name, "");
-                                            special = "T";
-                                        }
-                                        if (name.EndsWith("S"))
-                                        {
-                                            name = new Regex("S$").Replace(name, "");
-                                            special = "S";
-                                        }
-                                        name = name.Replace("*", "").Trim();
-                                        String damage = sub_nodes[first++].InnerText.Trim();
-                                        if (damage.Contains("x"))
-                                        {
-                                            String[] temp_d = damage.Split('x');
-                                            int mul = 1;
-                                            try
+                                            int first = sub_nodes[0].GetAttributeValue("rowspan", 1) == 1 ? 0 : 1;
+                                            if (sub_nodes[0].InnerText.Trim().Equals("40x46 mm"))
                                             {
-                                                foreach (String d in temp_d)
-                                                {
-                                                    mul *= Int32.Parse(d);
-                                                }
-                                            } catch (Exception ex)
-                                            {
-                                                Debug.WriteLine(ex.Message);
+                                                first = 1;
                                             }
-                                            damage += " = " + mul;
+                                            String name = sub_nodes[first++].InnerText.Trim();
+                                            String special = "";
+                                            if (name.EndsWith(" S T"))
+                                            {
+                                                name = new Regex("(S T)$").Replace(name, "");
+                                                special = @"Subsonic & Tracer";
+                                            }
+                                            if (name.EndsWith(" T"))
+                                            {
+                                                name = new Regex("T$").Replace(name, "");
+                                                special = @"Tracer";
+                                            }
+                                            if (name.EndsWith(" S"))
+                                            {
+                                                name = new Regex("S$").Replace(name, "");
+                                                special = @"Subsonic";
+                                            }
+                                            name = name.Replace("*", "").Trim();
+                                            String damage = sub_nodes[first++].InnerText.Trim();
+                                            if (damage.Contains("x"))
+                                            {
+                                                String[] temp_d = damage.Split('x');
+                                                int mul = 1;
+                                                try
+                                                {
+                                                    foreach (String d in temp_d)
+                                                    {
+                                                        mul *= Int32.Parse(d);
+                                                    }
+                                                }
+                                                catch (Exception ex)
+                                                {
+                                                    Debug.WriteLine(ex.Message);
+                                                }
+                                                damage += " = " + mul;
+                                            }
+                                            Ballistic b = new Ballistic(
+                                                name
+                                                , damage
+                                                , sub_nodes[first++].InnerText.Trim()
+                                                , sub_nodes[first++].InnerText.Trim()
+                                                , sub_nodes[first++].InnerText.Trim()
+                                                , sub_nodes[first++].InnerText.Trim()
+                                                , sub_nodes[first++].InnerText.Trim()
+                                                , sub_nodes[first++].InnerText.Trim()
+                                                , sub_nodes[first++].InnerText.Trim()
+                                                , sub_nodes[first++].InnerText.Trim()
+                                                , sub_nodes[first++].InnerText.Trim()
+                                                , sub_nodes[first++].InnerText.Trim()
+                                                , sub_nodes[first++].InnerText.Trim()
+                                                , sub_nodes[first++].InnerText.Trim()
+                                                , sub_nodes[first++].InnerText.Trim()
+                                                , special
+                                                , sub_blist
+                                                );
+                                            sub_blist.Add(b);
+                                            blist.Add(name, b);
                                         }
-                                        Ballistic b = new Ballistic(
-                                            name
-                                            , damage
-                                            , sub_nodes[first++].InnerText.Trim()
-                                            , sub_nodes[first++].InnerText.Trim()
-                                            , sub_nodes[first++].InnerText.Trim()
-                                            , sub_nodes[first++].InnerText.Trim()
-                                            , sub_nodes[first++].InnerText.Trim()
-                                            , sub_nodes[first++].InnerText.Trim()
-                                            , sub_nodes[first++].InnerText.Trim()
-                                            , sub_nodes[first++].InnerText.Trim()
-                                            , sub_nodes[first++].InnerText.Trim()
-                                            , sub_nodes[first++].InnerText.Trim()
-                                            , sub_nodes[first++].InnerText.Trim()
-                                            , sub_nodes[first++].InnerText.Trim()
-                                            , sub_nodes[first++].InnerText.Trim()
-                                            , special
-                                            , sub_blist
-                                            );
-                                        sub_blist.Add(b);
-                                        blist.Add(name, b);
                                     }
                                 }
                             }
                         }
                     }
+                    finishloadingballistics = true;
+                }
+                catch (Exception e)
+                {
+                    Debug.WriteLine("error with ballistics : " + e.Message);
+                    Thread.Sleep(3000);
                 }
             }
-            catch (Exception e)
-            {
-                Debug.WriteLine(e.Message);
-            }
+            Debug.WriteLine("finish to get ballistics.");
         }
     }
 }
