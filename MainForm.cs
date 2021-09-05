@@ -339,15 +339,7 @@ namespace TarkovPriceViewer
                 {
                     Item item = Program.itemlist[new Random().Next(Program.itemlist.Count - 1)];
                     //item = MatchItemName("7.62x54r_7n37".ToLower().Trim().ToCharArray());
-                    FindItemInfo(item);
-                    if (isiteminfo)
-                    {
-                        overlay.ShowInfo(item, cts_one);
-                    }
-                    else
-                    {
-                        overlay.ShowCompare(item, cts_one);
-                    }
+                    FindItemInfo(item, isiteminfo, cts_one);
                 }
             } else
             {
@@ -356,7 +348,7 @@ namespace TarkovPriceViewer
                 {
                     if (!cts_one.IsCancellationRequested)
                     {
-                        FindItem(isiteminfo, fullimage, cts_one);
+                        FindItem(fullimage, isiteminfo, cts_one);
                     }
                 }
                 else
@@ -462,7 +454,7 @@ namespace TarkovPriceViewer
             return text;
         }
 
-        private void FindItem(bool isiteminfo, Bitmap fullimage, CancellationToken cts_one)
+        private void FindItem(Bitmap fullimage, bool isiteminfo, CancellationToken cts_one)
         {
             Item item = new Item();
             using (Mat ScreenMat_original = BitmapConverter.ToMat(fullimage))
@@ -494,15 +486,7 @@ namespace TarkovPriceViewer
                 }
                 if (!cts_one.IsCancellationRequested)
                 {
-                    FindItemInfo(item);
-                    if (isiteminfo)
-                    {
-                        overlay.ShowInfo(item, cts_one);
-                    }
-                    else
-                    {
-                        overlay.ShowCompare(item, cts_one);
-                    }
+                    FindItemInfo(item, isiteminfo, cts_one);
                 }
             }
             fullimage.Dispose();
@@ -586,7 +570,7 @@ namespace TarkovPriceViewer
             return d[m - 1, n - 1];
         }
 
-        private void FindItemInfo(Item item)
+        private void FindItemInfo(Item item, bool isiteminfo, CancellationToken cts_one)
         {
             if (item.market_address != null)
             {
@@ -662,151 +646,169 @@ namespace TarkovPriceViewer
                                     }
                                 }
                             }
-                            Debug.WriteLine(Program.wiki + item.wiki_address);
-                            try
+                            if (isiteminfo)
                             {
-                                doc.LoadHtml(wc.DownloadString(Program.wiki + item.wiki_address));
+                                overlay.ShowInfo(item, cts_one);
                             }
-                            catch (WebException ex)
+                            else
                             {
-                                Debug.WriteLine(ex.Message);
-                                if (ex.Status == WebExceptionStatus.ProtocolError && ex.Response != null
-                                    && (ex.Response as HttpWebResponse).StatusCode == HttpStatusCode.NotFound)
-                                {
-                                    Debug.WriteLine(Program.wiki + item.name_display2.Replace(" ", "_"));
-                                    doc.LoadHtml(wc.DownloadString(Program.wiki + item.name_display2.Replace(" ", "_")));
-                                }
+                                overlay.ShowCompare(item, cts_one);
                             }
-                            node_tm = doc.DocumentNode.SelectSingleNode("//div[@class='mw-parser-output']");
-                            if (node_tm != null)
+                            bool isdisconnected = false;
+                            do
                             {
-                                StringBuilder sb = new StringBuilder();
-                                nodes = node_tm.SelectNodes(".//li");
-                                if (nodes != null)
+                                isdisconnected = false;
+                                try
                                 {
-                                    foreach (HtmlAgilityPack.HtmlNode node in nodes)
+                                    Debug.WriteLine(Program.wiki + item.wiki_address);
+                                    try
                                     {
-                                        if (node.InnerText.Contains(" to be found "))
-                                        {
-                                            sb.Append(node.InnerText).Append("\n");
-                                        }
+                                        doc.LoadHtml(wc.DownloadString(Program.wiki + item.wiki_address));
                                     }
-                                }
-                                sub_node_tm = node_tm.SelectSingleNode(".//td[@class='va-infobox-cont']");
-                                if (sub_node_tm != null)
-                                {
-                                    nodes = sub_node_tm.SelectNodes(".//table[@class='va-infobox-group']");
-                                    if (nodes != null)
+                                    catch (WebException ex) when (ex.Status == WebExceptionStatus.ProtocolError)
                                     {
-                                        foreach (HtmlAgilityPack.HtmlNode node in nodes)
+                                        Debug.WriteLine(ex.Message);
+                                        Debug.WriteLine(Program.wiki + item.name_display2.Replace(" ", "_"));
+                                        doc.LoadHtml(wc.DownloadString(Program.wiki + item.name_display2.Replace(" ", "_")));
+                                    }
+                                    node_tm = doc.DocumentNode.SelectSingleNode("//div[@class='mw-parser-output']");
+                                    if (node_tm != null)
+                                    {
+                                        StringBuilder sb = new StringBuilder();
+                                        nodes = node_tm.SelectNodes(".//li");
+                                        if (nodes != null)
                                         {
-                                            HtmlAgilityPack.HtmlNode temp_node = node.SelectSingleNode(".//th[@class='va-infobox-header']");
-                                            if (temp_node != null)
+                                            foreach (HtmlAgilityPack.HtmlNode node in nodes)
                                             {
-                                                if (temp_node.InnerText.Trim().Equals("General data"))
+                                                if (node.InnerText.Contains(" to be found "))
                                                 {
-                                                    HtmlAgilityPack.HtmlNodeCollection temp_node_list = sub_node_tm.SelectNodes(".//tr");
-                                                    if (temp_node_list != null)
+                                                    sb.Append(node.InnerText).Append("\n");
+                                                }
+                                            }
+                                        }
+                                        sub_node_tm = node_tm.SelectSingleNode(".//td[@class='va-infobox-cont']");
+                                        if (sub_node_tm != null)
+                                        {
+                                            nodes = sub_node_tm.SelectNodes(".//table[@class='va-infobox-group']");
+                                            if (nodes != null)
+                                            {
+                                                foreach (HtmlAgilityPack.HtmlNode node in nodes)
+                                                {
+                                                    HtmlAgilityPack.HtmlNode temp_node = node.SelectSingleNode(".//th[@class='va-infobox-header']");
+                                                    if (temp_node != null)
                                                     {
-                                                        for (int n = 0; n < temp_node_list.Count; n++)
+                                                        if (temp_node.InnerText.Trim().Equals("General data"))
                                                         {
-                                                            HtmlAgilityPack.HtmlNode temp_node2 = node.SelectSingleNode(".//td[@class='va-infobox-label']");
-                                                            if (temp_node2 != null && temp_node2.InnerHtml.Trim().Equals("Type"))
+                                                            HtmlAgilityPack.HtmlNodeCollection temp_node_list = sub_node_tm.SelectNodes(".//tr");
+                                                            if (temp_node_list != null)
                                                             {
-                                                                temp_node2 = node.SelectSingleNode(".//td[@class='va-infobox-content']");
-                                                                if (temp_node2 != null)
+                                                                for (int n = 0; n < temp_node_list.Count; n++)
                                                                 {
-                                                                    item.type = temp_node2.InnerHtml.Trim();
-                                                                    if (item.type.Equals("Round") || item.type.Equals("Slug")
-                                                                        || item.type.Equals("Buckshot") || item.type.Equals("Grenade launcher cartridge"))
+                                                                    HtmlAgilityPack.HtmlNode temp_node2 = node.SelectSingleNode(".//td[@class='va-infobox-label']");
+                                                                    if (temp_node2 != null && temp_node2.InnerHtml.Trim().Equals("Type"))
                                                                     {
-                                                                        if (!Program.blist.TryGetValue(item.name_display, out item.ballistic))
+                                                                        temp_node2 = node.SelectSingleNode(".//td[@class='va-infobox-content']");
+                                                                        if (temp_node2 != null)
                                                                         {
-                                                                            Program.blist.TryGetValue(item.name_display2, out item.ballistic);
+                                                                            item.type = temp_node2.InnerHtml.Trim();
+                                                                            if (item.type.Equals("Round") || item.type.Equals("Slug")
+                                                                                || item.type.Equals("Buckshot") || item.type.Equals("Grenade launcher cartridge"))
+                                                                            {
+                                                                                if (!Program.blist.TryGetValue(item.name_display, out item.ballistic))
+                                                                                {
+                                                                                    Program.blist.TryGetValue(item.name_display2, out item.ballistic);
+                                                                                }
+                                                                            }
                                                                         }
+                                                                        break;
                                                                     }
                                                                 }
-                                                                break;
                                                             }
                                                         }
-                                                    }
-                                                } else if (temp_node.InnerText.Trim().Equals("Performance"))
-                                                {
-                                                    HtmlAgilityPack.HtmlNodeCollection temp_node_list = sub_node_tm.SelectNodes(".//td[@class='va-infobox-label']");
-                                                    HtmlAgilityPack.HtmlNodeCollection temp_node_list2 = sub_node_tm.SelectNodes(".//td[@class='va-infobox-content']");
-                                                    if (temp_node_list != null && temp_node_list2 != null && temp_node_list.Count == temp_node_list2.Count)
-                                                    {
-                                                        for (int n = 0; n < temp_node_list.Count; n++)
+                                                        else if (temp_node.InnerText.Trim().Equals("Performance"))
                                                         {
-                                                            if (temp_node_list[n].InnerText.Trim().Contains("Recoil"))
+                                                            HtmlAgilityPack.HtmlNodeCollection temp_node_list = sub_node_tm.SelectNodes(".//td[@class='va-infobox-label']");
+                                                            HtmlAgilityPack.HtmlNodeCollection temp_node_list2 = sub_node_tm.SelectNodes(".//td[@class='va-infobox-content']");
+                                                            if (temp_node_list != null && temp_node_list2 != null && temp_node_list.Count == temp_node_list2.Count)
                                                             {
-                                                                item.recoil = temp_node_list2[n].InnerText.Trim();
+                                                                for (int n = 0; n < temp_node_list.Count; n++)
+                                                                {
+                                                                    if (temp_node_list[n].InnerText.Trim().Contains("Recoil"))
+                                                                    {
+                                                                        item.recoil = temp_node_list2[n].InnerText.Trim();
+                                                                    }
+                                                                    else if (temp_node_list[n].InnerText.Trim().Contains("Ergonomics"))
+                                                                    {
+                                                                        item.ergo = temp_node_list2[n].InnerText.Trim();
+                                                                    }
+                                                                    else if (temp_node_list[n].InnerText.Trim().Contains("Accuracy"))
+                                                                    {
+                                                                        item.accuracy = temp_node_list2[n].InnerText.Trim();
+                                                                    }
+                                                                }
                                                             }
-                                                            else if (temp_node_list[n].InnerText.Trim().Contains("Ergonomics"))
-                                                            {
-                                                                item.ergo = temp_node_list2[n].InnerText.Trim();
-                                                            }
-                                                            else if (temp_node_list[n].InnerText.Trim().Contains("Accuracy"))
-                                                            {
-                                                                item.accuracy = temp_node_list2[n].InnerText.Trim();
-                                                            }
+                                                            break;
                                                         }
                                                     }
-                                                    break;
                                                 }
                                             }
                                         }
-                                    }
-                                }
-                                sub_node_tm = node_tm.SelectSingleNode(".//table[@class='wikitable']");
-                                if (sub_node_tm != null)
-                                {
-                                    nodes = sub_node_tm.SelectNodes(".//tr");
-                                    if (nodes != null)
-                                    {
-                                        StringBuilder craftsb = new StringBuilder();
-                                        foreach (HtmlAgilityPack.HtmlNode node in nodes)
+                                        sub_node_tm = node_tm.SelectSingleNode(".//table[@class='wikitable']");
+                                        if (sub_node_tm != null)
                                         {
-                                            subnodes = node.SelectNodes(".//th");
-                                            if (subnodes != null && subnodes.Count >= 5)
+                                            nodes = sub_node_tm.SelectNodes(".//tr");
+                                            if (nodes != null)
                                             {
-                                                List<String> craftlist = new List<string>();
-                                                foreach (HtmlAgilityPack.HtmlNode temp in subnodes)
+                                                StringBuilder craftsb = new StringBuilder();
+                                                foreach (HtmlAgilityPack.HtmlNode node in nodes)
                                                 {
-                                                    foreach (HtmlAgilityPack.HtmlNode temp2 in temp.ChildNodes)
+                                                    subnodes = node.SelectNodes(".//th");
+                                                    if (subnodes != null && subnodes.Count >= 5)
                                                     {
-                                                        if (!temp2.InnerText.Trim().Equals(""))
+                                                        List<String> craftlist = new List<string>();
+                                                        foreach (HtmlAgilityPack.HtmlNode temp in subnodes)
                                                         {
-                                                            craftlist.Add(temp2.InnerText.Trim());
+                                                            foreach (HtmlAgilityPack.HtmlNode temp2 in temp.ChildNodes)
+                                                            {
+                                                                if (!temp2.InnerText.Trim().Equals(""))
+                                                                {
+                                                                    craftlist.Add(temp2.InnerText.Trim());
+                                                                }
+                                                            }
                                                         }
+                                                        int firstarrow = craftlist.IndexOf("→");
+                                                        int secondarrow = craftlist.LastIndexOf("→");
+                                                        List<String> firstlist = craftlist.GetRange(0, firstarrow);
+                                                        List<String> secondlist = craftlist.GetRange(firstarrow + 1, secondarrow - firstarrow - 1);
+                                                        List<String> thirdlist = craftlist.GetRange(secondarrow + 1, craftlist.Count - secondarrow - 1);
+                                                        firstlist.Reverse();
+                                                        if (secondlist.Count <= 2)
+                                                        {
+                                                            secondlist.Reverse();
+                                                        }
+                                                        thirdlist.Reverse();
+                                                        craftsb.Append(String.Format("{0} → {2} ({1})"
+                                                            , String.Join(" ", firstlist), String.Join(secondlist.Count <= 2 ? " in " : " ", secondlist), String.Join(" ", thirdlist))).Append("\n");
                                                     }
                                                 }
-                                                int firstarrow = craftlist.IndexOf("→");
-                                                int secondarrow = craftlist.LastIndexOf("→");
-                                                List<String> firstlist = craftlist.GetRange(0, firstarrow);
-                                                List<String> secondlist = craftlist.GetRange(firstarrow + 1, secondarrow - firstarrow - 1);
-                                                List<String> thirdlist = craftlist.GetRange(secondarrow + 1, craftlist.Count - secondarrow - 1);
-                                                firstlist.Reverse();
-                                                if (secondlist.Count <= 2)
+                                                if (!craftsb.ToString().Trim().Equals(""))
                                                 {
-                                                    secondlist.Reverse();
+                                                    item.bartersandcrafts = craftsb.ToString().Trim();
                                                 }
-                                                thirdlist.Reverse();
-                                                craftsb.Append(String.Format("{0} → {2} ({1})"
-                                                    , String.Join(" ", firstlist), String.Join(secondlist.Count <= 2 ? " in " : " ", secondlist), String.Join(" ", thirdlist))).Append("\n");
                                             }
                                         }
-                                        if (!craftsb.ToString().Trim().Equals(""))
+                                        if (!sb.ToString().Trim().Equals(""))
                                         {
-                                            item.bartersandcrafts = craftsb.ToString().Trim();
+                                            item.needs = sb.ToString().Trim();
                                         }
                                     }
                                 }
-                                if (!sb.ToString().Trim().Equals(""))
+                                catch (WebException ex) when (ex.Status == WebExceptionStatus.Timeout)
                                 {
-                                    item.needs = sb.ToString().Trim();
+                                    isdisconnected = true;
+                                    Debug.WriteLine("wiki reconnected...");
                                 }
-                            }
+                            } while (!cts_one.IsCancellationRequested && isdisconnected);
                         }
                     }
                     item.last_fetch = DateTime.Now;
@@ -815,6 +817,14 @@ namespace TarkovPriceViewer
                 {
                     Debug.WriteLine(e.Message);
                 }
+            }
+            if (isiteminfo)
+            {
+                overlay.ShowInfo(item, cts_one);
+            }
+            else
+            {
+                overlay.ShowCompare(item, cts_one);
             }
         }
 
