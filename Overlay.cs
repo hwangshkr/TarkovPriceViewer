@@ -197,23 +197,46 @@ namespace TarkovPriceViewer
             {
                 if (!cts_one.IsCancellationRequested)
                 {
-                    if (--compare_size > 0)
-                    {
-                        itemcompare_text.Text = String.Format("{0} Left : {1}", Program.loading, compare_size);
-                    } else
-                    {
-                        itemcompare_text.Text = String.Format("{0}", Program.presscomparekey);
-                    }
+                    DataGridViewRow temp = CheckItemExist(item);
                     if (item != null && item.market_address != null)
                     {
+                        if (temp != null)
+                        {
+                            ItemCompareGrid.Rows.Remove(temp);
+                        }
                         ItemCompareGrid.Rows.Add(item.Data());
                         SortCompareView();
                         ItemCompareGrid.Visible = true;
                         ResizeGrid(ItemCompareGrid);
                     }
+                    if (temp == null)
+                    {
+                        if (--compare_size > 0)
+                        {
+                            itemcompare_text.Text = String.Format("{0} Left : {1}", Program.loading, compare_size);
+                        }
+                        else
+                        {
+                            itemcompare_text.Text = String.Format("{0}", Program.presscomparekey);
+                        }
+                    }
                 }
             };
             Invoke(show);
+        }
+
+        public DataGridViewRow CheckItemExist(Item item)
+        {
+            DataGridViewRow value = null;
+            foreach (DataGridViewRow r in ItemCompareGrid.Rows)
+            {
+                if ((item.isname2 ? item.name_display2 : item.name_display).Equals(r.Cells[0].Value))
+                {
+                    value = r;
+                    break;
+                }
+            }
+            return value;
         }
 
         public void SortCompareView()
