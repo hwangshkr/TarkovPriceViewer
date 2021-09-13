@@ -73,10 +73,6 @@ namespace TarkovPriceViewer
             this.panel7 = new System.Windows.Forms.Panel();
             this.RandomItem = new System.Windows.Forms.CheckBox();
             this.ForFunRandom_Desc = new System.Windows.Forms.Label();
-            this.CompareSort = new System.Windows.Forms.ComboBox();
-            this.CompareSortDirection = new System.Windows.Forms.ComboBox();
-            this.CompareSortDesc = new System.Windows.Forms.Label();
-            this.CompareSortDirectionDesc = new System.Windows.Forms.Label();
             this.TrayMenu.SuspendLayout();
             this.panel1.SuspendLayout();
             ((System.ComponentModel.ISupportInitialize)(this.TransParent_Bar)).BeginInit();
@@ -466,16 +462,12 @@ namespace TarkovPriceViewer
             // 
             // panel6
             // 
-            this.panel6.Controls.Add(this.CompareSortDirection);
-            this.panel6.Controls.Add(this.CompareSortDirectionDesc);
-            this.panel6.Controls.Add(this.CompareSortDesc);
-            this.panel6.Controls.Add(this.CompareSort);
             this.panel6.Controls.Add(this.CompareOverlay_Desc);
             this.panel6.Controls.Add(this.CompareOverlay_Button);
             this.panel6.Controls.Add(this.CompareOverlay_Desc2);
             this.panel6.Location = new System.Drawing.Point(316, 186);
             this.panel6.Name = "panel6";
-            this.panel6.Size = new System.Drawing.Size(296, 111);
+            this.panel6.Size = new System.Drawing.Size(296, 73);
             this.panel6.TabIndex = 14;
             // 
             // CompareOverlay_Desc
@@ -540,50 +532,6 @@ namespace TarkovPriceViewer
             this.ForFunRandom_Desc.Size = new System.Drawing.Size(156, 12);
             this.ForFunRandom_Desc.TabIndex = 0;
             this.ForFunRandom_Desc.Text = "For Fun! Random Item!";
-            // 
-            // CompareSort
-            // 
-            this.CompareSort.DropDownStyle = System.Windows.Forms.ComboBoxStyle.DropDownList;
-            this.CompareSort.FormattingEnabled = true;
-            this.CompareSort.IntegralHeight = false;
-            this.CompareSort.Location = new System.Drawing.Point(19, 73);
-            this.CompareSort.Name = "CompareSort";
-            this.CompareSort.Size = new System.Drawing.Size(121, 20);
-            this.CompareSort.TabIndex = 2;
-            this.CompareSort.TabStop = false;
-            this.CompareSort.SelectedIndexChanged += new System.EventHandler(this.CompareSort_SelectedIndexChanged);
-            // 
-            // CompareSortDirection
-            // 
-            this.CompareSortDirection.DropDownStyle = System.Windows.Forms.ComboBoxStyle.DropDownList;
-            this.CompareSortDirection.FormattingEnabled = true;
-            this.CompareSortDirection.IntegralHeight = false;
-            this.CompareSortDirection.Location = new System.Drawing.Point(157, 73);
-            this.CompareSortDirection.Name = "CompareSortDirection";
-            this.CompareSortDirection.Size = new System.Drawing.Size(121, 20);
-            this.CompareSortDirection.TabIndex = 2;
-            this.CompareSortDirection.TabStop = false;
-            this.CompareSortDirection.SelectedIndexChanged += new System.EventHandler(this.CompareSortDirection_SelectedIndexChanged);
-            // 
-            // CompareSortDesc
-            // 
-            this.CompareSortDesc.AutoSize = true;
-            this.CompareSortDesc.Font = new System.Drawing.Font("굴림", 9F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(129)));
-            this.CompareSortDesc.Location = new System.Drawing.Point(17, 57);
-            this.CompareSortDesc.Name = "CompareSortDesc";
-            this.CompareSortDesc.Size = new System.Drawing.Size(46, 12);
-            this.CompareSortDesc.TabIndex = 6;
-            this.CompareSortDesc.Text = "Sort By";
-            // 
-            // CompareSortDirectionDesc
-            // 
-            this.CompareSortDirectionDesc.AutoSize = true;
-            this.CompareSortDirectionDesc.Font = new System.Drawing.Font("굴림", 9F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(129)));
-            this.CompareSortDirectionDesc.Location = new System.Drawing.Point(155, 57);
-            this.CompareSortDirectionDesc.Name = "CompareSortDirectionDesc";
-            this.CompareSortDirectionDesc.Size = new System.Drawing.Size(80, 12);
-            this.CompareSortDirectionDesc.TabIndex = 6;
-            this.CompareSortDirectionDesc.Text = "Sort Direction";
             // 
             // MainForm
             // 
@@ -676,10 +624,6 @@ namespace TarkovPriceViewer
         private System.Windows.Forms.Panel panel7;
         private System.Windows.Forms.CheckBox RandomItem;
         private System.Windows.Forms.Label ForFunRandom_Desc;
-        private System.Windows.Forms.ComboBox CompareSort;
-        private System.Windows.Forms.ComboBox CompareSortDirection;
-        private System.Windows.Forms.Label CompareSortDirectionDesc;
-        private System.Windows.Forms.Label CompareSortDesc;
     }
 }
 

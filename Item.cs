@@ -18,15 +18,17 @@ namespace TarkovPriceViewer
         public String sell_to_trader_price;
         public String buy_from_trader;
         public String buy_from_trader_price;
+        public String last_updated;
+
         public String needs;
         public String bartersandcrafts;
         public String type;
-        public Ballistic ballistic = null;
         public String recoil;
         public String accuracy;
         public String ergo;
-        public String last_updated;
+
         public DateTime last_fetch;
+        public Ballistic ballistic = null;
 
         public String[] Data()
         {

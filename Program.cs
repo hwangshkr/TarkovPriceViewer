@@ -67,6 +67,8 @@ namespace TarkovPriceViewer
                     Debug.WriteLine(ex.Message);
                 }
             }
+            ThreadPool.SetMinThreads(10, 10);
+            ThreadPool.SetMaxThreads(20, 20);
             Task task = Task.Factory.StartNew(() => getBallistics());
             LoadSettings();
             getItemList();
@@ -125,7 +127,7 @@ namespace TarkovPriceViewer
                 }
                 String st;
                 settings.Remove("Version");//force
-                settings.Add("Version", "v1.09");//force
+                settings.Add("Version", "v1.10");//force
                 if (!settings.TryGetValue("MinimizetoTrayWhenStartup", out st))
                 {
                     settings.Add("MinimizetoTrayWhenStartup", "false");
@@ -181,14 +183,6 @@ namespace TarkovPriceViewer
                 if (!settings.TryGetValue("Barters_and_Crafts", out st))
                 {
                     settings.Add("Barters_and_Crafts", "true");
-                }
-                if (!settings.TryGetValue("Compare_Sort", out st))
-                {
-                    settings.Add("Compare_Sort", "4");
-                }
-                if (!settings.TryGetValue("Compare_Sort_Direction", out st))
-                {
-                    settings.Add("Compare_Sort_Direction", "0");
                 }
             }
             catch (Exception e)

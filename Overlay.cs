@@ -23,14 +23,26 @@ namespace TarkovPriceViewer
         private static readonly int WS_EX_LAYERED = 0x80000;
         private static readonly int WS_EX_TRANSPARENT = 0x20;
         private static int compare_size = 0;
+        private static bool isinfoform = true;
+        private static bool ismoving = false;
+        private static int x, y;
 
-        public Overlay()
+        private Object _lock = new Object();
+
+        public Overlay(bool _isinfoform)
         {
             InitializeComponent();
+            isinfoform = _isinfoform;
             this.TopMost = true;
-            this.Opacity = Int32.Parse(Program.settings["Overlay_Transparent"]) * 0.01;
             var style = GetWindowLong(this.Handle, GWL_EXSTYLE);
-            SetWindowLong(this.Handle, GWL_EXSTYLE, style | WS_EX_LAYERED | WS_EX_TRANSPARENT | WS_EX_TOOLWINDOW);
+            if (isinfoform)
+            {
+                this.Opacity = Int32.Parse(Program.settings["Overlay_Transparent"]) * 0.01;
+                SetWindowLong(this.Handle, GWL_EXSTYLE, style | WS_EX_LAYERED | WS_EX_TOOLWINDOW | WS_EX_TRANSPARENT);
+            } else
+            {
+                SetWindowLong(this.Handle, GWL_EXSTYLE, style | WS_EX_LAYERED | WS_EX_TOOLWINDOW);
+            }
             settingFormPos();
             initializeCompareData();
             initializeBallistics();
@@ -131,59 +143,62 @@ namespace TarkovPriceViewer
             {
                 if (!cts_one.IsCancellationRequested)
                 {
-                    if (item == null || item.market_address == null)
+                    lock (_lock)
                     {
-                        iteminfo_text.Text = Program.notfound;
-                    }
-                    else if (item.price_last == null)
-                    {
-                        iteminfo_text.Text = Program.noflea;
-                    }
-                    else
-                    {
-                        StringBuilder sb = new StringBuilder();
-                        sb.Append(String.Format("Name : {0}\n\n", item.isname2 ? item.name_display2 : item.name_display));
-                        if (Convert.ToBoolean(Program.settings["Show_Last_Price"]))
+                        if (item == null || item.market_address == null)
                         {
-                            sb.Append(String.Format("Last Price : {0} ({1})\n", item.price_last, item.last_updated));
+                            iteminfo_text.Text = Program.notfound;
                         }
-                        if (Convert.ToBoolean(Program.settings["Show_Day_Price"]) && item.price_day != null)
+                        else if (item.price_last == null)
                         {
-                            sb.Append(String.Format("Day Price : {0}\n", item.price_day));
+                            iteminfo_text.Text = Program.noflea;
                         }
-                        if (Convert.ToBoolean(Program.settings["Show_Week_Price"]) && item.price_week != null)
+                        else
                         {
-                            sb.Append(String.Format("Week Price : {0}\n", item.price_week));
-                        }
-                        if (Convert.ToBoolean(Program.settings["Sell_to_Trader"]) && item.sell_to_trader != null)
-                        {
-                            sb.Append(String.Format("\nSell to Trader : {0}", item.sell_to_trader));
-                            sb.Append(String.Format("\nSell to Trader Price : {0}\n", item.sell_to_trader_price));
-                        }
-                        if (Convert.ToBoolean(Program.settings["Buy_From_Trader"]) && item.buy_from_trader != null)
-                        {
-                            sb.Append(String.Format("\nBuy From Trader : {0}", item.buy_from_trader));
-                            sb.Append(String.Format("\nBuy From Trader Price : {0}\n", item.buy_from_trader_price.Replace(" ", "").Replace(@"~", @" ≈")));
-                        }
-                        if (Convert.ToBoolean(Program.settings["Needs"]) && item.needs != null)
-                        {
-                            sb.Append(String.Format("\nNeeds :\n{0}\n", item.needs));
-                        }
-                        if (Convert.ToBoolean(Program.settings["Barters_and_Crafts"]) && item.bartersandcrafts != null)
-                        {
-                            sb.Append(String.Format("\nBarters & Crafts :\n{0}\n", item.bartersandcrafts));
-                        }
-                        iteminfo_text.Text = sb.ToString().Trim();
-                        setTextColors(item);
-                        if (item.ballistic != null)
-                        {
-                            foreach (Ballistic b in item.ballistic.Calibarlist)
+                            StringBuilder sb = new StringBuilder();
+                            sb.Append(String.Format("Name : {0}\n\n", item.isname2 ? item.name_display2 : item.name_display));
+                            if (Convert.ToBoolean(Program.settings["Show_Last_Price"]))
                             {
-                                iteminfo_ball.Rows.Add(b.Data());
+                                sb.Append(String.Format("Last Price : {0} ({1})\n", item.price_last, item.last_updated));
                             }
-                            iteminfo_ball.Visible = true;
-                            SetBallisticsColor(item);
-                            ResizeGrid(iteminfo_ball);
+                            if (Convert.ToBoolean(Program.settings["Show_Day_Price"]) && item.price_day != null)
+                            {
+                                sb.Append(String.Format("Day Price : {0}\n", item.price_day));
+                            }
+                            if (Convert.ToBoolean(Program.settings["Show_Week_Price"]) && item.price_week != null)
+                            {
+                                sb.Append(String.Format("Week Price : {0}\n", item.price_week));
+                            }
+                            if (Convert.ToBoolean(Program.settings["Sell_to_Trader"]) && item.sell_to_trader != null)
+                            {
+                                sb.Append(String.Format("\nSell to Trader : {0}", item.sell_to_trader));
+                                sb.Append(String.Format("\nSell to Trader Price : {0}\n", item.sell_to_trader_price));
+                            }
+                            if (Convert.ToBoolean(Program.settings["Buy_From_Trader"]) && item.buy_from_trader != null)
+                            {
+                                sb.Append(String.Format("\nBuy From Trader : {0}", item.buy_from_trader));
+                                sb.Append(String.Format("\nBuy From Trader Price : {0}\n", item.buy_from_trader_price.Replace(" ", "").Replace(@"~", @" ≈")));
+                            }
+                            if (Convert.ToBoolean(Program.settings["Needs"]) && item.needs != null)
+                            {
+                                sb.Append(String.Format("\nNeeds :\n{0}\n", item.needs));
+                            }
+                            if (Convert.ToBoolean(Program.settings["Barters_and_Crafts"]) && item.bartersandcrafts != null)
+                            {
+                                sb.Append(String.Format("\nBarters & Crafts :\n{0}\n", item.bartersandcrafts));
+                            }
+                            iteminfo_text.Text = sb.ToString().Trim();
+                            setTextColors(item);
+                            if (item.ballistic != null)
+                            {
+                                foreach (Ballistic b in item.ballistic.Calibarlist)
+                                {
+                                    iteminfo_ball.Rows.Add(b.Data());
+                                }
+                                iteminfo_ball.Visible = true;
+                                SetBallisticsColor(item);
+                                ResizeGrid(iteminfo_ball);
+                            }
                         }
                     }
                 }
@@ -197,27 +212,34 @@ namespace TarkovPriceViewer
             {
                 if (!cts_one.IsCancellationRequested)
                 {
-                    DataGridViewRow temp = CheckItemExist(item);
-                    if (item != null && item.market_address != null)
+                    lock (_lock)
                     {
-                        if (temp != null)
+                        DataGridViewRow temp = CheckItemExist(item);
+                        if (item != null && item.market_address != null)
                         {
-                            ItemCompareGrid.Rows.Remove(temp);
+                            if (temp != null)
+                            {
+                                ItemCompareGrid.Rows.Remove(temp);
+                            }
+                            ItemCompareGrid.Rows.Add(item.Data());
+                            if (ItemCompareGrid.SortedColumn != null)
+                            {
+                                ItemCompareGrid.Sort(ItemCompareGrid.SortedColumn,
+                                    ItemCompareGrid.SortOrder.Equals(SortOrder.Ascending) ? ListSortDirection.Ascending : ListSortDirection.Descending);
+                            }
+                            ItemCompareGrid.Visible = true;
+                            ResizeGrid(ItemCompareGrid);
                         }
-                        ItemCompareGrid.Rows.Add(item.Data());
-                        SortCompareView();
-                        ItemCompareGrid.Visible = true;
-                        ResizeGrid(ItemCompareGrid);
-                    }
-                    if (temp == null)
-                    {
-                        if (--compare_size > 0)
+                        if (temp == null)
                         {
-                            itemcompare_text.Text = String.Format("{0} Left : {1}", Program.loading, compare_size);
-                        }
-                        else
-                        {
-                            itemcompare_text.Text = String.Format("{0}", Program.presscomparekey);
+                            if (--compare_size > 0)
+                            {
+                                itemcompare_text.Text = String.Format("{0} Left : {1}", Program.loading, compare_size);
+                            }
+                            else
+                            {
+                                itemcompare_text.Text = String.Format("{0}", Program.presscomparekey);
+                            }
                         }
                     }
                 }
@@ -237,15 +259,6 @@ namespace TarkovPriceViewer
                 }
             }
             return value;
-        }
-
-        public void SortCompareView()
-        {
-            Action show = delegate ()
-            {
-                ItemCompareGrid.Sort(ItemCompareGrid.Columns[Int32.Parse(Program.settings["Compare_Sort"])], (ListSortDirection)Int32.Parse(Program.settings["Compare_Sort_Direction"]));
-            };
-            Invoke(show);
         }
 
         public void setTextColors(Item item)
@@ -305,11 +318,14 @@ namespace TarkovPriceViewer
         {
             Action show = delegate ()
             {
-                iteminfo_ball.Rows.Clear();
-                iteminfo_ball.Visible = false;
-                iteminfo_text.Text = Program.notfinishloading;
-                iteminfo_panel.Location = point;
-                iteminfo_panel.Visible = true;
+                lock (_lock)
+                {
+                    iteminfo_ball.Rows.Clear();
+                    iteminfo_ball.Visible = false;
+                    iteminfo_text.Text = Program.notfinishloading;
+                    iteminfo_panel.Location = point;
+                    iteminfo_panel.Visible = true;
+                }
             };
             Invoke(show);
         }
@@ -320,16 +336,19 @@ namespace TarkovPriceViewer
             {
                 if (!cts_one.IsCancellationRequested)
                 {
-                    if (!itemcompare_panel.Visible)
+                    lock (_lock)
                     {
-                        compare_size = 0;
-                        ItemCompareGrid.Rows.Clear();
-                        ResizeGrid(ItemCompareGrid);
-                        itemcompare_panel.Location = point;
-                        itemcompare_panel.Visible = true;
-                        itemcompare_text.Text = String.Format("{0}", Program.presscomparekey);
+                        if (!itemcompare_panel.Visible)
+                        {
+                            compare_size = 0;
+                            ItemCompareGrid.Rows.Clear();
+                            ResizeGrid(ItemCompareGrid);
+                            itemcompare_panel.Location = point;
+                            itemcompare_panel.Visible = true;
+                            itemcompare_text.Text = String.Format("{0}", Program.presscomparekey);
+                        }
+                        itemcompare_text.Text = String.Format("{0} Left : {1}", Program.loading, ++compare_size);
                     }
-                    itemcompare_text.Text = String.Format("{0} Left : {1}", Program.loading, ++compare_size);
                 }
             };
             Invoke(show);
@@ -408,6 +427,26 @@ namespace TarkovPriceViewer
         private void itemwindow_text_ContentsResized(object sender, ContentsResizedEventArgs e)
         {
             (sender as Control).ClientSize = new Size(e.NewRectangle.Width + 1, e.NewRectangle.Height + 1);
+        }
+
+        private void itemcompare_text_MouseMove(object sender, MouseEventArgs e)
+        {
+            if (ismoving)
+            {
+                itemcompare_panel.Location = new Point(Cursor.Position.X - x, Cursor.Position.Y - y);
+            }
+        }
+
+        private void itemcompare_text_MouseDown(object sender, MouseEventArgs e)
+        {
+            x = Cursor.Position.X - itemcompare_panel.Location.X;
+            y = Cursor.Position.Y - itemcompare_panel.Location.Y;
+            ismoving = true;
+        }
+
+        private void itemcompare_text_MouseUp(object sender, MouseEventArgs e)
+        {
+            ismoving = false;
         }
     }
 }

@@ -83,7 +83,8 @@ namespace TarkovPriceViewer
         private static System.Windows.Forms.Timer hooktimer = null;
         private static System.Drawing.Point point = new System.Drawing.Point(0, 0);
         private static int nFlags = 0x0;
-        private static Overlay overlay = new Overlay();
+        private static Overlay overlay_info = new Overlay(true);
+        private static Overlay overlay_compare = new Overlay(false);
         private static long presstime = 0;
         private static CancellationTokenSource cts_info = new CancellationTokenSource();
         private static CancellationTokenSource cts_compare = new CancellationTokenSource();
@@ -102,7 +103,10 @@ namespace TarkovPriceViewer
             SettingUI();
             SetHook();
             SetHookTimer();
-            overlay.Show();
+            overlay_info.Owner = this;
+            overlay_info.Show();
+            overlay_compare.Owner = this;
+            overlay_compare.Show();
         }
 
         private void SettingUI()
@@ -125,13 +129,6 @@ namespace TarkovPriceViewer
             CompareOverlay_Button.Text = ((Keys)Int32.Parse(Program.settings["CompareOverlay_Key"])).ToString();
             TransParent_Bar.Value = Int32.Parse(Program.settings["Overlay_Transparent"]);
             TransParent_Text.Text = Program.settings["Overlay_Transparent"];
-
-            string[] data = { "Name", "Recoil", "Accuracy", "Ergo", "Flea", "NPC", "LL" };
-            CompareSort.Items.AddRange(data);
-            CompareSort.SelectedIndex = Int32.Parse(Program.settings["Compare_Sort"]);
-            string[] data2 = { "ASC", "DESC" };
-            CompareSortDirection.Items.AddRange(data2);
-            CompareSortDirection.SelectedIndex = Int32.Parse(Program.settings["Compare_Sort_Direction"]);
 
             TrayIcon.Visible = true;
         }
@@ -255,7 +252,7 @@ namespace TarkovPriceViewer
                         } else
                         {
                             point = Control.MousePosition;
-                            overlay.ShowWaitBallistics(point);
+                            overlay_info.ShowWaitBallistics(point);
                         }
                     }
                 }
@@ -301,7 +298,7 @@ namespace TarkovPriceViewer
             isinfoclosed = false;
             cts_info.Cancel();
             cts_info = new CancellationTokenSource();
-            overlay.ShowLoadingInfo(point, cts_info.Token);
+            overlay_info.ShowLoadingInfo(point, cts_info.Token);
             Task task = Task.Factory.StartNew(() => FindItemTask(true, cts_info.Token));
         }
 
@@ -313,7 +310,7 @@ namespace TarkovPriceViewer
                 cts_compare.Cancel();
                 cts_compare = new CancellationTokenSource();
             }
-            overlay.ShowLoadingCompare(point, cts_compare.Token);
+            overlay_compare.ShowLoadingCompare(point, cts_compare.Token);
             Task task = Task.Factory.StartNew(() => FindItemTask(false, cts_compare.Token));
         }
 
@@ -321,14 +318,14 @@ namespace TarkovPriceViewer
         {
             isinfoclosed = true;
             cts_info.Cancel();
-            overlay.HideInfo();
+            overlay_info.HideInfo();
         }
 
         public void CloseItemCompare()
         {
             iscompareclosed = true;
             cts_compare.Cancel();
-            overlay.HideCompare();
+            overlay_compare.HideCompare();
         }
 
         private int FindItemTask(bool isiteminfo, CancellationToken cts_one)
@@ -357,11 +354,11 @@ namespace TarkovPriceViewer
                     {
                         if (isiteminfo)
                         {
-                            overlay.ShowInfo(null, cts_one);
+                            overlay_info.ShowInfo(null, cts_one);
                         }
                         else
                         {
-                            overlay.ShowCompare(null, cts_one);
+                            overlay_compare.ShowCompare(null, cts_one);
                         }
                     }
                     Debug.WriteLine("image null");
@@ -648,11 +645,11 @@ namespace TarkovPriceViewer
                             }
                             if (isiteminfo)
                             {
-                                overlay.ShowInfo(item, cts_one);
+                                overlay_info.ShowInfo(item, cts_one);
                             }
                             else
                             {
-                                overlay.ShowCompare(item, cts_one);
+                                overlay_compare.ShowCompare(item, cts_one);
                             }
                             bool isdisconnected = false;
                             do
@@ -820,11 +817,11 @@ namespace TarkovPriceViewer
             }
             if (isiteminfo)
             {
-                overlay.ShowInfo(item, cts_one);
+                overlay_info.ShowInfo(item, cts_one);
             }
             else
             {
-                overlay.ShowCompare(item, cts_one);
+                overlay_compare.ShowCompare(item, cts_one);
             }
         }
 
@@ -929,7 +926,7 @@ namespace TarkovPriceViewer
             TrackBar tb = (sender as TrackBar);
             Program.settings["Overlay_Transparent"] = tb.Value.ToString();
             TransParent_Text.Text = Program.settings["Overlay_Transparent"] + "%";
-            overlay.ChangeTransparent(tb.Value);
+            overlay_info.ChangeTransparent(tb.Value);
         }
 
         private void Github_Click(object sender, EventArgs e)
@@ -1026,18 +1023,6 @@ namespace TarkovPriceViewer
         private void RandomItem_CheckedChanged(object sender, EventArgs e)
         {
             Program.settings["RandomItem"] = (sender as CheckBox).Checked.ToString();
-        }
-
-        private void CompareSort_SelectedIndexChanged(object sender, EventArgs e)
-        {
-            Program.settings["Compare_Sort"] = (sender as ComboBox).SelectedIndex.ToString();
-            overlay.SortCompareView();
-        }
-
-        private void CompareSortDirection_SelectedIndexChanged(object sender, EventArgs e)
-        {
-            Program.settings["Compare_Sort_Direction"] = (sender as ComboBox).SelectedIndex.ToString();
-            overlay.SortCompareView();
         }
     }
 }
