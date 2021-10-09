@@ -49,6 +49,9 @@ namespace TarkovPriceViewer
         [DllImport("user32.dll")]
         private static extern int SetWindowLong(IntPtr hWnd, int nIndex, int dwNewLong);
 
+        [DllImport("User32.dll")]
+        private static extern bool GetLastInputInfo(ref LASTINPUTINFO Dummy);
+
         private const int GWL_EXSTYLE = -20;
         private const int WS_EX_LAYERED = 0x80000;
 
@@ -70,6 +73,12 @@ namespace TarkovPriceViewer
             Maximized = 3,
         }
 
+        internal struct LASTINPUTINFO
+        {
+            public uint cbSize;
+            public uint dwTime;
+        }
+
         private static readonly int WH_KEYBOARD_LL = 13;
         private static readonly int WM_KEYUP = 0x101;
         private static readonly int WH_MOUSE_LL = 14;
@@ -80,7 +89,6 @@ namespace TarkovPriceViewer
         private static LowLevelProc _proc_mouse = null;
         private static IntPtr hhook_keyboard = IntPtr.Zero;
         private static IntPtr hhook_mouse = IntPtr.Zero;
-        private static System.Windows.Forms.Timer hooktimer = null;
         private static System.Drawing.Point point = new System.Drawing.Point(0, 0);
         private static int nFlags = 0x0;
         private static Overlay overlay_info = new Overlay(true);
@@ -90,6 +98,7 @@ namespace TarkovPriceViewer
         private static CancellationTokenSource cts_compare = new CancellationTokenSource();
         private static Control press_key_control = null;
         private static Scalar linecolor = new Scalar(90, 89, 82);
+        private static long idle_time = 3600000;
 
         public MainForm()
         {
@@ -102,7 +111,6 @@ namespace TarkovPriceViewer
             InitializeComponent();
             SettingUI();
             SetHook();
-            SetHookTimer();
             overlay_info.Owner = this;
             overlay_info.Show();
             overlay_compare.Owner = this;
@@ -131,17 +139,26 @@ namespace TarkovPriceViewer
             TransParent_Text.Text = Program.settings["Overlay_Transparent"];
 
             TrayIcon.Visible = true;
+            check_idle_time.Start();
         }
 
         private void MainForm_load(object sender, EventArgs e)
         {
             //not use
         }
-
         private void SetHook()
+        {
+            SetHook(false);
+        }
+
+        private void SetHook(bool force)
         {
             try
             {
+                if (force)
+                {
+                    UnHook();
+                }
                 if (hhook_keyboard == IntPtr.Zero)
                 {
                     _proc_keyboard = hookKeyboardProc;
@@ -155,23 +172,6 @@ namespace TarkovPriceViewer
             {
                 Debug.WriteLine(e.Message);
             }
-        }
-
-        private void SetHookTimer()
-        {
-            if (hooktimer == null)
-            {
-                Debug.WriteLine("Start rehook Timer.");
-                hooktimer = new System.Windows.Forms.Timer();
-                hooktimer.Interval = 5000;
-                hooktimer.Tick += new EventHandler(HookTimer_Tick);
-                hooktimer.Start();
-            }
-        }
-
-        private void HookTimer_Tick(object sender, EventArgs e)
-        {
-            SetHook();
         }
 
         private void setMouseHook()
@@ -281,10 +281,21 @@ namespace TarkovPriceViewer
             return CallNextHookEx(hhook_mouse, code, (int)wParam, lParam);
         }
 
+        private uint GetIdleTime()
+        {
+            LASTINPUTINFO LastUserAction = new LASTINPUTINFO();
+            LastUserAction.cbSize = (uint)Marshal.SizeOf(LastUserAction);
+            GetLastInputInfo(ref LastUserAction);
+            return ((uint)Environment.TickCount - LastUserAction.dwTime);
+        }
+
+        public long GetTickCount()
+        {
+            return Environment.TickCount;
+        }
+
         private void CloseApp()
         {
-            hooktimer.Stop();
-            hooktimer.Dispose();
             UnHook();
             TrayIcon.Dispose();
             CloseItemInfo();
@@ -696,25 +707,20 @@ namespace TarkovPriceViewer
                                                     {
                                                         if (temp_node.InnerText.Trim().Equals("General data"))
                                                         {
-                                                            HtmlAgilityPack.HtmlNodeCollection temp_node_list = sub_node_tm.SelectNodes(".//tr");
-                                                            if (temp_node_list != null)
+                                                            HtmlAgilityPack.HtmlNodeCollection temp_node_list = sub_node_tm.SelectNodes(".//td[@class='va-infobox-label']");
+                                                            HtmlAgilityPack.HtmlNodeCollection temp_node_list2 = sub_node_tm.SelectNodes(".//td[@class='va-infobox-content']");
+                                                            if (temp_node_list != null && temp_node_list2 != null && temp_node_list.Count == temp_node_list2.Count)
                                                             {
                                                                 for (int n = 0; n < temp_node_list.Count; n++)
                                                                 {
-                                                                    HtmlAgilityPack.HtmlNode temp_node2 = node.SelectSingleNode(".//td[@class='va-infobox-label']");
-                                                                    if (temp_node2 != null && temp_node2.InnerHtml.Trim().Equals("Type"))
+                                                                    if (temp_node_list[n].InnerText.Trim().Contains("Type"))
                                                                     {
-                                                                        temp_node2 = node.SelectSingleNode(".//td[@class='va-infobox-content']");
-                                                                        if (temp_node2 != null)
+                                                                        item.type = temp_node_list2[n].InnerText.Trim();
+                                                                        if (Program.BEType.Contains(item.type))
                                                                         {
-                                                                            item.type = temp_node2.InnerHtml.Trim();
-                                                                            if (item.type.Equals("Round") || item.type.Equals("Slug")
-                                                                                || item.type.Equals("Buckshot") || item.type.Equals("Grenade launcher cartridge"))
+                                                                            if (!Program.blist.TryGetValue(item.name_display, out item.ballistic))
                                                                             {
-                                                                                if (!Program.blist.TryGetValue(item.name_display, out item.ballistic))
-                                                                                {
-                                                                                    Program.blist.TryGetValue(item.name_display2, out item.ballistic);
-                                                                                }
+                                                                                Program.blist.TryGetValue(item.name_display2, out item.ballistic);
                                                                             }
                                                                         }
                                                                         break;
@@ -744,7 +750,22 @@ namespace TarkovPriceViewer
                                                                     }
                                                                 }
                                                             }
-                                                            break;
+                                                        }
+                                                        else if (temp_node.InnerText.Trim().Equals("Ammunition"))
+                                                        {
+                                                            HtmlAgilityPack.HtmlNodeCollection temp_node_list = sub_node_tm.SelectNodes(".//td[@class='va-infobox-label']");
+                                                            HtmlAgilityPack.HtmlNodeCollection temp_node_list2 = sub_node_tm.SelectNodes(".//td[@class='va-infobox-content']");
+                                                            if (temp_node_list != null && temp_node_list2 != null && temp_node_list.Count == temp_node_list2.Count)
+                                                            {
+                                                                for (int n = 0; n < temp_node_list.Count; n++)
+                                                                {
+                                                                    if (temp_node_list[n].InnerText.Trim().Contains("Default ammo"))
+                                                                    {
+                                                                        Program.blist.TryGetValue(temp_node_list2[n].InnerText.Trim(), out item.ballistic);
+                                                                        break;
+                                                                    }
+                                                                }
+                                                            }
                                                         }
                                                     }
                                                 }
@@ -1023,6 +1044,22 @@ namespace TarkovPriceViewer
         private void RandomItem_CheckedChanged(object sender, EventArgs e)
         {
             Program.settings["RandomItem"] = (sender as CheckBox).Checked.ToString();
+        }
+
+        private void check_idle_time_Tick(object sender, EventArgs e)
+        {
+            if (GetIdleTime() >= idle_time)
+            {
+                idle_time += 3600000;
+                SetHook(true);
+            } else
+            {
+                if (idle_time > 3600000)
+                {
+                    idle_time = 3600000;
+                }
+                SetHook();
+            }
         }
     }
 }

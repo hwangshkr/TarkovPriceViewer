@@ -73,6 +73,7 @@ namespace TarkovPriceViewer
             this.panel7 = new System.Windows.Forms.Panel();
             this.RandomItem = new System.Windows.Forms.CheckBox();
             this.ForFunRandom_Desc = new System.Windows.Forms.Label();
+            this.check_idle_time = new System.Windows.Forms.Timer(this.components);
             this.TrayMenu.SuspendLayout();
             this.panel1.SuspendLayout();
             ((System.ComponentModel.ISupportInitialize)(this.TransParent_Bar)).BeginInit();
@@ -533,6 +534,11 @@ namespace TarkovPriceViewer
             this.ForFunRandom_Desc.TabIndex = 0;
             this.ForFunRandom_Desc.Text = "For Fun! Random Item!";
             // 
+            // check_idle_time
+            // 
+            this.check_idle_time.Interval = 60000;
+            this.check_idle_time.Tick += new System.EventHandler(this.check_idle_time_Tick);
+            // 
             // MainForm
             // 
             this.AutoScaleDimensions = new System.Drawing.SizeF(7F, 12F);
@@ -624,6 +630,7 @@ namespace TarkovPriceViewer
         private System.Windows.Forms.Panel panel7;
         private System.Windows.Forms.CheckBox RandomItem;
         private System.Windows.Forms.Label ForFunRandom_Desc;
+        private System.Windows.Forms.Timer check_idle_time;
     }
 }
 

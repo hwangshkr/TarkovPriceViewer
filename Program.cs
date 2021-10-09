@@ -24,6 +24,7 @@ namespace TarkovPriceViewer
             ColorTranslator.FromHtml("#FB9C0E"),
             ColorTranslator.FromHtml("#006400"),
             ColorTranslator.FromHtml("#009900") };
+        public static readonly HashSet<String> BEType = new HashSet<String> { "Round", "Slug", "Buckshot", "Grenade launcher cartridge" };
         public static readonly String setting_path = @"settings.json";
         public static readonly String appname = "EscapeFromTarkov";
         public static readonly String loading = "Loading...";
@@ -127,7 +128,7 @@ namespace TarkovPriceViewer
                 }
                 String st;
                 settings.Remove("Version");//force
-                settings.Add("Version", "v1.10");//force
+                settings.Add("Version", "v1.11");//force
                 if (!settings.TryGetValue("MinimizetoTrayWhenStartup", out st))
                 {
                     settings.Add("MinimizetoTrayWhenStartup", "false");
