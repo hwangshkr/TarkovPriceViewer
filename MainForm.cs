@@ -104,7 +104,7 @@ namespace TarkovPriceViewer
         {
             int style = GetWindowLong(this.Handle, GWL_EXSTYLE);
             SetWindowLong(this.Handle, GWL_EXSTYLE, style | WS_EX_LAYERED);
-            if (Environment.OSVersion.Version.Major == 10)
+            if (Environment.OSVersion.Version.Major >= 6)
             {
                 nFlags = 0x2;
             }
