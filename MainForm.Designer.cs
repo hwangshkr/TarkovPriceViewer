@@ -74,6 +74,7 @@ namespace TarkovPriceViewer
             this.RandomItem = new System.Windows.Forms.CheckBox();
             this.ForFunRandom_Desc = new System.Windows.Forms.Label();
             this.check_idle_time = new System.Windows.Forms.Timer(this.components);
+            this.refresh_b = new System.Windows.Forms.Button();
             this.TrayMenu.SuspendLayout();
             this.panel1.SuspendLayout();
             ((System.ComponentModel.ISupportInitialize)(this.TransParent_Bar)).BeginInit();
@@ -539,6 +540,16 @@ namespace TarkovPriceViewer
             this.check_idle_time.Interval = 60000;
             this.check_idle_time.Tick += new System.EventHandler(this.check_idle_time_Tick);
             // 
+            // refresh_b
+            // 
+            this.refresh_b.Location = new System.Drawing.Point(538, 301);
+            this.refresh_b.Name = "refresh_b";
+            this.refresh_b.Size = new System.Drawing.Size(75, 23);
+            this.refresh_b.TabIndex = 16;
+            this.refresh_b.Text = "refresh";
+            this.refresh_b.UseVisualStyleBackColor = true;
+            this.refresh_b.Click += new System.EventHandler(this.refresh_b_Click);
+            // 
             // MainForm
             // 
             this.AutoScaleDimensions = new System.Drawing.SizeF(7F, 12F);
@@ -546,6 +557,7 @@ namespace TarkovPriceViewer
             this.AutoSizeMode = System.Windows.Forms.AutoSizeMode.GrowAndShrink;
             this.BackColor = System.Drawing.Color.White;
             this.ClientSize = new System.Drawing.Size(624, 361);
+            this.Controls.Add(this.refresh_b);
             this.Controls.Add(this.panel5);
             this.Controls.Add(this.panel7);
             this.Controls.Add(this.panel6);
@@ -631,6 +643,7 @@ namespace TarkovPriceViewer
         private System.Windows.Forms.CheckBox RandomItem;
         private System.Windows.Forms.Label ForFunRandom_Desc;
         private System.Windows.Forms.Timer check_idle_time;
+        private System.Windows.Forms.Button refresh_b;
     }
 }
 

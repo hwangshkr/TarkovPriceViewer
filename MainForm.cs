@@ -89,6 +89,7 @@ namespace TarkovPriceViewer
         private static LowLevelProc _proc_mouse = null;
         private static IntPtr hhook_keyboard = IntPtr.Zero;
         private static IntPtr hhook_mouse = IntPtr.Zero;
+        private static IntPtr h_instance = LoadLibrary("User32");
         private static System.Drawing.Point point = new System.Drawing.Point(0, 0);
         private static int nFlags = 0x0;
         private static Overlay overlay_info = new Overlay(true);
@@ -157,12 +158,13 @@ namespace TarkovPriceViewer
             {
                 if (force)
                 {
+                    Debug.WriteLine("force unhook.");
                     UnHook();
                 }
                 if (hhook_keyboard == IntPtr.Zero)
                 {
                     _proc_keyboard = hookKeyboardProc;
-                    hhook_keyboard = SetWindowsHookEx(WH_KEYBOARD_LL, _proc_keyboard, LoadLibrary("User32"), 0);
+                    hhook_keyboard = SetWindowsHookEx(WH_KEYBOARD_LL, _proc_keyboard, h_instance, 0);
                 }
                 if (Convert.ToBoolean(Program.settings["CloseOverlayWhenMouseMoved"]))
                 {
@@ -179,7 +181,7 @@ namespace TarkovPriceViewer
             if (hhook_mouse == IntPtr.Zero)
             {
                 _proc_mouse = hookMouseProc;
-                hhook_mouse = SetWindowsHookEx(WH_MOUSE_LL, _proc_mouse, LoadLibrary("User32"), 0);
+                hhook_mouse = SetWindowsHookEx(WH_MOUSE_LL, _proc_mouse, h_instance, 0);
             }
         }
 
@@ -1060,6 +1062,11 @@ namespace TarkovPriceViewer
                 }
                 SetHook();
             }
+        }
+
+        private void refresh_b_Click(object sender, EventArgs e)
+        {
+            SetHook(true);
         }
     }
 }
