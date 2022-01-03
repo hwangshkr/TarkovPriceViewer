@@ -264,6 +264,26 @@ namespace TarkovPriceViewer
                                                 name = new Regex("S$").Replace(name, "");
                                                 special = @"Subsonic";
                                             }
+                                            if (name.EndsWith(" S T FM"))
+                                            {
+                                                name = new Regex("(S T FM)$").Replace(name, "");
+                                                special = @"Subsonic & Tracer";
+                                            }
+                                            if (name.EndsWith(" T FM"))
+                                            {
+                                                name = new Regex("T FM$").Replace(name, "");
+                                                special = @"Tracer";
+                                            }
+                                            if (name.EndsWith(" S FM"))
+                                            {
+                                                name = new Regex("S FM$").Replace(name, "");
+                                                special = @"Subsonic";
+                                            }
+                                            if (name.EndsWith(" FM"))//must be last
+                                            {
+                                                name = new Regex("FM$").Replace(name, "");
+                                                special = @"";
+                                            }
                                             name = name.Replace("*", "").Trim();
                                             String damage = sub_nodes[first++].InnerText.Trim();
                                             if (damage.Contains("x"))
