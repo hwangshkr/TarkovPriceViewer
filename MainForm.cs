@@ -598,6 +598,7 @@ namespace TarkovPriceViewer
                             HtmlAgilityPack.HtmlNode sub_node_tm2 = null;
                             HtmlAgilityPack.HtmlNodeCollection nodes = null;
                             HtmlAgilityPack.HtmlNodeCollection subnodes = null;
+                            HtmlAgilityPack.HtmlNodeCollection subnodes2 = null;
                             if (node_tm != null)
                             {
                                 nodes = node_tm.SelectNodes(".//div[@class='w-25']");
@@ -780,48 +781,51 @@ namespace TarkovPriceViewer
                                                 }
                                             }
                                         }
-                                        sub_node_tm = node_tm.SelectSingleNode(".//table[@class='wikitable']");
-                                        if (sub_node_tm != null)
+                                        nodes = node_tm.SelectNodes(".//table[@class='wikitable']");
+                                        if (nodes != null)
                                         {
-                                            nodes = sub_node_tm.SelectNodes(".//tr");
-                                            if (nodes != null)
+                                            StringBuilder craftsb = new StringBuilder();
+                                            foreach (HtmlAgilityPack.HtmlNode node in nodes)
                                             {
-                                                StringBuilder craftsb = new StringBuilder();
-                                                foreach (HtmlAgilityPack.HtmlNode node in nodes)
+                                                subnodes = node.SelectNodes(".//tr");
+                                                if (subnodes != null)
                                                 {
-                                                    subnodes = node.SelectNodes(".//th");
-                                                    if (subnodes != null && subnodes.Count >= 5)
+                                                    foreach (HtmlAgilityPack.HtmlNode node2 in subnodes)
                                                     {
-                                                        List<String> craftlist = new List<string>();
-                                                        foreach (HtmlAgilityPack.HtmlNode temp in subnodes)
+                                                        subnodes2 = node2.SelectNodes(".//th");
+                                                        if (subnodes2 != null && subnodes2.Count >= 5)
                                                         {
-                                                            foreach (HtmlAgilityPack.HtmlNode temp2 in temp.ChildNodes)
+                                                            List<String> craftlist = new List<string>();
+                                                            foreach (HtmlAgilityPack.HtmlNode temp in subnodes2)
                                                             {
-                                                                if (!temp2.InnerText.Trim().Equals(""))
+                                                                foreach (HtmlAgilityPack.HtmlNode temp2 in temp.ChildNodes)
                                                                 {
-                                                                    craftlist.Add(temp2.InnerText.Trim());
+                                                                    if (!temp2.InnerText.Trim().Equals(""))
+                                                                    {
+                                                                        craftlist.Add(temp2.InnerText.Trim());
+                                                                    }
                                                                 }
                                                             }
+                                                            int firstarrow = craftlist.IndexOf("→");
+                                                            int secondarrow = craftlist.LastIndexOf("→");
+                                                            List<String> firstlist = craftlist.GetRange(0, firstarrow);
+                                                            List<String> secondlist = craftlist.GetRange(firstarrow + 1, secondarrow - firstarrow - 1);
+                                                            List<String> thirdlist = craftlist.GetRange(secondarrow + 1, craftlist.Count - secondarrow - 1);
+                                                            firstlist.Reverse();
+                                                            if (secondlist.Count <= 2)
+                                                            {
+                                                                secondlist.Reverse();
+                                                            }
+                                                            thirdlist.Reverse();
+                                                            craftsb.Append(String.Format("{0} → {2} ({1})"
+                                                                , String.Join(" ", firstlist), String.Join(secondlist.Count <= 2 ? " in " : " ", secondlist), String.Join(" ", thirdlist))).Append("\n");
                                                         }
-                                                        int firstarrow = craftlist.IndexOf("→");
-                                                        int secondarrow = craftlist.LastIndexOf("→");
-                                                        List<String> firstlist = craftlist.GetRange(0, firstarrow);
-                                                        List<String> secondlist = craftlist.GetRange(firstarrow + 1, secondarrow - firstarrow - 1);
-                                                        List<String> thirdlist = craftlist.GetRange(secondarrow + 1, craftlist.Count - secondarrow - 1);
-                                                        firstlist.Reverse();
-                                                        if (secondlist.Count <= 2)
-                                                        {
-                                                            secondlist.Reverse();
-                                                        }
-                                                        thirdlist.Reverse();
-                                                        craftsb.Append(String.Format("{0} → {2} ({1})"
-                                                            , String.Join(" ", firstlist), String.Join(secondlist.Count <= 2 ? " in " : " ", secondlist), String.Join(" ", thirdlist))).Append("\n");
                                                     }
                                                 }
-                                                if (!craftsb.ToString().Trim().Equals(""))
-                                                {
-                                                    item.bartersandcrafts = craftsb.ToString().Trim();
-                                                }
+                                            }
+                                            if (!craftsb.ToString().Trim().Equals(""))
+                                            {
+                                                item.bartersandcrafts = craftsb.ToString().Trim();
                                             }
                                         }
                                         if (!sb.ToString().Trim().Equals(""))
