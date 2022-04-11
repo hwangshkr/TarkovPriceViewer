@@ -631,35 +631,53 @@ namespace TarkovPriceViewer
                                                     item.price_week = subnodes[1].InnerText.Trim();
                                                 }
                                             }
+                                            else if (sub_node_tm.InnerText.Trim().Contains("Buy from trader"))
+                                            {
+                                                if (node.ChildNodes.Count > 2)
+                                                {
+                                                    String[] temp = node.ChildNodes[2].InnerText.Trim().Split(' ');
+                                                    item.buy_from_trader = temp[0] + " " + temp[1];
+                                                    item.buy_from_trader_price = temp[2];
+                                                }
+                                            }
+                                            else if (sub_node_tm.InnerText.Trim().Contains("Sell to trader"))
+                                            {
+                                                if (node.ChildNodes.Count > 2)
+                                                {
+                                                    String[] temp = node.ChildNodes[2].InnerText.Trim().Split(' ');
+                                                    item.sell_to_trader = temp[0] + " " + temp[1];
+                                                    item.sell_to_trader_price = temp[2];
+                                                }
+                                            }/*
                                             else
                                             {
                                                 sub_node_tm2 = sub_node_tm.SelectSingleNode(".//div[@class='bold']");
                                                 if (sub_node_tm2 != null)
                                                 {
-                                                    String[] temp = sub_node_tm.InnerText.Trim().Split(' ');
+                                                    String[] temp = sub_node_tm2.InnerText.Trim().Split(' ');
                                                     if (temp.Length > 2)
                                                     {
-                                                        if (sub_node_tm.InnerText.Trim().Contains("LL"))
+                                                        if (sub_node_tm2.InnerText.Trim().Contains("LL"))
                                                         {
                                                             item.buy_from_trader = temp[0].Trim() + " " + temp[1];
-                                                            sub_node_tm = node.SelectSingleNode(".//div[@class='bold alt']");
-                                                            if (sub_node_tm != null)
+                                                            sub_node_tm2 = node.SelectSingleNode(".//div[@class='bold alt']");
+                                                            if (sub_node_tm2 != null)
                                                             {
-                                                                item.buy_from_trader_price = sub_node_tm.InnerText.Trim();
+                                                                item.buy_from_trader_price = sub_node_tm2.InnerText.Trim();
                                                             }
                                                         }
                                                         else
                                                         {
                                                             item.sell_to_trader = temp[0].Trim();
-                                                            sub_node_tm = node.SelectSingleNode(".//div[@class='bold alt']");
-                                                            if (sub_node_tm != null)
+                                                            sub_node_tm2 = node.SelectSingleNode(".//div[@class='bold alt']");
+                                                            if (sub_node_tm2 != null)
                                                             {
-                                                                item.sell_to_trader_price = sub_node_tm.InnerText.Trim();
+                                                                item.sell_to_trader_price = sub_node_tm2.InnerText.Trim();
                                                             }
                                                         }
                                                     }
                                                 }
-                                            }
+                                            }*/
                                         }
                                     }
                                 }
