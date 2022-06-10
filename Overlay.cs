@@ -161,6 +161,14 @@ namespace TarkovPriceViewer
                             {
                                 sb.Append(String.Format("Last Price : {0} ({1})\n", item.price_last, item.last_updated));
                             }
+                            if (item.fee != null)
+                            {
+                                int l;
+                                int f;
+                                Int32.TryParse(String.Join("", item.price_last.Replace(",", "").Split(Program.splitcur)), out l);
+                                Int32.TryParse(String.Join("", item.fee.Replace(",", "").Split(Program.splitcur)), out f);
+                                sb.Append(String.Format("Fee : {0} (Profit : {1})\n", item.fee, (l - f).ToString()));
+                            }
                             if (Convert.ToBoolean(Program.settings["Show_Day_Price"]) && item.price_day != null)
                             {
                                 sb.Append(String.Format("Day Price : {0}\n", item.price_day));

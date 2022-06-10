@@ -128,7 +128,7 @@ namespace TarkovPriceViewer
                 }
                 String st;
                 settings.Remove("Version");//force
-                settings.Add("Version", "v1.17");//force
+                settings.Add("Version", "v1.18");//force
                 if (!settings.TryGetValue("MinimizetoTrayWhenStartup", out st))
                 {
                     settings.Add("MinimizetoTrayWhenStartup", "false");

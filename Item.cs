@@ -12,6 +12,7 @@ namespace TarkovPriceViewer
         public String market_address;
         public String wiki_address;
         public String price_last;
+        public String fee;
         public String price_day;
         public String price_week;
         public String sell_to_trader;
