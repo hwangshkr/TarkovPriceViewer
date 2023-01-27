@@ -103,7 +103,7 @@ namespace TarkovPriceViewer
         public void ResizeGrid(DataGridView view)
         {
             view.ClientSize = new Size(view.Columns.GetColumnsWidth(DataGridViewElementStates.None) + 10,
-                view.Rows.GetRowsHeight(DataGridViewElementStates.None) + 20);
+                view.Rows.GetRowsHeight(DataGridViewElementStates.None) + 22);
             view.Refresh();
         }
 
@@ -113,11 +113,14 @@ namespace TarkovPriceViewer
             {
                 for (int i = 0; i < iteminfo_ball.Rows[b].Cells.Count; i++)
                 {
-                    if (i == 0)
+                    if (i == 1)
                     {
                         if (iteminfo_ball.Rows[b].Cells[i].Value.Equals(item.name_display) || iteminfo_ball.Rows[b].Cells[i].Value.Equals(item.name_display2))
                         {
+                            //iteminfo_ball.Rows.List).Items[6])).Cells.List).Items[1]
                             iteminfo_ball.Rows[b].Cells[i].Style.ForeColor = Color.Gold;
+                            iteminfo_ball.Rows[b].Cells[i-1].Style.ForeColor = Color.Gold;
+                            iteminfo_ball.Rows[b].Cells[i+1].Style.ForeColor = Color.Gold;
                         }
                     } else if (i >= 3)
                     {
@@ -155,19 +158,32 @@ namespace TarkovPriceViewer
                         }
                         else
                         {
+                            int l, f, tp;
+                            Int32.TryParse(String.Join("", item.price_last.Replace(",", "").Split(Program.splitcur)), out l);
+                            Int32.TryParse(String.Join("", item.fee.Replace(",", "").Split(Program.splitcur)), out f);
+                            Int32.TryParse(String.Join("", item.sell_to_trader_price.Replace(",", "").Split(Program.splitcur)), out tp);
+                            int flea_profit = l - f;
+                            char currency = item.price_last[item.price_last.Length - 1];
+
                             StringBuilder sb = new StringBuilder();
-                            sb.Append(String.Format("Name : {0}\n\n", item.isname2 ? item.name_display2 : item.name_display));
+                            sb.Append(String.Format("Name : {0}\n", item.isname2 ? item.name_display2 : item.name_display));
+
+                            if (tp >= flea_profit)
+                            {
+                                sb.Append(String.Format("\nSell to Trader : {0} --> Profit : {1}\n\n", item.sell_to_trader, item.sell_to_trader_price));
+                            }
+                            else
+                            {
+                                sb.Append(String.Format("\nSell to Flea Market --> Profit : {0}{1}\n\n", flea_profit.ToString("N0"), currency));
+                            }
+
                             if (Convert.ToBoolean(Program.settings["Show_Last_Price"]))
                             {
-                                sb.Append(String.Format("Last Price : {0} ({1})\n", item.price_last, item.last_updated));
+                                sb.Append(String.Format("Last Price : {0}  ({1})\n", item.price_last, item.last_updated));
                             }
                             if (item.fee != null)
                             {
-                                int l;
-                                int f;
-                                Int32.TryParse(String.Join("", item.price_last.Replace(",", "").Split(Program.splitcur)), out l);
-                                Int32.TryParse(String.Join("", item.fee.Replace(",", "").Split(Program.splitcur)), out f);
-                                sb.Append(String.Format("Fee : {0} (Profit : {1})\n", item.fee, (l - f).ToString()));
+                                sb.Append(String.Format("Profit : {0}{1} (Fee : {2})\n", flea_profit.ToString("N0"), currency, item.fee));
                             }
                             if (Convert.ToBoolean(Program.settings["Show_Day_Price"]) && item.price_day != null)
                             {
@@ -274,6 +290,7 @@ namespace TarkovPriceViewer
             setPriceColor();
             setInraidColor();
             setCraftColor(item);
+            setOthersColor(item);
         }
 
         public void setPriceColor()
@@ -303,6 +320,30 @@ namespace TarkovPriceViewer
             {
                 iteminfo_text.Select(m.Index, m.Length);
                 iteminfo_text.SelectionColor = Color.Green;
+            }
+        }
+
+        public void setOthersColor(Item item)
+        {
+            MatchCollection mc = new Regex(item.sell_to_trader).Matches(iteminfo_text.Text);
+            foreach (Match m in mc)
+            {
+                iteminfo_text.Select(m.Index, m.Length);
+                iteminfo_text.SelectionColor = Color.SkyBlue;
+            }
+
+            mc = new Regex(item.buy_from_trader).Matches(iteminfo_text.Text);
+            foreach (Match m in mc)
+            {
+                iteminfo_text.Select(m.Index, m.Length);
+                iteminfo_text.SelectionColor = Color.SkyBlue;
+            }
+
+            mc = new Regex("Flea Market").Matches(iteminfo_text.Text);
+            foreach (Match m in mc)
+            {
+                iteminfo_text.Select(m.Index, m.Length);
+                iteminfo_text.SelectionColor = Color.SkyBlue;
             }
         }
 

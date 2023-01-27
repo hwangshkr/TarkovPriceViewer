@@ -29,15 +29,15 @@ namespace TarkovPriceViewer
         public static readonly String appname = "EscapeFromTarkov";
         public static readonly String loading = "Loading...";
         public static readonly String notfound = "Item Name Not Found.";
-        public static readonly String noflea = "Item not Found on Flea.";
+        public static readonly String noflea = "Item not Found on the Flea Market.";
         public static readonly String notfinishloading = "Wait for Loading Data. Please Check Your Internet, and Check Tarkov Wiki Site.";
         public static readonly String presscomparekey = "Please Press Compare Key.";
         public static bool finishloadingballistics = false;
         public static readonly String wiki = "https://escapefromtarkov.fandom.com/wiki/";
         public static readonly String tarkovmarket = "https://tarkov-market.com/item/";
         public static readonly String official = "https://www.escapefromtarkov.com/";
-        public static readonly String github = "https://github.com/hwangshkr/TarkovPriceViewer";
-        public static readonly String checkupdate = "https://github.com/hwangshkr/TarkovPriceViewer/raw/main/README.md";
+        public static readonly String github = "https://github.com/Zotikus1001/TarkovPriceViewer";
+        public static readonly String checkupdate = "https://github.com/Zotikus1001/TarkovPriceViewer/raw/main/README.md";
         public static readonly char rouble = '₽';
         public static readonly char dollar = '$';
         public static readonly char euro = '€';
@@ -128,7 +128,7 @@ namespace TarkovPriceViewer
                 }
                 String st;
                 settings.Remove("Version");//force
-                settings.Add("Version", "v1.18");//force
+                settings.Add("Version", "v1.19");//force
                 if (!settings.TryGetValue("MinimizetoTrayWhenStartup", out st))
                 {
                     settings.Add("MinimizetoTrayWhenStartup", "false");
@@ -220,9 +220,10 @@ namespace TarkovPriceViewer
                         HtmlAgilityPack.HtmlDocument doc = new HtmlAgilityPack.HtmlDocument();
                         Debug.WriteLine(Program.wiki + "Ballistics");
                         doc.LoadHtml(wc.DownloadString(Program.wiki + "Ballistics"));
-                        HtmlAgilityPack.HtmlNode node_tm = doc.DocumentNode.SelectSingleNode("//table[@id='trkballtable']");
+                        HtmlAgilityPack.HtmlNode node_tm = doc.DocumentNode.SelectSingleNode("//table[4]"); //table[@id='trkballtable']
                         HtmlAgilityPack.HtmlNodeCollection nodes = null;
                         HtmlAgilityPack.HtmlNodeCollection sub_nodes = null;
+
                         if (node_tm != null)
                         {
                             node_tm = node_tm.SelectSingleNode(".//tbody");
