@@ -9,6 +9,7 @@ using System.Runtime.InteropServices;
 using System.Text;
 using System.Threading;
 using System.Threading.Tasks;
+using System.Timers;
 using System.Windows.Forms;
 using Tesseract;
 
@@ -55,6 +56,9 @@ namespace TarkovPriceViewer
         private const int GWL_EXSTYLE = -20;
         private const int WS_EX_LAYERED = 0x80000;
 
+        private static int repeatCount = 0;
+        public static System.Timers.Timer timer = new System.Timers.Timer(250);
+
         private struct WINDOWPLACEMENT
         {
             public int length;
@@ -94,12 +98,14 @@ namespace TarkovPriceViewer
         private static int nFlags = 0x0;
         private static Overlay overlay_info = new Overlay(true);
         private static Overlay overlay_compare = new Overlay(false);
-        private static long presstime = 0;
         private static CancellationTokenSource cts_info = new CancellationTokenSource();
         private static CancellationTokenSource cts_compare = new CancellationTokenSource();
         private static Control press_key_control = null;
         private static Scalar linecolor = new Scalar(90, 89, 82);
         private static long idle_time = 3600000;
+        public static DateTime KeyPressedTime;
+        private static DateTime presstime;
+        public static bool WaitingForTooltip = false;
 
         public MainForm()
         {
@@ -116,6 +122,25 @@ namespace TarkovPriceViewer
             overlay_info.Show();
             overlay_compare.Owner = this;
             overlay_compare.Show();
+
+            timer.Elapsed += Timer_Elapsed;
+            timer.AutoReset = true;
+        }
+
+        private void Timer_Elapsed(object sender, ElapsedEventArgs e)
+        {
+            if (repeatCount >= 12)
+            {
+                timer.Stop(); WaitingForTooltip = false;
+                repeatCount = 0;
+            }
+            else
+            {
+                repeatCount++;
+
+                point = Control.MousePosition;
+                LoadingItemInfo();
+            }
         }
 
         private void SettingUI()
@@ -226,17 +251,18 @@ namespace TarkovPriceViewer
                             int vkCode = Marshal.ReadInt32(lParam);
                             if (vkCode == Int32.Parse(Program.settings["ShowOverlay_Key"]))
                             {
-                                long CurrentTime = DateTime.Now.Ticks;
-                                if (CurrentTime - presstime > 2000000)
+                                KeyPressedTime = DateTime.Now;
+                                Debug.WriteLine(Program.settings["ShowOverlay_Key"] + " Key Pressed.");
+                                if ((!timer.Enabled || !WaitingForTooltip) && (KeyPressedTime - presstime).TotalMilliseconds >= 200)
                                 {
                                     point = Control.MousePosition;
                                     LoadingItemInfo();
                                 }
-                                else
+                                else if ((KeyPressedTime - presstime).TotalMilliseconds < 200)
                                 {
-                                    Debug.WriteLine("key pressed in 0.2 seconds.");
+                                    Debug.WriteLine("Key pressed in less than 200 milliseconds.");
                                 }
-                                presstime = CurrentTime;
+                                    presstime = KeyPressedTime;
                             }
                             else if (vkCode == Int32.Parse(Program.settings["CompareOverlay_Key"]))
                             {
@@ -251,7 +277,8 @@ namespace TarkovPriceViewer
                                 CloseItemInfo();
                                 CloseItemCompare();
                             }
-                        } else
+                        } 
+                        else
                         {
                             point = Control.MousePosition;
                             overlay_info.ShowWaitBallistics(point);
@@ -272,8 +299,9 @@ namespace TarkovPriceViewer
             {
                 if (!isinfoclosed && code >= 0
                     && wParam == (IntPtr)WM_MOUSEMOVE
-                    && (Math.Abs(Control.MousePosition.X - point.X) > 5 || Math.Abs(Control.MousePosition.Y - point.Y) > 5))
+                    && (Math.Abs(Control.MousePosition.X - point.X) > 60 || Math.Abs(Control.MousePosition.Y - point.Y) > 60))
                 {
+                    timer.Stop(); WaitingForTooltip = false; repeatCount = 0;
                     CloseItemInfo();
                 }
             } catch (Exception e)
@@ -303,7 +331,7 @@ namespace TarkovPriceViewer
             CloseItemInfo();
             CloseItemCompare();
             Program.SaveSettings();
-            Application.Exit();
+            System.Windows.Forms.Application.Exit();
         }
 
         public void LoadingItemInfo()
@@ -311,7 +339,12 @@ namespace TarkovPriceViewer
             isinfoclosed = false;
             cts_info.Cancel();
             cts_info = new CancellationTokenSource();
-            overlay_info.ShowLoadingInfo(point, cts_info.Token);
+
+            if(timer.Enabled || WaitingForTooltip)
+                overlay_info.ShowWaitinfForTooltipInfo(point, cts_info.Token);
+            else
+                overlay_info.ShowLoadingInfo(point, cts_info.Token);
+
             Task task = Task.Factory.StartNew(() => FindItemTask(true, cts_info.Token));
         }
 
@@ -351,7 +384,8 @@ namespace TarkovPriceViewer
                     //item = MatchItemName("7.62x54r_7n37".ToLower().Trim().ToCharArray());
                     FindItemInfo(item, isiteminfo, cts_one);
                 }
-            } else
+            } 
+            else
             {
                 Bitmap fullimage = CaptureScreen(CheckisTarkov());
                 if (fullimage != null)
@@ -485,15 +519,19 @@ namespace TarkovPriceViewer
                             using (Mat temp2 = temp.Threshold(0, 255, ThresholdTypes.BinaryInv))
                             {
                                 String text = getTesseract(temp2);
-                                if (!text.Equals(""))
+
+                                if (!text.Equals("")) //If tooltip text found
                                 {
                                     item = MatchItemName(text.ToLower().Trim().ToCharArray());
                                     break;
                                 }
                             }
                         }
+                        else
+                            timer.Start(); WaitingForTooltip = true;
                     }
                 }
+                
                 if (!cts_one.IsCancellationRequested)
                 {
                     FindItemInfo(item, isiteminfo, cts_one);
@@ -533,6 +571,10 @@ namespace TarkovPriceViewer
                         break;
                     }
                 }
+            }
+            if (result.name_display != null || result.name_display2 != null)
+            {
+                timer.Stop(); WaitingForTooltip = false; repeatCount = 0;
             }
             Debug.WriteLine(d + " text match : " + result.name_display + " & " + result.name_display2);
             return result;

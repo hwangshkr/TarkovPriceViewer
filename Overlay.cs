@@ -26,6 +26,9 @@ namespace TarkovPriceViewer
         private static bool isinfoform = true;
         private static bool ismoving = false;
         private static int x, y;
+        public static DateTime startTime;
+        private static string waitinfForTooltipText = Program.waitingForTooltip;
+        private static int DotsCounter = 0;
 
         private Object _lock = new Object();
 
@@ -150,7 +153,10 @@ namespace TarkovPriceViewer
                     {
                         if (item == null || item.market_address == null)
                         {
-                            iteminfo_text.Text = Program.notfound;
+                            if (MainForm.timer.Enabled || MainForm.WaitingForTooltip)
+                                iteminfo_text.Text = waitinfForTooltipText;
+                            else
+                                iteminfo_text.Text = Program.notfound;
                         }
                         else if (item.price_last == null)
                         {
@@ -314,8 +320,17 @@ namespace TarkovPriceViewer
         }
 
         public void setCraftColor(Item item)
-        {
-            MatchCollection mc = new Regex(item.name_display).Matches(iteminfo_text.Text);
+        { 
+
+            MatchCollection mc;
+
+            if (iteminfo_text.Text.Contains(item.name_display2) && item.name_display2 != null)
+            {
+                mc = new Regex(item.name_display2).Matches(iteminfo_text.Text);
+            }
+            else
+                mc = new Regex(item.name_display).Matches(iteminfo_text.Text);
+
             foreach (Match m in mc)
             {
                 iteminfo_text.Select(m.Index, m.Length);
@@ -332,13 +347,16 @@ namespace TarkovPriceViewer
                 iteminfo_text.SelectionColor = Color.SkyBlue;
             }
 
-            mc = new Regex(item.buy_from_trader).Matches(iteminfo_text.Text);
-            foreach (Match m in mc)
+            if (item.buy_from_trader != null)
             {
-                iteminfo_text.Select(m.Index, m.Length);
-                iteminfo_text.SelectionColor = Color.SkyBlue;
+                mc = new Regex(item.buy_from_trader).Matches(iteminfo_text.Text);
+                foreach (Match m in mc)
+                {
+                    iteminfo_text.Select(m.Index, m.Length);
+                    iteminfo_text.SelectionColor = Color.SkyBlue;
+                }
             }
-
+            
             mc = new Regex("Flea Market").Matches(iteminfo_text.Text);
             foreach (Match m in mc)
             {
@@ -353,10 +371,38 @@ namespace TarkovPriceViewer
             {
                 if (!cts_one.IsCancellationRequested)
                 {
+                    waitinfForTooltipText = Program.waitingForTooltip;
                     iteminfo_ball.Rows.Clear();
                     iteminfo_ball.Visible = false;
                     iteminfo_text.Text = Program.loading;
-                    iteminfo_panel.Location = point;
+                    iteminfo_panel.Location = new Point(point.X + 20, point.Y + 20);
+                    iteminfo_panel.Visible = true;
+                }
+            };
+            Invoke(show);
+        }
+
+        public void ShowWaitinfForTooltipInfo(Point point, CancellationToken cts_one)
+        {
+            Action show = delegate ()
+            {
+                if (!cts_one.IsCancellationRequested)
+                {
+                    iteminfo_ball.Rows.Clear();
+                    iteminfo_ball.Visible = false;
+
+                    if (DotsCounter < 3)
+                    {
+                        waitinfForTooltipText += ".";
+                        DotsCounter++;
+                    }
+                    else
+                    {
+                        waitinfForTooltipText = Program.waitingForTooltip + ".";
+                        DotsCounter = 1;
+                    }
+
+                    iteminfo_text.Text = waitinfForTooltipText;
                     iteminfo_panel.Visible = true;
                 }
             };

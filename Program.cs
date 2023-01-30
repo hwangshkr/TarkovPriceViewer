@@ -29,6 +29,7 @@ namespace TarkovPriceViewer
         public static readonly String appname = "EscapeFromTarkov";
         public static readonly String loading = "Loading...";
         public static readonly String notfound = "Item Name Not Found.";
+        public static readonly String waitingForTooltip = "Waiting for tooltip";
         public static readonly String noflea = "Item not Found on the Flea Market.";
         public static readonly String notfinishloading = "Wait for Loading Data. Please Check Your Internet, and Check Tarkov Wiki Site.";
         public static readonly String presscomparekey = "Please Press Compare Key.";
@@ -128,7 +129,7 @@ namespace TarkovPriceViewer
                 }
                 String st;
                 settings.Remove("Version");//force
-                settings.Add("Version", "v1.19");//force
+                settings.Add("Version", "v1.20");//force
                 if (!settings.TryGetValue("MinimizetoTrayWhenStartup", out st))
                 {
                     settings.Add("MinimizetoTrayWhenStartup", "false");
