@@ -1,14 +1,16 @@
-﻿using System;
-using System.Collections.Specialized;
+﻿using Newtonsoft.Json.Linq;
+using System;
+using System.Collections.Generic;
 using System.ComponentModel;
-using System.Data;
 using System.Diagnostics;
 using System.Drawing;
+using System.Linq;
 using System.Runtime.InteropServices;
 using System.Text;
 using System.Text.RegularExpressions;
 using System.Threading;
 using System.Windows.Forms;
+using static TarkovPriceViewer.TarkovAPI;
 
 namespace TarkovPriceViewer
 {
@@ -143,6 +145,39 @@ namespace TarkovPriceViewer
             iteminfo_ball.Refresh();
         }
 
+        public void SetBallisticsColorAPI(TarkovAPI.Item item)
+        {
+            for (int b = 0; b < iteminfo_ball.Rows.Count; b++)
+            {
+                for (int i = 0; i < iteminfo_ball.Rows[b].Cells.Count; i++)
+                {
+                    if (i == 1)
+                    {
+                        if (iteminfo_ball.Rows[b].Cells[i].Value.Equals(item.name))
+                        {
+                            iteminfo_ball.Rows[b].Cells[i].Style.ForeColor = Color.Gold;
+                            iteminfo_ball.Rows[b].Cells[i - 1].Style.ForeColor = Color.Gold;
+                            iteminfo_ball.Rows[b].Cells[i + 1].Style.ForeColor = Color.Gold;
+                        }
+                    }
+                    else if (i >= 3)
+                    {
+                        try
+                        {
+                            int level = 0;
+                            Int32.TryParse((String)iteminfo_ball.Rows[b].Cells[i].Value, out level);
+                            iteminfo_ball.Rows[b].Cells[i].Style.BackColor = Program.BEColor[level];
+                        }
+                        catch (Exception e)
+                        {
+                            Debug.WriteLine(e.Message);
+                        }
+                    }
+                }
+            }
+            iteminfo_ball.Refresh();
+        }
+
         public void ShowInfo(Item item, CancellationToken cts_one)
         {
             Action show = delegate ()
@@ -158,16 +193,58 @@ namespace TarkovPriceViewer
                             else
                                 iteminfo_text.Text = Program.notfound;
                         }
-                        else if (item.price_last == null)
+                        else if (item.last_updated == null && item.banned_from_flea == null)
                         {
                             iteminfo_text.Text = Program.noflea;
                         }
+                        else if (item.banned_from_flea != null) //Handle items banned from Flea Market
+                        {
+                            int tp;
+                            Int32.TryParse(String.Join("", item.sell_to_trader_price.Replace(",", "").Split(Program.splitcur)), out tp);
+
+                            StringBuilder sb = new StringBuilder();
+                            sb.Append(String.Format("Name : {0}\n", item.isname2 ? item.name_display2 : item.name_display));
+                            sb.Append(String.Format("Sell to Trader : {0} --> Profit : {1}\n", item.sell_to_trader, item.sell_to_trader_price));
+
+                            if (Convert.ToBoolean(Program.settings["Buy_From_Trader"]) && item.buy_from_trader != null)
+                            {
+                                sb.Append(String.Format("\nBuy from Trader : {0} --> {1}\n", item.buy_from_trader, item.buy_from_trader_price.Replace(" ", "").Replace(@"~", @" ≈")));
+                            }
+                            if (Convert.ToBoolean(Program.settings["Needs"]) && item.needs != null)
+                            {
+                                sb.Append(String.Format("\nNeeds :\n{0}\n", item.needs));
+                            }
+                            if (Convert.ToBoolean(Program.settings["Barters_and_Crafts"]) && item.bartersandcrafts != null)
+                            {
+                                sb.Append(String.Format("\nBarters & Crafts :\n{0}\n", item.bartersandcrafts));
+                            }
+                            sb.Append(String.Format("Banned from Flea Market"));
+                            iteminfo_ball.Rows.Clear();
+                            iteminfo_text.Text = sb.ToString().Trim();
+                            setTextColors(item);
+                            if (item.ballistic != null)
+                            {
+                                foreach (Ballistic b in item.ballistic.Calibarlist)
+                                {
+                                    iteminfo_ball.Rows.Add(b.Data());
+                                }
+                                iteminfo_ball.Visible = true;
+                                SetBallisticsColor(item);
+                                ResizeGrid(iteminfo_ball);
+                            }
+                        }
                         else
                         {
-                            int l, f, tp;
+                            int l, f, tp, btp = 0;
                             Int32.TryParse(String.Join("", item.price_last.Replace(",", "").Split(Program.splitcur)), out l);
                             Int32.TryParse(String.Join("", item.fee.Replace(",", "").Split(Program.splitcur)), out f);
                             Int32.TryParse(String.Join("", item.sell_to_trader_price.Replace(",", "").Split(Program.splitcur)), out tp);
+
+                            if (item.buy_from_trader != null)
+                            {
+                                Int32.TryParse(String.Join("", item.buy_from_trader_price.Replace(",", "").Split(Program.splitcur)), out btp);
+                            }
+                            
                             int flea_profit = l - f;
                             char currency = item.price_last[item.price_last.Length - 1];
 
@@ -176,11 +253,20 @@ namespace TarkovPriceViewer
 
                             if (tp >= flea_profit)
                             {
-                                sb.Append(String.Format("\nSell to Trader : {0} --> Profit : {1}\n\n", item.sell_to_trader, item.sell_to_trader_price));
+                                sb.Append(String.Format("Sell to Trader : {0} --> Profit : {1}\n", item.sell_to_trader, item.sell_to_trader_price));
                             }
                             else
                             {
-                                sb.Append(String.Format("\nSell to Flea Market --> Profit : {0}{1}\n\n", flea_profit.ToString("N0"), currency));
+                                sb.Append(String.Format("Sell to Flea Market --> Profit : {0}{1}\n", flea_profit.ToString("N0"), currency));
+                            }
+
+                            if (l >= btp && item.buy_from_trader != null)
+                            {
+                                sb.Append(String.Format("\nBetter to Buy from Trader : {0} --> {1}\n\n", item.buy_from_trader, item.buy_from_trader_price.Replace(" ", "").Replace(@"~", @" ≈")));
+                            }
+                            else
+                            {
+                                sb.Append(String.Format("\nBetter to Buy from Flea Market : {0}{1}\n\n", l.ToString("N0"), currency));
                             }
 
                             if (Convert.ToBoolean(Program.settings["Show_Last_Price"]))
@@ -201,13 +287,11 @@ namespace TarkovPriceViewer
                             }
                             if (Convert.ToBoolean(Program.settings["Sell_to_Trader"]) && item.sell_to_trader != null)
                             {
-                                sb.Append(String.Format("\nSell to Trader : {0}", item.sell_to_trader));
-                                sb.Append(String.Format("\nSell to Trader Price : {0}\n", item.sell_to_trader_price));
+                                sb.Append(String.Format("\nSell to Trader : {0} --> {1}", item.sell_to_trader, item.sell_to_trader_price));
                             }
                             if (Convert.ToBoolean(Program.settings["Buy_From_Trader"]) && item.buy_from_trader != null)
                             {
-                                sb.Append(String.Format("\nBuy From Trader : {0}", item.buy_from_trader));
-                                sb.Append(String.Format("\nBuy From Trader Price : {0}\n", item.buy_from_trader_price.Replace(" ", "").Replace(@"~", @" ≈")));
+                                sb.Append(String.Format("\nBuy from Trader : {0} --> {1}", item.buy_from_trader, item.buy_from_trader_price.Replace(" ", "").Replace(@"~", @" ≈")));
                             }
                             if (Convert.ToBoolean(Program.settings["Needs"]) && item.needs != null)
                             {
@@ -215,8 +299,9 @@ namespace TarkovPriceViewer
                             }
                             if (Convert.ToBoolean(Program.settings["Barters_and_Crafts"]) && item.bartersandcrafts != null)
                             {
-                                sb.Append(String.Format("\nBarters & Crafts :\n{0}\n", item.bartersandcrafts));
+                                sb.Append(String.Format("\n\nBarters & Crafts :\n{0}\n", item.bartersandcrafts));
                             }
+                            iteminfo_ball.Rows.Clear();
                             iteminfo_text.Text = sb.ToString().Trim();
                             setTextColors(item);
                             if (item.ballistic != null)
@@ -234,6 +319,209 @@ namespace TarkovPriceViewer
                 }
             };
             Invoke(show);
+        }
+
+        public void ShowInfoAPI(TarkovAPI.Item item, CancellationToken cts_one)
+        {
+            Action show = delegate ()
+            {
+                if (!cts_one.IsCancellationRequested)
+                {
+                    lock (_lock)
+                    {
+                        if (item == null || item.name == null)
+                        {
+                            if (MainForm.timer.Enabled || MainForm.WaitingForTooltip)
+                                iteminfo_text.Text = waitinfForTooltipText;
+                            else
+                                iteminfo_text.Text = Program.notfound;
+                        }
+                        else if (item.link == null)
+                        {
+                            iteminfo_text.Text = Program.noflea;
+                        }
+                        else
+                        {
+                            Debug.WriteLine("Market Link: " + item.link);
+
+                            string mainCurrency = Program.rouble.ToString();
+                            string BestSellTo_vendorName = "";
+                            string BestBuyFrom_vendorName = "";
+                            
+                            StringBuilder sb = new StringBuilder();
+                            
+                            //Loot Tier
+                            SetLootTierPerSlot(item);
+                            if(item.lootTier != null)
+                                sb.Append(String.Format("{0}\n", item.lootTier));
+
+                            sb.Append(String.Format("{0}", item.name));
+
+                            //Find Flea Market profit
+                            int flea_profit = 0;
+                            if (item.lastLowPrice != null && item.fleaMarketFee != null)
+                            {
+                                flea_profit = item.lastLowPrice.Value - item.fleaMarketFee.Value;
+                            }
+
+                            //Find best trader to sell to
+                            if (item.sellFor.Count > 0)
+                            {
+                                List<SellFor> list = new List<SellFor>(item.sellFor);
+                                var sortedVendor = list.OrderByDescending(p => p.priceRUB).First();
+                                BestSellTo_vendorName = sortedVendor.vendor.name;
+
+                                int vendorPrice = sortedVendor.priceRUB.Value;
+                                if (sortedVendor.vendor.name == "Flea Market")
+                                    vendorPrice = flea_profit;
+
+                                if (sortedVendor.vendor.minTraderLevel != null /*&& !sortedVendor.vendor.name.Contains(" LL")*/)
+                                    BestSellTo_vendorName += " LL" + sortedVendor.vendor.minTraderLevel;
+
+                                sb.Append(String.Format("\n\nBest sell to {0} --> {1}{2}", BestSellTo_vendorName, vendorPrice.ToString("N0"), mainCurrency));
+                            }
+
+                            //Find best trader to buy from
+                            if (item.buyFor.Count > 0)
+                            {
+                                List<BuyFor> list = new List<BuyFor>(item.buyFor);
+                                var sortedVendor = list.OrderBy(p => p.priceRUB).First();
+                                BestBuyFrom_vendorName = sortedVendor.vendor.name;
+
+                                int vendorPrice = sortedVendor.priceRUB.Value;
+                                if (sortedVendor.vendor.name == "Flea Market")
+                                    vendorPrice = item.lastLowPrice.Value;
+
+                                if (sortedVendor.vendor.minTraderLevel != null)
+                                    BestBuyFrom_vendorName += " LL" + sortedVendor.vendor.minTraderLevel;
+
+                                sb.Append(String.Format("\nBest buy from {0} --> {1}{2}", BestBuyFrom_vendorName, vendorPrice.ToString("N0"), mainCurrency));
+                            }
+
+                            if (Convert.ToBoolean(Program.settings["Show_Last_Price"]) && item.lastLowPrice != null)
+                            {
+                                sb.Append(String.Format("\n\nLast Price : {0}{1}  ({2})", ((int)item.lastLowPrice).ToString("N0"), mainCurrency, Program.LastUpdated((DateTime)item.updated)));
+                            }
+                            if (item.fleaMarketFee != null && !item.types.Exists(e => e.Equals("preset")))
+                            {
+                                sb.Append(String.Format("\nProfit : {0}{1} (Fee : {2}{3})", flea_profit.ToString("N0"), mainCurrency, item.fleaMarketFee.Value.ToString("N0"), mainCurrency));
+                            }
+                            if (Convert.ToBoolean(Program.settings["Show_Day_Price"]) && item.avg24hPrice.Value > 0)
+                            {
+                                sb.Append(String.Format("\nAverage 24h : {0}{1}", item.avg24hPrice.Value.ToString("N0"), mainCurrency));
+                            }
+                            if (Convert.ToBoolean(Program.settings["Sell_to_Trader"]) && item.sellFor.Count > 0)
+                            {
+                                List<SellFor> list = new List<SellFor>(item.sellFor);
+                                list.RemoveAll(p => p.vendor.name == "Flea Market");
+                                if (list.Count > 0)
+                                {
+                                    var sortedNoFlea = list.OrderByDescending(p => p.priceRUB).First();
+                                    string vendorName = sortedNoFlea.vendor.name;
+
+                                    if (sortedNoFlea.vendor.minTraderLevel != null)
+                                        vendorName += " LL" + sortedNoFlea.vendor.minTraderLevel;
+
+                                    if(BestSellTo_vendorName != vendorName)
+                                        sb.Append(String.Format("\n\nSell to {0} --> {1}{2}", vendorName, sortedNoFlea.priceRUB.Value.ToString("N0"), mainCurrency));
+                                }
+                            }
+                            if (Convert.ToBoolean(Program.settings["Buy_From_Trader"]) && item.buyFor.Count > 0)
+                            {
+                                List<BuyFor> list =  new List<BuyFor>(item.buyFor);
+                                list.RemoveAll(p => p.vendor.name == "Flea Market");
+                                if (list.Count > 0)
+                                {
+                                    var sortedNoFlea = list.OrderBy(p => p.priceRUB).First();
+                                    string vendorName = sortedNoFlea.vendor.name;
+
+                                    if (sortedNoFlea.vendor.minTraderLevel != null)
+                                        vendorName += " LL" + sortedNoFlea.vendor.minTraderLevel;
+                                    if(BestBuyFrom_vendorName != vendorName)
+                                        sb.Append(String.Format("\nBuy from {0} --> {1}{2}", vendorName, sortedNoFlea.priceRUB.Value.ToString("N0"), mainCurrency));
+                                }
+                            }
+                            if (Convert.ToBoolean(Program.settings["Needs"]) && item.usedInTasks.Count > 0)
+                            {
+                                string tasks = "";
+                                var list = item.usedInTasks.OrderBy(p => p.minPlayerLevel);
+                                foreach (var task in list)
+                                {
+                                    if (task.minPlayerLevel != null)
+                                        tasks += "[" + task.minPlayerLevel + "] ";
+                                    if (task.name != null)
+                                        tasks += task.name;
+                                    if (task.map != null)
+                                        tasks += " [" + task.map.name + "]";
+                                    tasks += "\n";
+                                }
+
+                                sb.Append(String.Format("\n\nUsed in Task:\n{0}\n", tasks));
+                            }
+                            //TODO
+                            /*if (Convert.ToBoolean(Program.settings["Barters_and_Crafts"]) && item.bartersandcrafts != null)
+                            {
+                                sb.Append(String.Format("\n\nBarters & Crafts :\n{0}\n", item.bartersandcrafts));
+                            }*/
+                            if (item.types.Exists(e => e.Equals("preset")))
+                            {
+                                sb.Append(String.Format("\n\nThis is a Preset item \nCan't be sold or bought in Flea Market"));
+                            }
+                            else if (flea_profit == 0)
+                                sb.Append(String.Format("\nBanned from Flea Market"));
+
+                            iteminfo_ball.Rows.Clear();
+                            iteminfo_text.Text = sb.ToString().Trim();
+                            setTextColorsAPI(item);
+                            if (item.ballistic != null)
+                            {
+                                foreach (Ballistic b in item.ballistic.Calibarlist)
+                                {
+                                    iteminfo_ball.Rows.Add(b.Data());
+                                }
+                                iteminfo_ball.Visible = true;
+                                SetBallisticsColorAPI(item);
+                                ResizeGrid(iteminfo_ball);
+                            }
+                        }
+                    }
+                }
+            };
+            Invoke(show);
+        }
+
+        private void SetLootTierPerSlot(TarkovAPI.Item item)
+        {
+            if (item.lastLowPrice != null || item.lastLowPrice > 0)
+            {
+                float valuePerSlot;
+                if (item.types.Exists(e => e.Equals("gun")))
+                    valuePerSlot = item.lastLowPrice.Value / (item.properties.defaultHeight.Value * item.properties.defaultWidth.Value);
+                else
+                    valuePerSlot = item.lastLowPrice.Value / (item.height.Value * item.width.Value);
+
+                if (!item.types.Exists(e => e.Equals("ammo")))
+                {
+                    if (valuePerSlot < 8500)
+                        item.lootTier = "Loot Tier F";
+                    else if (valuePerSlot >= 8500 && valuePerSlot < 21000)
+                        item.lootTier = "Loot Tier E";
+                    else if (valuePerSlot >= 21000 && valuePerSlot < 26750)
+                        item.lootTier = "Loot Tier D";
+                    else if (valuePerSlot >= 26750 && valuePerSlot < 34250)
+                        item.lootTier = "Loot Tier C";
+                    else if (valuePerSlot >= 34250 && valuePerSlot < 45500)
+                        item.lootTier = "Loot Tier B";
+                    else if (valuePerSlot >= 45500 && valuePerSlot < 63000)
+                        item.lootTier = "Loot Tier A";
+                    else if (valuePerSlot >= 63000 && valuePerSlot < 100000)
+                        item.lootTier = "Loot Tier S";
+                    else if (valuePerSlot >= 100000 && valuePerSlot < 500000)
+                        item.lootTier = "Loot Tier S+";
+                    else if (valuePerSlot >= 500000 && valuePerSlot < 2000000)
+                        item.lootTier = "Loot Tier S++";
+                }
+            }
         }
 
         public void ShowCompare(Item item, CancellationToken cts_one)
@@ -277,6 +565,48 @@ namespace TarkovPriceViewer
             Invoke(show);
         }
 
+        //TODO
+        /*public void ShowCompareAPI(TarkovAPI.Item item, CancellationToken cts_one)
+        {
+            Action show = delegate ()
+            {
+                if (!cts_one.IsCancellationRequested)
+                {
+                    lock (_lock)
+                    {
+                        DataGridViewRow temp = CheckItemExistAPI(item);
+                        if (item != null && item.Link != null)
+                        {
+                            if (temp != null)
+                            {
+                                ItemCompareGrid.Rows.Remove(temp);
+                            }
+                            ItemCompareGrid.Rows.Add(item.Data());
+                            if (ItemCompareGrid.SortedColumn != null)
+                            {
+                                ItemCompareGrid.Sort(ItemCompareGrid.SortedColumn,
+                                    ItemCompareGrid.SortOrder.Equals(SortOrder.Ascending) ? ListSortDirection.Ascending : ListSortDirection.Descending);
+                            }
+                            ItemCompareGrid.Visible = true;
+                            ResizeGrid(ItemCompareGrid);
+                        }
+                        if (temp == null)
+                        {
+                            if (--compare_size > 0)
+                            {
+                                itemcompare_text.Text = String.Format("{0} Left : {1}", Program.loading, compare_size);
+                            }
+                            else
+                            {
+                                itemcompare_text.Text = String.Format("{0}", Program.presscomparekey);
+                            }
+                        }
+                    }
+                }
+            };
+            Invoke(show);
+        }*/
+
         public DataGridViewRow CheckItemExist(Item item)
         {
             DataGridViewRow value = null;
@@ -291,12 +621,36 @@ namespace TarkovPriceViewer
             return value;
         }
 
+        public DataGridViewRow CheckItemExistAPI(TarkovAPI.Item item)
+        {
+            DataGridViewRow value = null;
+            foreach (DataGridViewRow r in ItemCompareGrid.Rows)
+            {
+                if ((item.name).Equals(r.Cells[0].Value))
+                {
+                    value = r;
+                    break;
+                }
+            }
+            return value;
+        }
+
         public void setTextColors(Item item)
         {
             setPriceColor();
             setInraidColor();
             setCraftColor(item);
             setOthersColor(item);
+        }
+
+        public void setTextColorsAPI(TarkovAPI.Item item)
+        {
+            setPriceColor();
+            setInraidColor();
+            
+            setOthersColorAPI(item);
+            setCraftColorAPI(item);
+            setLootTierColorAPI(item);
         }
 
         public void setPriceColor()
@@ -326,10 +680,10 @@ namespace TarkovPriceViewer
 
             if (iteminfo_text.Text.Contains(item.name_display2) && item.name_display2 != null)
             {
-                mc = new Regex(item.name_display2).Matches(iteminfo_text.Text);
+                mc = new Regex(Regex.Escape(item.name_display2)).Matches(iteminfo_text.Text);
             }
             else
-                mc = new Regex(item.name_display).Matches(iteminfo_text.Text);
+                mc = new Regex(Regex.Escape(item.name_display)).Matches(iteminfo_text.Text);
 
             foreach (Match m in mc)
             {
@@ -338,9 +692,91 @@ namespace TarkovPriceViewer
             }
         }
 
+        public void setCraftColorAPI(TarkovAPI.Item item)
+        {
+            //MatchCollection mc = new Regex(Regex.Escape(item.name)).Matches(iteminfo_text.Text);
+            MatchCollection mc = new Regex(Regex.Escape(item.name)).Matches(iteminfo_text.Text);
+
+            foreach (Match m in mc)
+            {
+                iteminfo_text.Select(m.Index, m.Length);
+                iteminfo_text.SelectionColor = Color.ForestGreen;
+            }
+        }
+
+        public void setLootTierColorAPI(TarkovAPI.Item item)
+        {
+            if (item.lootTier != null)
+            {
+                if (item.lootTier.Contains("F"))
+                {
+                    MatchCollection mc = new Regex(Regex.Escape(item.lootTier)).Matches(iteminfo_text.Text);
+                    foreach (Match m in mc)
+                    {
+                        iteminfo_text.Select(m.Index, m.Length);
+                        iteminfo_text.SelectionColor = Color.Gray;
+                    }
+                }
+                else if (item.lootTier.Contains("E"))
+                {
+                    MatchCollection mc = new Regex(Regex.Escape(item.lootTier)).Matches(iteminfo_text.Text);
+                    foreach (Match m in mc)
+                    {
+                        iteminfo_text.Select(m.Index, m.Length);
+                        iteminfo_text.SelectionColor = Color.DarkGoldenrod;
+                    }
+                }
+                else if (item.lootTier.Contains("D"))
+                {
+                    MatchCollection mc = new Regex(Regex.Escape(item.lootTier)).Matches(iteminfo_text.Text);
+                    foreach (Match m in mc)
+                    {
+                        iteminfo_text.Select(m.Index, m.Length);
+                        iteminfo_text.SelectionColor = Color.DarkGreen;
+                    }
+                }
+                else if (item.lootTier.Contains("C"))
+                {
+                    MatchCollection mc = new Regex(Regex.Escape(item.lootTier)).Matches(iteminfo_text.Text);
+                    foreach (Match m in mc)
+                    {
+                        iteminfo_text.Select(m.Index, m.Length);
+                        iteminfo_text.SelectionColor = Color.LimeGreen;
+                    }
+                }
+                else if (item.lootTier.Contains("B"))
+                {
+                    MatchCollection mc = new Regex(Regex.Escape(item.lootTier)).Matches(iteminfo_text.Text);
+                    foreach (Match m in mc)
+                    {
+                        iteminfo_text.Select(m.Index, m.Length);
+                        iteminfo_text.SelectionColor = Color.RoyalBlue;
+                    }
+                }
+                else if (item.lootTier.Contains("A"))
+                {
+                    MatchCollection mc = new Regex(Regex.Escape(item.lootTier)).Matches(iteminfo_text.Text);
+                    foreach (Match m in mc)
+                    {
+                        iteminfo_text.Select(m.Index, m.Length);
+                        iteminfo_text.SelectionColor = Color.DarkViolet;
+                    }
+                }
+                else if (item.lootTier.Contains("S"))
+                {
+                    MatchCollection mc = new Regex(Regex.Escape(item.lootTier)).Matches(iteminfo_text.Text);
+                    foreach (Match m in mc)
+                    {
+                        iteminfo_text.Select(m.Index, m.Length);
+                        iteminfo_text.SelectionColor = Color.Gold;
+                    }
+                }
+            }
+        }
+
         public void setOthersColor(Item item)
         {
-            MatchCollection mc = new Regex(item.sell_to_trader).Matches(iteminfo_text.Text);
+            MatchCollection mc = new Regex(Regex.Escape(item.sell_to_trader)).Matches(iteminfo_text.Text);
             foreach (Match m in mc)
             {
                 iteminfo_text.Select(m.Index, m.Length);
@@ -349,7 +785,7 @@ namespace TarkovPriceViewer
 
             if (item.buy_from_trader != null)
             {
-                mc = new Regex(item.buy_from_trader).Matches(iteminfo_text.Text);
+                mc = new Regex(Regex.Escape(item.buy_from_trader)).Matches(iteminfo_text.Text);
                 foreach (Match m in mc)
                 {
                     iteminfo_text.Select(m.Index, m.Length);
@@ -362,6 +798,84 @@ namespace TarkovPriceViewer
             {
                 iteminfo_text.Select(m.Index, m.Length);
                 iteminfo_text.SelectionColor = Color.SkyBlue;
+            }
+
+            mc = new Regex("Banned from Flea Market").Matches(iteminfo_text.Text);
+            foreach (Match m in mc)
+            {
+                iteminfo_text.Select(m.Index, m.Length);
+                iteminfo_text.SelectionColor = Color.Red;
+            }
+        }
+
+        public void setOthersColorAPI(TarkovAPI.Item item)
+        {
+            MatchCollection mc;
+
+            foreach (var itemT in item.sellFor)
+            {
+                mc = new Regex(Regex.Escape(itemT.vendor.name)).Matches(iteminfo_text.Text);
+                foreach (Match m in mc)
+                {
+                    iteminfo_text.Select(m.Index, m.Length);
+                    iteminfo_text.SelectionColor = Color.SkyBlue;
+                }
+            }
+
+            foreach (var itemT in item.buyFor)
+            {
+                if (itemT.vendor != null)
+                {
+                    mc = new Regex(Regex.Escape(itemT.vendor.name)).Matches(iteminfo_text.Text);
+                    foreach (Match m in mc)
+                    {
+                        iteminfo_text.Select(m.Index, m.Length);
+                        iteminfo_text.SelectionColor = Color.SkyBlue;
+                    }
+                }
+            }
+            
+
+            mc = new Regex("Flea Market").Matches(iteminfo_text.Text);
+            foreach (Match m in mc)
+            {
+                iteminfo_text.Select(m.Index, m.Length);
+                iteminfo_text.SelectionColor = Color.SkyBlue;
+            }
+
+            mc = new Regex("Banned from Flea Market").Matches(iteminfo_text.Text);
+            foreach (Match m in mc)
+            {
+                iteminfo_text.Select(m.Index, m.Length);
+                iteminfo_text.SelectionColor = Color.Red;
+            }
+
+            mc = new Regex("This is a Preset item \nCan't be sold or bought in Flea Market").Matches(iteminfo_text.Text);
+            foreach (Match m in mc)
+            {
+                iteminfo_text.Select(m.Index, m.Length);
+                iteminfo_text.SelectionColor = Color.Orange;
+            }
+
+            mc = new Regex("Used in Task:").Matches(iteminfo_text.Text);
+            foreach (Match m in mc)
+            {
+                iteminfo_text.Select(m.Index, m.Length);
+                iteminfo_text.SelectionColor = Color.DarkOrange;
+            }
+            
+            mc = new Regex(Regex.Escape("[")).Matches(iteminfo_text.Text);
+            foreach (Match m in mc)
+            {
+                iteminfo_text.Select(m.Index, m.Length);
+                iteminfo_text.SelectionColor = Color.DarkOrange;
+            }
+
+            mc = new Regex(Regex.Escape("]")).Matches(iteminfo_text.Text);
+            foreach (Match m in mc)
+            {
+                iteminfo_text.Select(m.Index, m.Length);
+                iteminfo_text.SelectionColor = Color.DarkOrange;
             }
         }
 
@@ -418,6 +932,22 @@ namespace TarkovPriceViewer
                     iteminfo_ball.Rows.Clear();
                     iteminfo_ball.Visible = false;
                     iteminfo_text.Text = Program.notfinishloading;
+                    iteminfo_panel.Location = point;
+                    iteminfo_panel.Visible = true;
+                }
+            };
+            Invoke(show);
+        }
+
+        public void ShowWaitAPI(Point point)
+        {
+            Action show = delegate ()
+            {
+                lock (_lock)
+                {
+                    iteminfo_ball.Rows.Clear();
+                    iteminfo_ball.Visible = false;
+                    iteminfo_text.Text = Program.notfinishloadingAPI;
                     iteminfo_panel.Location = point;
                     iteminfo_panel.Visible = true;
                 }
