@@ -368,17 +368,32 @@ namespace TarkovPriceViewer
                             if (item.sellFor.Count > 0)
                             {
                                 List<SellFor> list = new List<SellFor>(item.sellFor);
-                                var sortedVendor = list.OrderByDescending(p => p.priceRUB).First();
-                                BestSellTo_vendorName = sortedVendor.vendor.name;
+                                List<SellFor> sortedVendor = new List<SellFor>(list.OrderByDescending(p => p.priceRUB));
+                                var lastSortedVendor = item.sellFor[0];
 
-                                int vendorPrice = sortedVendor.priceRUB.Value;
-                                if (sortedVendor.vendor.name == "Flea Market")
+                                if (sortedVendor[0].vendor.name == "Flea Market" && sortedVendor.Count > 1 && flea_profit > 0)
+                                {
+                                    if (flea_profit > sortedVendor[1].priceRUB.Value)
+                                    {
+                                        lastSortedVendor = sortedVendor[0];
+                                    }
+                                    else
+                                    {
+                                        lastSortedVendor = sortedVendor[1];
+                                    }
+                                }
+
+                                BestSellTo_vendorName = lastSortedVendor.vendor.name;
+
+                                int vendorPrice = lastSortedVendor.priceRUB.Value;
+                                if (lastSortedVendor.vendor.name == "Flea Market" && item.lastLowPrice != null)
                                     vendorPrice = flea_profit;
 
-                                if (sortedVendor.vendor.minTraderLevel != null /*&& !sortedVendor.vendor.name.Contains(" LL")*/)
-                                    BestSellTo_vendorName += " LL" + sortedVendor.vendor.minTraderLevel;
+                                if (lastSortedVendor.vendor.minTraderLevel != null)
+                                    BestSellTo_vendorName += " LL" + lastSortedVendor.vendor.minTraderLevel;
 
-                                sb.Append(String.Format("\n\nBest sell to {0} --> {1}{2}", BestSellTo_vendorName, vendorPrice.ToString("N0"), mainCurrency));
+                                if (vendorPrice > 0)
+                                    sb.Append(String.Format("\n\nBest sell to {0} --> {1}{2}", BestSellTo_vendorName, vendorPrice.ToString("N0"), mainCurrency));
                             }
 
                             //Find best trader to buy from
@@ -389,13 +404,14 @@ namespace TarkovPriceViewer
                                 BestBuyFrom_vendorName = sortedVendor.vendor.name;
 
                                 int vendorPrice = sortedVendor.priceRUB.Value;
-                                if (sortedVendor.vendor.name == "Flea Market")
+                                if (sortedVendor.vendor.name == "Flea Market" && item.lastLowPrice != null)
                                     vendorPrice = item.lastLowPrice.Value;
 
                                 if (sortedVendor.vendor.minTraderLevel != null)
                                     BestBuyFrom_vendorName += " LL" + sortedVendor.vendor.minTraderLevel;
 
-                                sb.Append(String.Format("\nBest buy from {0} --> {1}{2}", BestBuyFrom_vendorName, vendorPrice.ToString("N0"), mainCurrency));
+                                if(vendorPrice > 0)
+                                    sb.Append(String.Format("\nBest buy from {0} --> {1}{2}", BestBuyFrom_vendorName, vendorPrice.ToString("N0"), mainCurrency));
                             }
 
                             if (Convert.ToBoolean(Program.settings["Show_Last_Price"]) && item.lastLowPrice != null)
@@ -404,7 +420,8 @@ namespace TarkovPriceViewer
                             }
                             if (item.fleaMarketFee != null && !item.types.Exists(e => e.Equals("preset")))
                             {
-                                sb.Append(String.Format("\nProfit : {0}{1} (Fee : {2}{3})", flea_profit.ToString("N0"), mainCurrency, item.fleaMarketFee.Value.ToString("N0"), mainCurrency));
+                                if (flea_profit > 0)
+                                    sb.Append(String.Format("\nProfit : {0}{1} (Fee : {2}{3})", flea_profit.ToString("N0"), mainCurrency, item.fleaMarketFee.Value.ToString("N0"), mainCurrency));
                             }
                             if (Convert.ToBoolean(Program.settings["Show_Day_Price"]) && item.avg24hPrice.Value > 0)
                             {
@@ -885,7 +902,7 @@ namespace TarkovPriceViewer
             {
                 if (!cts_one.IsCancellationRequested)
                 {
-                    waitinfForTooltipText = Program.waitingForTooltip;
+                    //waitinfForTooltipText = Program.waitingForTooltip;
                     iteminfo_ball.Rows.Clear();
                     iteminfo_ball.Visible = false;
                     iteminfo_text.Text = Program.loading;
@@ -915,7 +932,7 @@ namespace TarkovPriceViewer
                         waitinfForTooltipText = Program.waitingForTooltip + ".";
                         DotsCounter = 1;
                     }
-
+                    iteminfo_panel.Location = new Point(point.X + 20, point.Y + 20);
                     iteminfo_text.Text = waitinfForTooltipText;
                     iteminfo_panel.Visible = true;
                 }

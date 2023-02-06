@@ -32,7 +32,7 @@ namespace TarkovPriceViewer
         public static readonly String appname = "EscapeFromTarkov";
         public static readonly String loading = "Loading...";
         public static readonly String notfound = "Item Name Not Found.";
-        public static readonly String waitingForTooltip = "Waiting for tooltip";
+        public static readonly String waitingForTooltip = "Loading";
         public static readonly String noflea = "Item not Found on the Flea Market.";
         public static readonly String notfinishloading = "Ballistics Data not finished loading. \nPlease try again or check your Internet connection.";
         public static readonly String notfinishloadingAPI = "API not finished loading. \nPlease try again or check your Internet connection.";
@@ -137,10 +137,12 @@ namespace TarkovPriceViewer
                 {
                     try
                     {
+                        Debug.WriteLine("\n--> Updating API...");
+
                         var data = new Dictionary<string, string>()
-                    {
-                        {"query", "{\r\n  items {\r\n    name\r\n    types\r\n    lastLowPrice\r\n    avg24hPrice\r\n    updated\r\n    fleaMarketFee\r\n    link\r\n    wikiLink\r\n    width\r\n    height\r\n    properties {\r\n      ... on ItemPropertiesAmmo {\r\n        caliber\r\n        damage\r\n        projectileCount\r\n        penetrationPower\r\n        armorDamage\r\n        fragmentationChance\r\n        ammoType\r\n      }\r\n      ... on ItemPropertiesWeapon {\r\n        caliber\r\n        ergonomics\r\n        defaultRecoilVertical\r\n        defaultRecoilHorizontal\r\n        defaultWidth\r\n        defaultHeight\r\n        defaultAmmo {\r\n          name\r\n        }\r\n      }\r\n    }\r\n    sellFor {\r\n      currency\r\n      priceRUB\r\n      vendor {\r\n        name\r\n        ... on TraderOffer {\r\n          minTraderLevel\r\n        }\r\n      }\r\n    }\r\n    buyFor {\r\n      currency\r\n      priceRUB\r\n      vendor {\r\n        name\r\n        ... on TraderOffer {\r\n          minTraderLevel\r\n        }\r\n      }\r\n    }\r\n    usedInTasks {\r\n      name\r\n      trader {\r\n        name\r\n      }\r\n      map {\r\n        name\r\n      }\r\n      minPlayerLevel\r\n      traderLevelRequirements {\r\n        level\r\n      }\r\n    }\r\n  }\r\n}"}
-                    };
+                        {
+                            {"query", "{\r\n  items {\r\n    name\r\n    types\r\n    lastLowPrice\r\n    avg24hPrice\r\n    updated\r\n    fleaMarketFee\r\n    link\r\n    wikiLink\r\n    width\r\n    height\r\n    properties {\r\n      ... on ItemPropertiesAmmo {\r\n        caliber\r\n        damage\r\n        projectileCount\r\n        penetrationPower\r\n        armorDamage\r\n        fragmentationChance\r\n        ammoType\r\n      }\r\n      ... on ItemPropertiesWeapon {\r\n        caliber\r\n        ergonomics\r\n        defaultRecoilVertical\r\n        defaultRecoilHorizontal\r\n        defaultWidth\r\n        defaultHeight\r\n        defaultAmmo {\r\n          name\r\n        }\r\n      }\r\n    }\r\n    sellFor {\r\n      currency\r\n      priceRUB\r\n      vendor {\r\n        name\r\n        ... on TraderOffer {\r\n          minTraderLevel\r\n        }\r\n      }\r\n    }\r\n    buyFor {\r\n      currency\r\n      priceRUB\r\n      vendor {\r\n        name\r\n        ... on TraderOffer {\r\n          minTraderLevel\r\n        }\r\n      }\r\n    }\r\n    usedInTasks {\r\n      name\r\n      trader {\r\n        name\r\n      }\r\n      map {\r\n        name\r\n      }\r\n      minPlayerLevel\r\n      traderLevelRequirements {\r\n        level\r\n      }\r\n    }\r\n  }\r\n}"}
+                        };
 
                         using (var httpClient = new HttpClient())
                         {
@@ -160,15 +162,17 @@ namespace TarkovPriceViewer
                             //responseContent = JToken.Parse(responseContent).ToString();
 
                             tarkovAPI = JsonConvert.DeserializeObject<TarkovAPI.Data>(responseContent);
-                            File.WriteAllText(@"Resources\TarkovAPI.json", responseContent);
-                            Debug.WriteLine("\n--> API Updated!");
                             APILastUpdated = DateTime.Now;
                             finishloadingAPI = true;
+                            Debug.WriteLine("\n--> API Updated!");
+                            File.WriteAllText(@"Resources\TarkovAPI.json", responseContent);
                         }
                     }
                     catch (Exception ex)
                     {
-                        MessageBox.Show("--> Error trying to update Tarkov API: " + ex.Message);
+                        //MessageBox.Show("--> Error trying to update Tarkov API: " + ex.Message);
+                        Thread.Sleep(500);
+                        UpdateItemListAPI();
                     }
                 }
                 else if (tarkovAPI == null)
@@ -182,11 +186,13 @@ namespace TarkovPriceViewer
                     }
                     catch (Exception ex)
                     {
-                        MessageBox.Show("\n--> Error trying to load Tarkov API from local file: " + ex.Message);
+                        //MessageBox.Show("\n--> Error trying to load Tarkov API from local file: " + ex.Message);
+                        Thread.Sleep(500);
+                        UpdateItemListAPI();
                     }
                 }
                 else
-                    Debug.WriteLine("\n--> No need to update API! \n--> " + LastUpdated(APILastUpdated));
+                    Debug.WriteLine("--> No need to update API! \n--> " + LastUpdated(APILastUpdated) + "\n");
             }
         }
 
@@ -237,7 +243,7 @@ namespace TarkovPriceViewer
                 }
                 String st;
                 settings.Remove("Version");//force
-                settings.Add("Version", "v1.21");//force
+                settings.Add("Version", "v1.22");//force
                 if (!settings.TryGetValue("MinimizetoTrayWhenStartup", out st))
                 {
                     settings.Add("MinimizetoTrayWhenStartup", "false");

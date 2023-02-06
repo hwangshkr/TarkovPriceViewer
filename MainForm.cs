@@ -107,6 +107,7 @@ namespace TarkovPriceViewer
         public static DateTime KeyPressedTime;
         private static DateTime presstime;
         public static bool WaitingForTooltip = false;
+        public static bool GettingItemInfo = false;
 
         public MainForm()
         {
@@ -130,17 +131,20 @@ namespace TarkovPriceViewer
 
         private void Timer_Elapsed(object sender, ElapsedEventArgs e)
         {
-            if (repeatCount >= 12)
+            if (!GettingItemInfo)
             {
-                timer.Stop(); WaitingForTooltip = false;
-                repeatCount = 0;
-            }
-            else
-            {
-                repeatCount++;
+                if (repeatCount >= 12)
+                {
+                    timer.Stop(); WaitingForTooltip = false;
+                    repeatCount = 0;
+                }
+                else
+                {
+                    repeatCount++;
 
-                point = Control.MousePosition;
-                LoadingItemInfo();
+                    point = Control.MousePosition;
+                    LoadingItemInfo();
+                }
             }
         }
 
@@ -255,10 +259,11 @@ namespace TarkovPriceViewer
                                 if (vkCode == Int32.Parse(Program.settings["ShowOverlay_Key"]))
                                 {
                                     KeyPressedTime = DateTime.Now;
-                                    Debug.WriteLine(Program.settings["ShowOverlay_Key"] + " Key Pressed.");
+                                    Debug.WriteLine("\n\n----------------" + Program.settings["ShowOverlay_Key"] + " Key Pressed -----------------");
                                     if ((!timer.Enabled || !WaitingForTooltip) && (KeyPressedTime - presstime).TotalMilliseconds >= 200)
                                     {
                                         point = Control.MousePosition;
+                                        WaitingForTooltip = true; timer.Start(); 
                                         LoadingItemInfo();
                                     }
                                     else if ((KeyPressedTime - presstime).TotalMilliseconds < 200)
@@ -350,7 +355,7 @@ namespace TarkovPriceViewer
             cts_info.Cancel();
             cts_info = new CancellationTokenSource();
 
-            if(timer.Enabled || WaitingForTooltip)
+            if (timer.Enabled || WaitingForTooltip)
                 overlay_info.ShowWaitinfForTooltipInfo(point, cts_info.Token);
             else
                 overlay_info.ShowLoadingInfo(point, cts_info.Token);
@@ -394,7 +399,7 @@ namespace TarkovPriceViewer
                     //item = MatchItemName("7.62x54r_7n37".ToLower().Trim().ToCharArray());
                     FindItemInfo(item, isiteminfo, cts_one);
                 }
-            } 
+            }
             else
             {
                 Bitmap fullimage = CaptureScreen(CheckisTarkov());
@@ -493,6 +498,7 @@ namespace TarkovPriceViewer
 
         private String getTesseract(Mat textmat)
         {
+            GettingItemInfo = true;
             String text = "";
             try
             {
@@ -502,13 +508,20 @@ namespace TarkovPriceViewer
                 {
                     text = texts.GetText().Replace("\n", " ").Split(Program.splitcur)[0].Trim();
 
-                    Debug.WriteLine("Tesseract Text : " + text);   
+                    if (text == "GELLER")
+                        text = "Hand drill";
+                    else if (text == "[ZEULELED")
+                        text = "Bandana";
+
+                    Debug.WriteLine("Tesseract Text : " + text);
                 }
             }
             catch (Exception e)
             {
                 Debug.WriteLine("Tesseract error: " + e.Message);
+                GettingItemInfo = false;
             }
+            GettingItemInfo = false;
             return text;
         }
 
@@ -584,8 +597,8 @@ namespace TarkovPriceViewer
                                 }
                             }
                         }
-                        else
-                            timer.Start(); WaitingForTooltip = true;
+                        /*else
+                            timer.Start(); WaitingForTooltip = true;*/
                     }
                 }
 
