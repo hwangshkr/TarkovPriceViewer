@@ -1,4 +1,5 @@
-﻿using System;
+﻿using Newtonsoft.Json;
+using System;
 using System.Collections.Generic;
 
 namespace TarkovPriceViewer
@@ -41,6 +42,7 @@ namespace TarkovPriceViewer
 
             public Ballistic ballistic = null;
             public string lootTier = null;
+            public string className = null;
         }
 
         public class Map
@@ -50,19 +52,25 @@ namespace TarkovPriceViewer
 
         public class Properties
         {
-            public string caliber { get; set; }
-            public int? ergonomics { get; set; }
-            public int? defaultRecoilVertical { get; set; }
-            public int? defaultRecoilHorizontal { get; set; }
+            //public string caliber { get; set; }
+            //public int? ergonomics { get; set; }
+            //public int? defaultRecoilVertical { get; set; }
+            //public int? defaultRecoilHorizontal { get; set; }
             public int? defaultWidth { get; set; }
             public int? defaultHeight { get; set; }
-            public DefaultAmmo defaultAmmo { get; set; }
-            public int? damage { get; set; }
-            public int? projectileCount { get; set; }
-            public int? penetrationPower { get; set; }
-            public int? armorDamage { get; set; }
-            public double? fragmentationChance { get; set; }
-            public string ammoType { get; set; }
+            //public DefaultAmmo defaultAmmo { get; set; }
+            //public int? uses { get; set; }
+            //public int? accuracyModifier { get; set; }
+
+            [JsonProperty(PropertyName = "class")]
+            public int? _class { get; set; }
+
+            //public int? damage { get; set; }
+            //public int? projectileCount { get; set; }
+            //public int? penetrationPower { get; set; }
+            //public int? armorDamage { get; set; }
+            //public double? fragmentationChance { get; set; }
+            //public string ammoType { get; set; }
         }
 
         public class Root
@@ -103,3 +111,8 @@ namespace TarkovPriceViewer
         }
     }
 }
+
+/*
+public Ballistic ballistic = null;
+public string lootTier = null;
+*/
