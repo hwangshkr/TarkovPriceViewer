@@ -1,11 +1,16 @@
-# <img width="36" align="center" src="https://user-images.githubusercontent.com/32073152/126047438-2f1b7e59-ca31-43f2-bcf6-00b2f00e408c.png"/> Tarkov Price Viewer v1.18
-This program is for newbies. It is especially good to find out the market price in advance when the flea market is not open yet. Currently, only English is available.
+# <img width="36" align="center" src="https://user-images.githubusercontent.com/32073152/126047438-2f1b7e59-ca31-43f2-bcf6-00b2f00e408c.png"/> Tarkov Price Viewer v1.22
+This Overlay software is meant to help new players.
+You can easily distinguish all the strengths and weaknesses of all the ammo in the game.
+It is especially good to find out the market price in advance when the flea market is not open yet. 
+Currently, only English is available.
 
 Most of the information for this program (names, prices, wiki links, etc.) was provided by the Tarkov Market, and some information (Needs, etc.) was provided by the Tarkov Wiki.
 
 # How to use
-<img src="https://user-images.githubusercontent.com/32073152/130308975-2a380c87-f0d1-4e9e-91e6-cc2381d5d2c0.gif"/>
-When the name appears as in the image, press the shortcut key (default: F9). By default, it disappears when you move the mouse, and this can be removed from the settings. It disappears even if you press the shortcut key (default: F10).
+<img src="https://i.imgur.com/bluk1dQ.gif"/>
+Hover the item and press the shortcut key (default: F9). 
+By default, it disappears when you move the mouse, and this can be removed from the settings. 
+It disappears even if you press the shortcut key (default: F10).
 </br>
 </br>
 <img src="https://user-images.githubusercontent.com/32073152/130593787-f0979114-46cf-47cb-93f3-2f364195e7e9.gif"/>
@@ -14,12 +19,19 @@ This is the experiential function since version 1.06. You can compare some optio
 Sorting function is added since Version 1.08.</br>
 </br>
 </br>
-<img src="https://user-images.githubusercontent.com/32073152/131343945-99a673df-877b-4059-a674-85ea6df966cf.png"/>
-Ballistics is added since Version 1.08.
+<img src="https://i.imgur.com/iLxEsIc.png"/>
+Ballistics added since Version 1.08.
 </br>
 </br>
-<img src="https://user-images.githubusercontent.com/32073152/131344302-57be08bb-b6f1-449a-a653-20544db68630.png"/>
-You can set some values for the functions.
+<img src="https://i.imgur.com/9POHPgA.png"/>
+<img src="https://i.imgur.com/Xru5QA5.png"/>
+<img src="https://i.imgur.com/GKyoYLl.png"/>
+<img src="https://i.imgur.com/Sn7DPlO.png"/>
+Loot Tiers added in v1.21
+</br>
+</br>
+<img src="https://i.imgur.com/GdkE78e.png"/>
+You can change the settings how you like.
 </br>
 </br>
 If you got errors, please check you installed .NET Framework 4.7.2 (https://dotnet.microsoft.com/download/dotnet-framework/net472).
@@ -42,3 +54,4 @@ If you got errors, please check you installed .NET Framework 4.7.2 (https://dotn
 4. Tarkov Market (https://tarkov-market.com/)
 5. Tarkov Wiki (https://escapefromtarkov.fandom.com/wiki/Escape_from_Tarkov_Wiki)
 6. Escape from Tarkov(https://www.escapefromtarkov.com/)
+7. Tarkov.dev API(https://tarkov.dev/)

@@ -20,6 +20,8 @@ namespace TarkovPriceViewer
         public String buy_from_trader;
         public String buy_from_trader_price;
         public String last_updated;
+        public String profit;
+        public String banned_from_flea;
 
         public String needs;
         public String bartersandcrafts;

@@ -1,18 +1,24 @@
 ﻿
 Microsoft Visual Studio Solution File, Format Version 12.00
-# Visual Studio Version 16
-VisualStudioVersion = 16.0.30907.101
+# Visual Studio Version 17
+VisualStudioVersion = 17.4.32804.182
 MinimumVisualStudioVersion = 10.0.40219.1
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "TarkovPriceViewer", "TarkovPriceViewer.csproj", "{2229B1A0-C5D1-4B47-B418-49C0F1395EAD}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
+		Debug|Any CPU = Debug|Any CPU
 		Debug|x64 = Debug|x64
+		Release|Any CPU = Release|Any CPU
 		Release|x64 = Release|x64
 	EndGlobalSection
 	GlobalSection(ProjectConfigurationPlatforms) = postSolution
+		{2229B1A0-C5D1-4B47-B418-49C0F1395EAD}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{2229B1A0-C5D1-4B47-B418-49C0F1395EAD}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{2229B1A0-C5D1-4B47-B418-49C0F1395EAD}.Debug|x64.ActiveCfg = Debug|Any CPU
 		{2229B1A0-C5D1-4B47-B418-49C0F1395EAD}.Debug|x64.Build.0 = Debug|Any CPU
+		{2229B1A0-C5D1-4B47-B418-49C0F1395EAD}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{2229B1A0-C5D1-4B47-B418-49C0F1395EAD}.Release|Any CPU.Build.0 = Release|Any CPU
 		{2229B1A0-C5D1-4B47-B418-49C0F1395EAD}.Release|x64.ActiveCfg = Release|Any CPU
 		{2229B1A0-C5D1-4B47-B418-49C0F1395EAD}.Release|x64.Build.0 = Release|Any CPU
 	EndGlobalSection
