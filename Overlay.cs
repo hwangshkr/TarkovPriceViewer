@@ -353,26 +353,9 @@ namespace TarkovPriceViewer
                             //Loot Tier
                             SetLootTierPerSlot(item);
                             if(item.lootTier != null)
-                                sb.Append(String.Format("{0}", item.lootTier));
+                                sb.Append(String.Format("{0}\n", item.lootTier));
 
-                            //Name
-                            sb.Append(String.Format("\n{0}", item.name));
-
-                            //Helmet/Armour Class
-                            if (item.properties != null && item.properties._class != null)
-                            {
-                                item.className = "Class " + item.properties._class.Value;
-                                if(item.properties._class.Value > 0)
-                                sb.Append(String.Format("\n{0}\n", item.className));
-                            }
-
-                            //Key Info
-                            if (item.types.Any(e => e.Equals("keys")) && item.wikiLink != null)
-                            {
-                                string lockLocation = FindKeyInfo(item);
-                                if(lockLocation != null)
-                                    sb.Append(String.Format("\n\nLocation: \n{0}", lockLocation));
-                            }
+                            sb.Append(String.Format("{0}", item.name));
 
                             //Find Flea Market profit
                             int flea_profit = 0;
@@ -410,7 +393,7 @@ namespace TarkovPriceViewer
                                     BestSellTo_vendorName += " LL" + lastSortedVendor.vendor.minTraderLevel;
 
                                 if (vendorPrice > 0)
-                                    sb.Append(String.Format("\nBest sell to {0} --> {1}{2}", BestSellTo_vendorName, vendorPrice.ToString("N0"), mainCurrency));
+                                    sb.Append(String.Format("\n\nBest sell to {0} --> {1}{2}", BestSellTo_vendorName, vendorPrice.ToString("N0"), mainCurrency));
                             }
 
                             //Find best trader to buy from
@@ -490,7 +473,7 @@ namespace TarkovPriceViewer
                                     tasks += "\n";
                                 }
 
-                                sb.Append(String.Format("\n\nUsed in Task:\n{0}", tasks));
+                                sb.Append(String.Format("\n\nUsed in Task:\n{0}\n", tasks));
                             }
                             //TODO
                             /*if (Convert.ToBoolean(Program.settings["Barters_and_Crafts"]) && item.bartersandcrafts != null)
@@ -499,10 +482,10 @@ namespace TarkovPriceViewer
                             }*/
                             if (item.types.Exists(e => e.Equals("preset")))
                             {
-                                sb.Append(String.Format("\nThis is a Preset item \nCan't be sold or bought in Flea Market"));
+                                sb.Append(String.Format("\n\nThis is a Preset item \nCan't be sold or bought in Flea Market"));
                             }
                             else if (flea_profit == 0)
-                                sb.Append(String.Format("\nItem Banned from Flea Market"));
+                                sb.Append(String.Format("\nBanned from Flea Market"));
 
                             iteminfo_ball.Rows.Clear();
                             iteminfo_text.Text = sb.ToString().Trim();
@@ -556,26 +539,6 @@ namespace TarkovPriceViewer
                         item.lootTier = "Loot Tier S++";
                 }
             }
-        }
-
-        private string FindKeyInfo(TarkovAPI.Item item)
-        {
-            try
-            {
-                using (TPVWebClient wc = new TPVWebClient())
-                {
-                    HtmlAgilityPack.HtmlDocument doc = new HtmlAgilityPack.HtmlDocument();
-                    doc.LoadHtml(wc.DownloadString(item.wikiLink));
-                    HtmlAgilityPack.HtmlNode node = doc.DocumentNode.SelectSingleNode("//div[@class='mw-parser-output']");
-                    var subnode = node.SelectSingleNode("//p[3]");
-                    return subnode.InnerText;
-                }
-            }
-            catch (Exception e)
-            {
-                Debug.WriteLine(e.Message);
-            }
-            return null;
         }
 
         public void ShowCompare(Item item, CancellationToken cts_one)
@@ -705,7 +668,6 @@ namespace TarkovPriceViewer
             setOthersColorAPI(item);
             setCraftColorAPI(item);
             setLootTierColorAPI(item);
-            setClassTierColorAPI(item);
         }
 
         public void setPriceColor()
@@ -829,67 +791,6 @@ namespace TarkovPriceViewer
             }
         }
 
-        public void setClassTierColorAPI(TarkovAPI.Item item)
-        {
-            if (item.className != null)
-            {
-                if (item.className.Contains("1"))
-                {
-                    MatchCollection mc = new Regex(Regex.Escape(item.className)).Matches(iteminfo_text.Text);
-                    foreach (Match m in mc)
-                    {
-                        iteminfo_text.Select(m.Index, m.Length);
-                        iteminfo_text.SelectionColor = Color.DarkGoldenrod;
-                    }
-                }
-                else if (item.className.Contains("2"))
-                {
-                    MatchCollection mc = new Regex(Regex.Escape(item.className)).Matches(iteminfo_text.Text);
-                    foreach (Match m in mc)
-                    {
-                        iteminfo_text.Select(m.Index, m.Length);
-                        iteminfo_text.SelectionColor = Color.LimeGreen;
-                    }
-                }
-                else if (item.className.Contains("3"))
-                {
-                    MatchCollection mc = new Regex(Regex.Escape(item.className)).Matches(iteminfo_text.Text);
-                    foreach (Match m in mc)
-                    {
-                        iteminfo_text.Select(m.Index, m.Length);
-                        iteminfo_text.SelectionColor = Color.RoyalBlue;
-                    }
-                }
-                else if (item.className.Contains("4"))
-                {
-                    MatchCollection mc = new Regex(Regex.Escape(item.className)).Matches(iteminfo_text.Text);
-                    foreach (Match m in mc)
-                    {
-                        iteminfo_text.Select(m.Index, m.Length);
-                        iteminfo_text.SelectionColor = Color.DarkViolet;
-                    }
-                }
-                else if (item.className.Contains("5"))
-                {
-                    MatchCollection mc = new Regex(Regex.Escape(item.className)).Matches(iteminfo_text.Text);
-                    foreach (Match m in mc)
-                    {
-                        iteminfo_text.Select(m.Index, m.Length);
-                        iteminfo_text.SelectionColor = Color.Gold;
-                    }
-                }
-                else
-                {
-                    MatchCollection mc = new Regex(Regex.Escape(item.className)).Matches(iteminfo_text.Text);
-                    foreach (Match m in mc)
-                    {
-                        iteminfo_text.Select(m.Index, m.Length);
-                        iteminfo_text.SelectionColor = Color.Gold;
-                    }
-                }
-            }
-        }
-
         public void setOthersColor(Item item)
         {
             MatchCollection mc = new Regex(Regex.Escape(item.sell_to_trader)).Matches(iteminfo_text.Text);
@@ -959,7 +860,7 @@ namespace TarkovPriceViewer
                 iteminfo_text.SelectionColor = Color.SkyBlue;
             }
 
-            mc = new Regex("Item Banned from Flea Market").Matches(iteminfo_text.Text);
+            mc = new Regex("Banned from Flea Market").Matches(iteminfo_text.Text);
             foreach (Match m in mc)
             {
                 iteminfo_text.Select(m.Index, m.Length);
@@ -992,24 +893,6 @@ namespace TarkovPriceViewer
             {
                 iteminfo_text.Select(m.Index, m.Length);
                 iteminfo_text.SelectionColor = Color.DarkOrange;
-            }
-
-            mc = new Regex(Regex.Escape("Location:")).Matches(iteminfo_text.Text);
-            foreach (Match m in mc)
-            {
-                iteminfo_text.Select(m.Index, m.Length);
-                iteminfo_text.SelectionColor = Color.SandyBrown;
-            }
-
-            string[] mapList = { "Customs", "Interchange", "Factory", "Woods", "Reserve", "Shoreline", "The Lab", "Lighthouse", "Streets of Tarkov" };
-            foreach (var map in mapList)
-            {
-                mc = new Regex(map).Matches(iteminfo_text.Text);
-                foreach (Match m in mc)
-                {
-                    iteminfo_text.Select(m.Index, m.Length);
-                    iteminfo_text.SelectionColor = Color.SteelBlue;
-                }
             }
         }
 
