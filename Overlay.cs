@@ -371,7 +371,7 @@ namespace TarkovPriceViewer
                             {
                                 string lockLocation = FindKeyInfo(item);
                                 if(lockLocation != null)
-                                    sb.Append(String.Format("\n\nLocation: \n{0}", lockLocation));
+                                    sb.Append(String.Format("\n\nUse Location: \n{0}", lockLocation));
                             }
 
                             //Find Flea Market profit
@@ -475,7 +475,28 @@ namespace TarkovPriceViewer
                                         sb.Append(String.Format("\nBuy from {0} --> {1}{2}", vendorName, sortedNoFlea.priceRUB.Value.ToString("N0"), mainCurrency));
                                 }
                             }
-                            if (Convert.ToBoolean(Program.settings["Needs"]) && item.usedInTasks.Count > 0)
+
+                            if (Convert.ToBoolean(Program.settings["Needs"]) && item.usedInTasks.Count > 0 && Convert.ToBoolean(Program.settings["useTarkovTrackerAPI"]) && item.name != "Roubles" && item.name != "Euros" && item.name != "Dollars")
+                            {
+                                string tasks = "";
+                                var list = item.usedInTasks.OrderBy(p => p.minPlayerLevel);
+                                foreach (var task in list)
+                                {
+                                    if (!Program.tarkovTrackerAPI.data.tasksProgress.Any(e => e.id.Equals(task.id)))
+                                    {
+                                        if (task.minPlayerLevel != null)
+                                            tasks += "[" + task.minPlayerLevel + "] ";
+                                        if (task.name != null)
+                                            tasks += task.name;
+                                        if (task.map != null)
+                                            tasks += " [" + task.map.name + "]";
+                                        tasks += "\n";
+                                    }
+                                }
+                                if(tasks != "")
+                                    sb.Append(String.Format("\n\nUsed in Task:\n{0}", tasks));
+                            }
+                            else if (Convert.ToBoolean(Program.settings["Needs"]) && item.usedInTasks.Count > 0 && item.name != "Roubles" && item.name != "Euros" && item.name != "Dollars")
                             {
                                 string tasks = "";
                                 var list = item.usedInTasks.OrderBy(p => p.minPlayerLevel);
@@ -489,9 +510,79 @@ namespace TarkovPriceViewer
                                         tasks += " [" + task.map.name + "]";
                                     tasks += "\n";
                                 }
-
                                 sb.Append(String.Format("\n\nUsed in Task:\n{0}", tasks));
                             }
+
+                            //Hideout Upgrades
+                            if (!Program.settings["TarkovTrackerAPIKey"].Contains("APIKey") && Convert.ToBoolean(Program.settings["useTarkovTrackerAPI"]) && Convert.ToBoolean(Program.settings["showHideoutUpgrades"]))
+                            {
+                                var HideoutStations = Program.tarkovAPI.hideoutStations;
+                                
+                                if (item.name != "Roubles")
+                                {
+                                    var upgradesList = new List<hideoutUpgrades>();
+                                    string upgrades = "";
+                                    foreach (var station in HideoutStations)
+                                    {
+                                        foreach (var stationLevel in station.levels)
+                                        {
+                                            foreach (var itemReq in stationLevel.itemRequirements)
+                                            {
+                                                if (item.id == itemReq.item.id && !Program.tarkovTrackerAPI.data.hideoutModulesProgress.Any(e => e.id.Equals(stationLevel.id)))
+                                                {
+                                                    upgradesList.Add(new hideoutUpgrades() { Name = station.name, Level = stationLevel.level });
+                                                }
+                                            }
+                                        }
+                                    }
+                                    if (upgradesList.Count > 0)
+                                    {
+                                        var sortedUpgradesList = new List<hideoutUpgrades>(upgradesList.OrderBy(p => p.Level));
+
+                                        foreach (var upgrade in sortedUpgradesList)
+                                        {
+                                            upgrades += "[Level " + upgrade.Level + "] " + upgrade.Name + "\n";
+                                        }
+
+                                        sb.Append(String.Format("\n\nNeeded for Hideout:\n{0}", upgrades));
+                                    }
+                                }
+                            }
+                            else if (Convert.ToBoolean(Program.settings["showHideoutUpgrades"]))
+                            {
+                                var HideoutStations = Program.tarkovAPI.hideoutStations;
+
+                                if (item.name != "Roubles")
+                                {
+                                    var upgradesList = new List<hideoutUpgrades>();
+                                    string upgrades = "";
+                                    foreach (var station in HideoutStations)
+                                    {
+                                        foreach (var stationLevel in station.levels)
+                                        {
+                                            foreach (var itemReq in stationLevel.itemRequirements)
+                                            {
+                                                if (item.id == itemReq.item.id)
+                                                {
+                                                    upgradesList.Add(new hideoutUpgrades() { Name = station.name, Level = stationLevel.level });
+                                                }
+                                            }
+                                        }
+                                    }
+                                    if (upgradesList.Count > 0)
+                                    {
+                                        var sortedUpgradesList = new List<hideoutUpgrades>(upgradesList.OrderBy(p => p.Level));
+
+                                        foreach (var upgrade in sortedUpgradesList)
+                                        {
+                                            upgrades += "[Level " + upgrade.Level + "] " + upgrade.Name + "\n";
+                                        }
+
+                                        sb.Append(String.Format("\n\nNeeded for Hideout:\n{0}", upgrades));
+                                    }
+                                }
+                            }
+
                             //TODO
                             /*if (Convert.ToBoolean(Program.settings["Barters_and_Crafts"]) && item.bartersandcrafts != null)
                             {
@@ -501,7 +592,7 @@ namespace TarkovPriceViewer
                             {
                                 sb.Append(String.Format("\nThis is a Preset item \nCan't be sold or bought in Flea Market"));
                             }
-                            else if (flea_profit == 0)
+                            else if (flea_profit == 0 && item.name != "Roubles" && item.name != "Euros" && item.name != "Dollars")
                                 sb.Append(String.Format("\nItem Banned from Flea Market"));
 
                             iteminfo_ball.Rows.Clear();
@@ -973,13 +1064,20 @@ namespace TarkovPriceViewer
                 iteminfo_text.SelectionColor = Color.Orange;
             }
 
+            mc = new Regex("Needed for Hideout:").Matches(iteminfo_text.Text);
+            foreach (Match m in mc)
+            {
+                iteminfo_text.Select(m.Index, m.Length);
+                iteminfo_text.SelectionColor = Color.DarkOrange;
+            }
+
             mc = new Regex("Used in Task:").Matches(iteminfo_text.Text);
             foreach (Match m in mc)
             {
                 iteminfo_text.Select(m.Index, m.Length);
                 iteminfo_text.SelectionColor = Color.DarkOrange;
             }
-            
+
             mc = new Regex(Regex.Escape("[")).Matches(iteminfo_text.Text);
             foreach (Match m in mc)
             {
@@ -994,11 +1092,11 @@ namespace TarkovPriceViewer
                 iteminfo_text.SelectionColor = Color.DarkOrange;
             }
 
-            mc = new Regex(Regex.Escape("Location:")).Matches(iteminfo_text.Text);
+            mc = new Regex(Regex.Escape("Use Location:")).Matches(iteminfo_text.Text);
             foreach (Match m in mc)
             {
                 iteminfo_text.Select(m.Index, m.Length);
-                iteminfo_text.SelectionColor = Color.SandyBrown;
+                iteminfo_text.SelectionColor = Color.DarkOrange;
             }
 
             string[] mapList = { "Customs", "Interchange", "Factory", "Woods", "Reserve", "Shoreline", "The Lab", "Lighthouse", "Streets of Tarkov" };
@@ -1207,5 +1305,11 @@ namespace TarkovPriceViewer
         {
             ismoving = false;
         }
+    }
+
+    public class hideoutUpgrades
+    {
+        public string Name { get; set; }
+        public int? Level { get; set; }
     }
 }
