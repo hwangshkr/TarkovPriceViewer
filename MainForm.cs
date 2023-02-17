@@ -168,6 +168,9 @@ namespace TarkovPriceViewer
             CompareOverlay_Button.Text = ((Keys)Int32.Parse(Program.settings["CompareOverlay_Key"])).ToString();
             TransParent_Bar.Value = Int32.Parse(Program.settings["Overlay_Transparent"]);
             TransParent_Text.Text = Program.settings["Overlay_Transparent"];
+            checkBox1.Checked = Convert.ToBoolean(Program.settings["useTarkovTrackerAPI"]);
+            hideoutUpgrades_checkBox.Checked = Convert.ToBoolean(Program.settings["showHideoutUpgrades"]);
+            tarkovTrackerApiKey_textbox.Text = Program.settings["TarkovTrackerAPIKey"];
 
             TrayIcon.Visible = true;
             check_idle_time.Start();
@@ -253,7 +256,7 @@ namespace TarkovPriceViewer
                     {
                         if (Program.finishloadingballistics)
                         {
-                            if ((Program.finishloadingAPI && Program.UsingAPI) || !Program.UsingAPI)
+                            if (((Program.finishloadingAPI && Program.UsingAPI) || !Program.UsingAPI) && (Program.finishloadingTarkovTrackerAPI && Convert.ToBoolean(Program.settings["useTarkovTrackerAPI"])) || !Convert.ToBoolean(Program.settings["useTarkovTrackerAPI"]))
                             {
                                 int vkCode = Marshal.ReadInt32(lParam);
                                 if (vkCode == Int32.Parse(Program.settings["ShowOverlay_Key"]))
@@ -318,6 +321,7 @@ namespace TarkovPriceViewer
                     timer.Stop(); WaitingForTooltip = false; repeatCount = 0;
                     CloseItemInfo();
                     Task UpdateAPI = Task.Factory.StartNew(() => Program.UpdateItemListAPI());
+                    Task UpdateTarkovTrackerAPI = Task.Factory.StartNew(() => Program.UpdateTarkovTrackerAPI());
                 }
             } catch (Exception e)
             {
@@ -341,6 +345,9 @@ namespace TarkovPriceViewer
 
         private void CloseApp()
         {
+            if (checkBox1.Checked)
+                Program.settings["TarkovTrackerAPIKey"] = tarkovTrackerApiKey_textbox.Text;
+
             UnHook();
             TrayIcon.Dispose();
             CloseItemInfo();
@@ -592,7 +599,7 @@ namespace TarkovPriceViewer
 
                                 if (!text.Equals("") || !text2.Equals("")) //If tooltip text found
                                 {
-                                    item = MatchItemNameAPI(text.ToLower().Trim().ToCharArray(), text2.ToLower().Trim().ToCharArray());
+                                    item = MatchItemNameAPI(text, text2);
                                     break;
                                 }
                             }
@@ -650,8 +657,11 @@ namespace TarkovPriceViewer
             return result;
         }
 
-        private TarkovAPI.Item MatchItemNameAPI(char[] itemname, char[] itemname2)
+        private TarkovAPI.Item MatchItemNameAPI(string name, string name2)
         {
+            char[] itemname = name.ToLower().Trim().ToCharArray();
+            char[] itemname2 = name2.ToLower().Trim().ToCharArray();
+
             var result = new TarkovAPI.Item();
             int d = 999;
             foreach (var item in Program.tarkovAPI.items)
@@ -688,6 +698,11 @@ namespace TarkovPriceViewer
             if (result.name != null)
             {
                 timer.Stop(); WaitingForTooltip = false; repeatCount = 0;
+            }
+            if (name == "Encrypted message" || name2 == "Encrypted message")
+            {
+                result = new TarkovAPI.Item();
+                result.name = "Encrypted Message";
             }
             Debug.WriteLine(d + " text match : " + result.name);
             return result;
@@ -1266,12 +1281,50 @@ namespace TarkovPriceViewer
 
         private void refresh_b_Click(object sender, EventArgs e)
         {
+            if (checkBox1.Checked)
+                Program.settings["TarkovTrackerAPIKey"] = tarkovTrackerApiKey_textbox.Text;
+            
             SetHook(true);
         }
 
         private void Tarkov_Dev_Click(object sender, EventArgs e)
         {
             Process.Start(Program.tarkov_dev);
+        }
+
+        private void checkBox1_CheckedChanged(object sender, EventArgs e)
+        {
+            Program.settings["useTarkovTrackerAPI"] = (sender as CheckBox).Checked.ToString();
+        }
+
+        private void label1_MouseHover(object sender, EventArgs e)
+        {
+            TarkovTrackerAPI_tooltip.SetToolTip(label1, "Use TarkovTracker.io to show only your active tasks and hideout upgrades. And hide completed.");
+        }
+
+        private void checkBox1_MouseHover(object sender, EventArgs e)
+        {
+            TarkovTrackerAPI_tooltip.SetToolTip(checkBox1, "Use TarkovTracker.io to show only your active tasks and hideout upgrades. And hide completed.");
+        }
+
+        private void label2_MouseHover(object sender, EventArgs e)
+        {
+            TarkovTrackerAPI_tooltip.SetToolTip(label2, "Go to \"https://tarkovtracker.io/settings\" to get your API key.");
+        }
+
+        private void tarkovTrackerApiKey_textbox_MouseHover(object sender, EventArgs e)
+        {
+            TarkovTrackerAPI_tooltip.SetToolTip(tarkovTrackerApiKey_textbox, "Go to \"https://tarkovtracker.io/settings\" to get your API key.");
+        }
+
+        private void TarkovTracker_button_Click(object sender, EventArgs e)
+        {
+            Process.Start(Program.tarkovtracker);
+        }
+
+        private void hideoutUpgrades_checkBox_CheckedChanged(object sender, EventArgs e)
+        {
+            Program.settings["showHideoutUpgrades"] = (sender as CheckBox).Checked.ToString();
         }
     }
 }
