@@ -48,9 +48,7 @@ If you got errors, please check you installed .NET Framework 4.7.2 (https://dotn
 
 # Notice - User
 1. It cannot be used in full screen. Borderless windowed mode is recommended.
-2. Since this information is fetched through parsing from the relevant sites, the information of this program will not be updated unless the information of the relevant sites is updated (especially, the information may be very different right after initialization).
-3. The name may not be recognized or incorrect product information may be obtained. When checking information, you must make sure that the name part of the searched item matches.
-4. I do not take any responsibility for any disadvantages or damages including the above. However, there is no danger of ban, so don't worry. Overwolf's minimap overlay is also not a reason for ban.
+2. I do not take any responsibility for any disadvantages or damages including the above. However, there is no danger of ban, so don't worry. Overwolf's minimap overlay or RatScanner are also not a reason for ban.
 
 # Notice - Developer
 1. I'm a newbie developer who just graduated from college who used to program mostly in Java programs So please understand that most of the code is not optimized for C#. If you tell us about any strange parts in the code or where it can be improved, we will try to fix it as much as possible.
@@ -66,3 +64,18 @@ If you got errors, please check you installed .NET Framework 4.7.2 (https://dotn
 6. Escape from Tarkov (https://www.escapefromtarkov.com/)
 7. Tarkov.dev API (https://tarkov.dev/)
 8. TarkovTracker API (https://tarkovtracker.io)
+
+# Funny description written by ChatGPT
+Hey fellow Tarkov players, listen up! If you're struggling to keep up with all the ammo types in the game, or if you're having a hard time finding out the market price of certain items before the flea market opens, then boy do I have the perfect tool for you!
+
+Introducing the Escape from Tarkov Overlay Helper - your new best friend when it comes to all things Tarkov. This app is jam-packed with all the information you need to survive in the game, and it's especially helpful for newer players who are still getting the hang of things.
+
+With this tool, you can easily distinguish all the strengths and weaknesses of every single ammo type in the game thanks to the ammo chart and ammo tier list. Plus, you can use it to compare prices of parts in Edit Preset, so you can get the best deal possible.
+
+But that's not all - this overlay also has a sorting function, ballistics information, and even loot tiers! So you can make sure you're looting the right places and getting the best possible gear.
+
+And if you're struggling with certain tasks or quests, this app also has maps and a guide to help you out. And for those who prefer a scanner alternative, you're in luck - this overlay tool has got you covered.
+
+And if you're looking for info on items that are needed for hideout upgrades, you're in luck too! This tool has all the details you need, based on TarkovTracker progress.
+
+So what are you waiting for? Download the Escape from Tarkov Overlay Helper now and stay safe out there, fellow Tarkovians!
