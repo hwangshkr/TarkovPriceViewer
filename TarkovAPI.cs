@@ -8,6 +8,7 @@ namespace TarkovPriceViewer
     {
         public class BartersFor
         {
+            public Trader trader { get; set; }
             public List<RequiredItem> requiredItems { get; set; }
             public List<RewardItem> rewardItems { get; set; }
             public TaskUnlock taskUnlock { get; set; }
@@ -30,11 +31,15 @@ namespace TarkovPriceViewer
         public class CraftsFor
         {
             public Station station { get; set; }
+            public List<RequiredItem> requiredItems { get; set; }
+            public List<RewardItem> rewardItems { get; set; }
         }
 
         public class CraftsUsing
         {
             public Station station { get; set; }
+            public List<RequiredItem> requiredItems { get; set; }
+            public List<RewardItem> rewardItems { get; set; }
         }
 
         public class Data
@@ -58,6 +63,7 @@ namespace TarkovPriceViewer
         {
             public string id { get; set; }
             public string name { get; set; }
+            public string normalizedName { get; set; }
             public List<string> types { get; set; }
             public int? lastLowPrice { get; set; }
             public int? avg24hPrice { get; set; }
@@ -71,9 +77,9 @@ namespace TarkovPriceViewer
             public List<SellFor> sellFor { get; set; }
             public List<BuyFor> buyFor { get; set; }
             public List<BartersUsing> bartersUsing { get; set; }
-            public List<BartersFor> bartersFor { get; set; }
             public List<CraftsFor> craftsFor { get; set; }
             public List<CraftsUsing> craftsUsing { get; set; }
+            public List<BartersFor> bartersFor { get; set; }
             public List<UsedInTask> usedInTasks { get; set; }
 
             public Ballistic ballistic = null;
@@ -89,14 +95,21 @@ namespace TarkovPriceViewer
 
         public class Level
         {
-            public string id { get; set; }
             public int? level { get; set; }
+            public string id { get; set; }
             public List<ItemRequirement> itemRequirements { get; set; }
         }
 
         public class Map
         {
             public string name { get; set; }
+        }
+
+        public class Objective
+        {
+            public string id { get; set; }
+            public string description { get; set; }
+            public List<Map> maps { get; set; }
         }
 
         public class Properties
@@ -125,15 +138,15 @@ namespace TarkovPriceViewer
         public class RequiredItem
         {
             public Item item { get; set; }
-            public int? count { get; set; }
-            public int? quantity { get; set; }
+            public float? count { get; set; }
+            public float? quantity { get; set; }
         }
 
         public class RewardItem
         {
             public Item item { get; set; }
-            public int? count { get; set; }
-            public int? quantity { get; set; }
+            public float? count { get; set; }
+            public float? quantity { get; set; }
         }
 
         public class Root
@@ -172,6 +185,7 @@ namespace TarkovPriceViewer
 
         public class UsedInTask
         {
+            public List<Objective> objectives { get; set; }
             public string id { get; set; }
             public string name { get; set; }
             public Trader trader { get; set; }
@@ -185,17 +199,16 @@ namespace TarkovPriceViewer
             public string name { get; set; }
             public int? minTraderLevel { get; set; }
         }
-
-
     }
 }
 
 /*
+
+Item:
 public Ballistic ballistic = null;
 public string lootTier = null;
 public string className = null;
 
- 
  
 public class Properties
 {
@@ -218,8 +231,6 @@ public class Properties
     //public int? armorDamage { get; set; }
     //public double? fragmentationChance { get; set; }
     //public string ammoType { get; set; }
-} 
- 
- 
+}
 */
 
