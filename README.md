@@ -1,4 +1,4 @@
-# <img width="36" align="center" src="https://user-images.githubusercontent.com/32073152/126047438-2f1b7e59-ca31-43f2-bcf6-00b2f00e408c.png"/> Tarkov Price Viewer v1.24
+# <img width="36" align="center" src="https://user-images.githubusercontent.com/32073152/126047438-2f1b7e59-ca31-43f2-bcf6-00b2f00e408c.png"/> Tarkov Price Viewer v1.25
 This Overlay software is meant to help new players.
 You can easily distinguish all the strengths and weaknesses of all the ammo in the game.
 It is especially good to find out the market price in advance when the flea market is not open yet. 
@@ -37,7 +37,11 @@ Added item Class (Armours, Helmets, etc) and Key use locations in v1.23
 </br>
 </br>
 <img src="https://i.imgur.com/QemMxGG.png"/>
-Added info on items that are needed for Hideout Upgrades, based on TarkovTracker progress in v1.23
+Added info on items that are needed for Hideout Upgrades, based on TarkovTracker progress in v1.24
+</br>
+</br>
+<img src="https://i.imgur.com/EsfSOkv.png"/>
+Re-Added Barters & Crafts in v1.25
 </br>
 </br>
 <img src="https://i.imgur.com/Bgbwo3v.png"/>
