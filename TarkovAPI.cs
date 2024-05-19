@@ -1,4 +1,4 @@
-using Newtonsoft.Json;
+﻿using Newtonsoft.Json;
 using System;
 using System.Collections.Generic;
 
@@ -85,6 +85,27 @@ namespace TarkovPriceViewer
             public Ballistic ballistic = null;
             public string lootTier = null;
             public string className = null;
+            public String[] Data()
+            {
+                return (new String[] {
+                    name
+                    , ""
+                    , ""
+                    , ""
+                    , ""
+                    , ""
+                    , ""
+                });
+                //return (new String[] {
+                //    name
+                //    , (recoil != null ? recoil : "")
+                //    , (accuracy != null ? accuracy : "")
+                //    , (ergo != null ? ergo : "")
+                //    , (price_last != null ? price_last : "")
+                //    , (buy_from_trader_price != null ? buy_from_trader_price.Replace(" ", "").Replace(@"~", @" ≈") : "")
+                //    , (buy_from_trader != null ? buy_from_trader : "")
+                //});
+            }
         }
 
         public class ItemRequirement

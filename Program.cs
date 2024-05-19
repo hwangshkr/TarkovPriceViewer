@@ -1,3 +1,4 @@
+using Newtonsoft.Json;
 using System;
 using System.Collections.Generic;
 using System.Diagnostics;
@@ -9,17 +10,13 @@ using System.Text.RegularExpressions;
 using System.Threading;
 using System.Threading.Tasks;
 using System.Windows.Forms;
-using Newtonsoft.Json;
 
 namespace TarkovPriceViewer
 {
     static class Program
     {
-        public static bool UsingAPI = true;
-
         private static MainForm main = null;
         public static Dictionary<String, String> settings = new Dictionary<String, String>();
-        public static readonly List<Item> itemlist = new List<Item>();
         public static readonly Dictionary<String, Ballistic> blist = new Dictionary<String, Ballistic>();
         public static readonly Color[] BEColor = new Color[] { ColorTranslator.FromHtml("#B32425"),
             ColorTranslator.FromHtml("#DD3333"),
@@ -46,8 +43,8 @@ namespace TarkovPriceViewer
         public static readonly String tarkovtracker = "https://tarkovtracker.io/";
         public static readonly String tarkovmarket = "https://tarkov-market.com/item/";
         public static readonly String official = "https://www.escapefromtarkov.com/";
-        public static readonly String github = "https://github.com/Zotikus1001/TarkovPriceViewer";
-        public static readonly String checkupdate = "https://github.com/Zotikus1001/TarkovPriceViewer/raw/main/README.md";
+        public static readonly List<String> github = new List<string>() { "https://github.com/hwangshkr/TarkovPriceViewer", "https://github.com/Zotikus1001/TarkovPriceViewer" };
+        public static readonly String checkupdate = "/raw/main/README.md";
         public static readonly char rouble = '₽';
         public static readonly char dollar = '$';
         public static readonly char euro = '€';
@@ -88,15 +85,10 @@ namespace TarkovPriceViewer
 
             LoadSettings();
 
-            if (UsingAPI)
-            {
-                if (File.Exists(@"Resources\TarkovAPI.json"))
-                    APILastUpdated = File.GetLastWriteTime(@"Resources\TarkovAPI.json");
+            if (File.Exists(@"Resources\TarkovAPI.json"))
+                APILastUpdated = File.GetLastWriteTime(@"Resources\TarkovAPI.json");
 
-                Task task2 = Task.Factory.StartNew(() => UpdateItemListAPI());
-            }
-            else
-                getItemList();
+            Task task2 = Task.Factory.StartNew(() => UpdateItemListAPI());
 
             if (Convert.ToBoolean(settings["useTarkovTrackerAPI"]))
             {
@@ -107,103 +99,76 @@ namespace TarkovPriceViewer
             if (Convert.ToBoolean(settings["MinimizetoTrayWhenStartup"]))
             {
                 Application.Run();
-            } else
+            }
+            else
             {
                 Application.Run(main);
             }
         }
 
-        private static void getItemList()
-        {
-            String[] textValue = null;
-            if (File.Exists(@"Resources\itemlist.txt"))
-            {
-                textValue = File.ReadAllLines(@"Resources\itemlist.txt");
-            }
-            if (textValue != null && textValue.Length > 0)
-            {
-                for (int i = 0; i < textValue.Length; i++)//ignore 1,2 Line
-                {
-                    String[] spl = textValue[i].Split('\t');
-                    Item item = new Item();
-                    item.name_display = spl[0].Trim(); //Column 1
-                    item.name_display2 = spl[2].Trim(); //Column 3
-                    item.name_compare = item.name_display.ToLower().ToCharArray();
-                    item.name_compare2 = item.name_display2.ToLower().ToCharArray();
-                    item.market_address = spl[1].Replace(" ", "_").Trim(); //Column 2
-                    item.wiki_address = spl[0].Replace(" ", "_").Trim(); //Column 1
-                    itemlist.Add(item);
-                }
-            }
-            Debug.WriteLine("itemlist Count : " + itemlist.Count);
-        }
-
         public static async void UpdateItemListAPI()
         {
-            if (UsingAPI)
+            //If Outdated by 15 minutes.
+            if ((DateTime.Now - APILastUpdated).TotalMinutes >= 15)
             {
-                //If Outdated by 15 minutes.
-                if ((DateTime.Now - APILastUpdated).TotalMinutes >= 15)
+                try
                 {
-                    try
-                    {
-                        Debug.WriteLine("\n--> Updating API...");
+                    Debug.WriteLine("\n--> Updating API...");
 
-                        var data = new Dictionary<string, string>()
+                    var data = new Dictionary<string, string>()
                         {
                             {"query", "{\r\n  items {\r\n    id\r\n    name\r\n    normalizedName\r\n    types\r\n    lastLowPrice\r\n    avg24hPrice\r\n    updated\r\n    fleaMarketFee\r\n    link\r\n    wikiLink\r\n    width\r\n    height\r\n    properties {\r\n      ... on ItemPropertiesArmor {\r\n        class\r\n      }\r\n      ... on ItemPropertiesArmorAttachment {\r\n        class\r\n      }\r\n      ... on ItemPropertiesChestRig {\r\n        class\r\n      }\r\n      ... on ItemPropertiesGlasses {\r\n        class\r\n      }\r\n      ... on ItemPropertiesHelmet {\r\n        class\r\n      }\r\n      ... on ItemPropertiesKey {\r\n        uses\r\n      }\r\n      ... on ItemPropertiesAmmo {\r\n        caliber\r\n        damage\r\n        projectileCount\r\n        penetrationPower\r\n        armorDamage\r\n        fragmentationChance\r\n        ammoType\r\n      }\r\n      ... on ItemPropertiesWeapon {\r\n        caliber\r\n        ergonomics\r\n        defaultRecoilVertical\r\n        defaultRecoilHorizontal\r\n        defaultWidth\r\n        defaultHeight\r\n        defaultAmmo {\r\n          name\r\n        }\r\n      }\r\n      ... on ItemPropertiesWeaponMod {\r\n        accuracyModifier\r\n      }\r\n    }\r\n    sellFor {\r\n      currency\r\n      priceRUB\r\n      vendor {\r\n        name\r\n        ... on TraderOffer {\r\n          minTraderLevel\r\n        }\r\n      }\r\n    }\r\n    buyFor {\r\n      currency\r\n      priceRUB\r\n      vendor {\r\n        name\r\n        ... on TraderOffer {\r\n          minTraderLevel\r\n        }\r\n      }\r\n    }\r\n    bartersUsing {\r\n      trader {\r\n        name\r\n        levels {\r\n          level\r\n        }\r\n      }\r\n      requiredItems {\r\n        item {\r\n          name\r\n        }\r\n        count\r\n        quantity\r\n      }\r\n      rewardItems {\r\n        item {\r\n          name\r\n        }\r\n        count\r\n        quantity\r\n      }\r\n    }\r\n    craftsFor {\r\n      station {\r\n        name\r\n        levels {\r\n          level\r\n        }\r\n      }\r\n      requiredItems {\r\n        item {\r\n          name\r\n        }\r\n        count\r\n        quantity\r\n      }\r\n      rewardItems {\r\n        item {\r\n          name\r\n        }\r\n        count\r\n        quantity\r\n      }\r\n    }\r\n    craftsUsing {\r\n      station {\r\n        name\r\n        levels {\r\n          level\r\n        }\r\n      }\r\n      requiredItems {\r\n        item {\r\n          name\r\n        }\r\n        count\r\n        quantity\r\n      }\r\n      rewardItems {\r\n        item {\r\n          name\r\n        }\r\n        count\r\n        quantity\r\n      }\r\n    }\r\n    bartersFor {\r\n      trader {\r\n        name\r\n        levels {\r\n          level\r\n        }\r\n      }\r\n      requiredItems {\r\n        item {\r\n          name\r\n        }\r\n        count\r\n        quantity\r\n      }\r\n      rewardItems {\r\n        item {\r\n          name\r\n        }\r\n        count\r\n        quantity\r\n      }\r\n      taskUnlock {\r\n        name\r\n      }\r\n    }\r\n    usedInTasks {\r\n      objectives {\r\n        id\r\n        description\r\n        maps {\r\n          name\r\n        }\r\n      }\r\n      id\r\n      name\r\n      trader {\r\n        name\r\n      }\r\n      map {\r\n        name\r\n      }\r\n      minPlayerLevel\r\n      traderLevelRequirements {\r\n        level\r\n      }\r\n    }\r\n  }\r\n  hideoutStations {\r\n    name\r\n    levels {\r\n      id\r\n      level\r\n      itemRequirements {\r\n        item {\r\n          id\r\n          name\r\n        }\r\n        count\r\n      }\r\n    }\r\n  }\r\n}"}
                         };
 
-                        using (var httpClient = new HttpClient())
+                    using (var httpClient = new HttpClient())
+                    {
+                        //Http response message
+                        var httpResponse = await httpClient.PostAsJsonAsync("https://api.tarkov.dev/graphql", data);
+                        //Response content
+                        string responseContent = await httpResponse.Content.ReadAsStringAsync();
+
+                        int index = responseContent.IndexOf("{\"data\":");
+                        if (index != -1)
                         {
-                            //Http response message
-                            var httpResponse = await httpClient.PostAsJsonAsync("https://api.tarkov.dev/graphql", data);
-                            //Response content
-                            string responseContent = await httpResponse.Content.ReadAsStringAsync();
-
-                            int index = responseContent.IndexOf("{\"data\":");
-                            if (index != -1)
-                            {
-                                responseContent = responseContent.Remove(index, 8);
-                                responseContent = responseContent.Remove(responseContent.Length - 1, 1);
-                            }
-
-                            //Prettify JSON (Produces a larger file)
-                            //responseContent = JToken.Parse(responseContent).ToString();
-
-                            tarkovAPI = JsonConvert.DeserializeObject<TarkovAPI.Data>(responseContent);
-                            APILastUpdated = DateTime.Now;
-                            finishloadingAPI = true;
-                            Debug.WriteLine("\n--> TarkovDev API Updated!");
-                            File.WriteAllText(@"Resources\TarkovAPI.json", responseContent);
+                            responseContent = responseContent.Remove(index, 8);
+                            responseContent = responseContent.Remove(responseContent.Length - 1, 1);
                         }
-                    }
-                    catch (Exception ex)
-                    {
-                        MessageBox.Show("--> Error trying to update Tarkov API: " + ex.Message);
-                        Thread.Sleep(2000);
-                        UpdateItemListAPI();
-                    }
-                }
-                else if (tarkovAPI == null)
-                {
-                    try
-                    {
-                        string responseContent = File.ReadAllText(@"Resources\TarkovAPI.json");
+
+                        //Prettify JSON (Produces a larger file)
+                        //responseContent = JToken.Parse(responseContent).ToString();
+
                         tarkovAPI = JsonConvert.DeserializeObject<TarkovAPI.Data>(responseContent);
-                        Debug.WriteLine("\n--> TarkovDev API Loaded from local File! \n--> " + LastUpdated(APILastUpdated) + "\n\n");
+                        APILastUpdated = DateTime.Now;
                         finishloadingAPI = true;
-                    }
-                    catch (Exception ex)
-                    {
-                        MessageBox.Show("\n--> Error trying to load Tarkov API from local file: " + ex.Message);
-                        Thread.Sleep(2000);
-                        UpdateItemListAPI();
+                        Debug.WriteLine("\n--> TarkovDev API Updated!");
+                        File.WriteAllText(@"Resources\TarkovAPI.json", responseContent);
                     }
                 }
-                else
-                    Debug.WriteLine("--> No need to update TarkovDev API! \n--> " + LastUpdated(APILastUpdated) + "\n\n");
+                catch (Exception ex)
+                {
+                    MessageBox.Show("--> Error trying to update Tarkov API: " + ex.Message);
+                    Thread.Sleep(2000);
+                    UpdateItemListAPI();
+                }
             }
+            else if (tarkovAPI == null)
+            {
+                try
+                {
+                    string responseContent = File.ReadAllText(@"Resources\TarkovAPI.json");
+                    tarkovAPI = JsonConvert.DeserializeObject<TarkovAPI.Data>(responseContent);
+                    Debug.WriteLine("\n--> TarkovDev API Loaded from local File! \n--> " + LastUpdated(APILastUpdated) + "\n\n");
+                    finishloadingAPI = true;
+                }
+                catch (Exception ex)
+                {
+                    MessageBox.Show("\n--> Error trying to load Tarkov API from local file: " + ex.Message);
+                    Thread.Sleep(2000);
+                    UpdateItemListAPI();
+                }
+            }
+            else
+                Debug.WriteLine("--> No need to update TarkovDev API! \n--> " + LastUpdated(APILastUpdated) + "\n\n");
         }
 
         public static async void UpdateTarkovTrackerAPI()
@@ -271,7 +236,7 @@ namespace TarkovPriceViewer
             }
             else
             {
-                if(elapsed.TotalDays <= 1) 
+                if (elapsed.TotalDays <= 1)
                     return $"Updated: {(int)elapsed.TotalDays} day ago";
                 else
                     return $"Updated: {(int)elapsed.TotalDays} days ago";
@@ -290,7 +255,8 @@ namespace TarkovPriceViewer
                 try
                 {
                     settings = System.Text.Json.JsonSerializer.Deserialize<Dictionary<String, String>>(text);
-                } catch (System.Text.Json.JsonException je)
+                }
+                catch (System.Text.Json.JsonException je)
                 {
                     Debug.WriteLine("Error 11: " + je.Message);
                     text = "{}";
@@ -298,7 +264,7 @@ namespace TarkovPriceViewer
                 }
                 String st;
                 settings.Remove("Version");//force
-                settings.Add("Version", "v1.25");//force
+                settings.Add("Version", "v1.26");//force
                 if (!settings.TryGetValue("MinimizetoTrayWhenStartup", out st))
                 {
                     settings.Add("MinimizetoTrayWhenStartup", "false");
@@ -357,7 +323,7 @@ namespace TarkovPriceViewer
                 }
                 if (!settings.TryGetValue("useTarkovTrackerAPI", out st))
                 {
-                    settings.Add("useTarkovTrackerAPI", "true");
+                    settings.Add("useTarkovTrackerAPI", "false");//false
                 }
                 if (!settings.TryGetValue("TarkovTrackerAPIKey", out st))
                 {
