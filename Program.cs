@@ -138,6 +138,11 @@ namespace TarkovPriceViewer
                         //responseContent = JToken.Parse(responseContent).ToString();
 
                         tarkovAPI = JsonConvert.DeserializeObject<TarkovAPI.Data>(responseContent);
+						// Check to make sure the response didn't return an error schema
+						if(tarkovAPI.items == null){
+							TarkovPriceViewer.ResponseShell temp = JsonConvert.DeserializeObject<TarkovPriceViewer.ResponseShell>(responseContent);
+							tarkovAPI = temp.data;
+						}
                         APILastUpdated = DateTime.Now;
                         finishloadingAPI = true;
                         Debug.WriteLine("\n--> TarkovDev API Updated!");
@@ -157,6 +162,11 @@ namespace TarkovPriceViewer
                 {
                     string responseContent = File.ReadAllText(@"Resources\TarkovAPI.json");
                     tarkovAPI = JsonConvert.DeserializeObject<TarkovAPI.Data>(responseContent);
+					// Check to make sure the response didn't return an error schema
+					if(tarkovAPI.items == null){
+						TarkovPriceViewer.ResponseShell temp = JsonConvert.DeserializeObject<TarkovPriceViewer.ResponseShell>(responseContent);
+						tarkovAPI = temp.data;
+					}
                     Debug.WriteLine("\n--> TarkovDev API Loaded from local File! \n--> " + LastUpdated(APILastUpdated) + "\n\n");
                     finishloadingAPI = true;
                 }
