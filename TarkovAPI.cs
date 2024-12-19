@@ -4,6 +4,25 @@ using System.Collections.Generic;
 
 namespace TarkovPriceViewer
 {
+	public class ResponseShell
+    {
+        public List<GQLError> errors { get; set; }
+
+        public TarkovAPI.Data data { get; set; }
+
+        public class GQLError
+        {
+            public string message { get; set; }
+            public List<Location> locations { get; set; }
+            public class Location
+            {
+                public int line { get; set; }
+                public int column { get; set; }
+            }
+            public List<Object> path;
+        }
+    }
+
     public class TarkovAPI
     {
         public class BartersFor
