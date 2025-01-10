@@ -931,9 +931,9 @@ namespace TarkovPriceViewer
 
         private void refreshAPI_b_Click(object sender, EventArgs e)
         {
-            if (TarkovTrackerCheckBox.Checked)
-                Program.settings["TarkovTrackerAPIKey"] = tarkovTrackerApiKey_textbox.Text;
-
+            Program.settings["TarkovTrackerAPIKey"] = tarkovTrackerApiKey_textbox.Text;
+            Task.Factory.StartNew(() => Program.UpdateTarkovTrackerAPI());
+            
             SetHook(true);
         }
 
