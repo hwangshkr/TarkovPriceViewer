@@ -81,18 +81,18 @@ namespace TarkovPriceViewer
             }
             ThreadPool.SetMinThreads(10, 10);
             ThreadPool.SetMaxThreads(20, 20);
-            Task task = Task.Factory.StartNew(() => getBallistics());
+            Task.Factory.StartNew(() => getBallistics());
 
             LoadSettings();
 
             if (File.Exists(@"Resources\TarkovAPI.json"))
                 APILastUpdated = File.GetLastWriteTime(@"Resources\TarkovAPI.json");
 
-            Task task2 = Task.Factory.StartNew(() => UpdateItemListAPI());
+            Task.Factory.StartNew(() => UpdateItemListAPI());
 
             if (Convert.ToBoolean(settings["useTarkovTrackerAPI"]))
             {
-                Task task3 = Task.Factory.StartNew(() => UpdateTarkovTrackerAPI());
+                Task.Factory.StartNew(() => UpdateTarkovTrackerAPI());
             }
 
             main = new MainForm();
@@ -183,7 +183,8 @@ namespace TarkovPriceViewer
 
         public static async void UpdateTarkovTrackerAPI()
         {
-            if (Convert.ToBoolean(Program.settings["useTarkovTrackerAPI"]))
+            String apiKey = settings["TarkovTrackerAPIKey"];
+            if (Convert.ToBoolean(Program.settings["useTarkovTrackerAPI"]) && !string.Equals(apiKey, "APIKey") && !string.IsNullOrWhiteSpace(apiKey))
             {
                 //If Outdated by 1 minutes.
                 if ((DateTime.Now - TarkovTrackerAPILastUpdated).TotalMinutes >= 1)
@@ -191,8 +192,6 @@ namespace TarkovPriceViewer
                     try
                     {
                         Debug.WriteLine("\n--> Updating TarkovTracker API...");
-
-                        string apiKey = settings["TarkovTrackerAPIKey"];
 
                         using (var httpClient = new HttpClient())
                         {
@@ -225,7 +224,7 @@ namespace TarkovPriceViewer
                     Debug.WriteLine("--> No need to update TarkovTracker API! \n--> " + LastUpdated(APILastUpdated) + "\n\n");
             }
         }
-
+        
         public static string LastUpdated(DateTime time)
         {
             TimeSpan elapsed = DateTime.Now - time;
