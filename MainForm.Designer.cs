@@ -85,6 +85,10 @@ namespace TarkovPriceViewer
             this.tarkovTrackerApiKey_textbox = new System.Windows.Forms.TextBox();
             this.label1 = new System.Windows.Forms.Label();
             this.TarkovTrackerAPI_tooltip = new System.Windows.Forms.ToolTip(this.components);
+            this.languageBox = new System.Windows.Forms.ComboBox();
+            this.label3 = new System.Windows.Forms.Label();
+            this.modeBox = new System.Windows.Forms.ComboBox();
+            this.label4 = new System.Windows.Forms.Label();
             this.TrayMenu.SuspendLayout();
             this.panel1.SuspendLayout();
             ((System.ComponentModel.ISupportInitialize)(this.TransParent_Bar)).BeginInit();
@@ -262,7 +266,7 @@ namespace TarkovPriceViewer
             // week_price_box
             // 
             this.week_price_box.AutoSize = true;
-            this.week_price_box.Location = new System.Drawing.Point(524, 26);
+            this.week_price_box.Location = new System.Drawing.Point(12, 45);
             this.week_price_box.Margin = new System.Windows.Forms.Padding(4, 3, 4, 3);
             this.week_price_box.Name = "week_price_box";
             this.week_price_box.Size = new System.Drawing.Size(86, 16);
@@ -712,6 +716,40 @@ namespace TarkovPriceViewer
             this.label1.Text = "Use TarkovTracker.io?";
             this.label1.MouseHover += new System.EventHandler(this.label1_MouseHover);
             // 
+            // languageBox
+            // 
+            this.languageBox.FormattingEnabled = true;
+            this.languageBox.Location = new System.Drawing.Point(543, 11);
+            this.languageBox.Name = "languageBox";
+            this.languageBox.Size = new System.Drawing.Size(69, 20);
+            this.languageBox.TabIndex = 18;
+            // 
+            // label3
+            // 
+            this.label3.AutoSize = true;
+            this.label3.Location = new System.Drawing.Point(500, 15);
+            this.label3.Name = "label3";
+            this.label3.Size = new System.Drawing.Size(40, 12);
+            this.label3.TabIndex = 19;
+            this.label3.Text = "Detect";
+            // 
+            // modeBox
+            // 
+            this.modeBox.FormattingEnabled = true;
+            this.modeBox.Location = new System.Drawing.Point(543, 37);
+            this.modeBox.Name = "modeBox";
+            this.modeBox.Size = new System.Drawing.Size(69, 20);
+            this.modeBox.TabIndex = 20;
+            // 
+            // label4
+            // 
+            this.label4.AutoSize = true;
+            this.label4.Location = new System.Drawing.Point(503, 41);
+            this.label4.Name = "label4";
+            this.label4.Size = new System.Drawing.Size(37, 12);
+            this.label4.TabIndex = 21;
+            this.label4.Text = "Mode";
+            // 
             // MainForm
             // 
             this.AutoScaleDimensions = new System.Drawing.SizeF(7F, 12F);
@@ -719,6 +757,10 @@ namespace TarkovPriceViewer
             this.AutoSizeMode = System.Windows.Forms.AutoSizeMode.GrowAndShrink;
             this.BackColor = System.Drawing.Color.White;
             this.ClientSize = new System.Drawing.Size(621, 411);
+            this.Controls.Add(this.label4);
+            this.Controls.Add(this.modeBox);
+            this.Controls.Add(this.label3);
+            this.Controls.Add(this.languageBox);
             this.Controls.Add(this.week_price_box);
             this.Controls.Add(this.panel8);
             this.Controls.Add(this.panel5);
@@ -820,6 +862,10 @@ namespace TarkovPriceViewer
         private System.Windows.Forms.Button TarkovTracker_button;
         private System.Windows.Forms.CheckBox hideoutUpgrades_checkBox;
         private System.Windows.Forms.Button button1;
+        private System.Windows.Forms.ComboBox languageBox;
+        private System.Windows.Forms.Label label3;
+        private System.Windows.Forms.ComboBox modeBox;
+        private System.Windows.Forms.Label label4;
     }
 }
 

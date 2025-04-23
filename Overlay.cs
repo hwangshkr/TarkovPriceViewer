@@ -613,8 +613,8 @@ namespace TarkovPriceViewer
                 {
                     HtmlAgilityPack.HtmlDocument doc = new HtmlAgilityPack.HtmlDocument();
                     doc.LoadHtml(wc.DownloadString(item.wikiLink));
-                    HtmlAgilityPack.HtmlNode node = doc.DocumentNode.SelectSingleNode("//div[@class='mw-parser-output']");
-                    var subnode = node.SelectSingleNode("//p[3]");
+                    HtmlAgilityPack.HtmlNode node = doc?.DocumentNode.SelectSingleNode("//div[@class='mw-parser-output']");
+                    var subnode = node?.SelectSingleNode("//p[3]");
                     if (subnode != null)
                         return subnode.InnerText;
                     else

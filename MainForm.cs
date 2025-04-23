@@ -1,5 +1,7 @@
 ﻿using OpenCvSharp;
 using OpenCvSharp.Extensions;
+using Sdcb.PaddleOCR.Models.Local;
+using Sdcb.PaddleOCR.Models;
 using System;
 using System.Diagnostics;
 using System.Drawing;
@@ -9,8 +11,11 @@ using System.Threading;
 using System.Threading.Tasks;
 using System.Timers;
 using System.Windows.Forms;
-using Tesseract;
 using static TarkovPriceViewer.TarkovAPI;
+using Sdcb.PaddleInference;
+using Sdcb.PaddleOCR;
+using Sdcb.PaddleOCR.Models.Online;
+using static System.Windows.Forms.VisualStyles.VisualStyleElement;
 
 namespace TarkovPriceViewer
 {
@@ -169,6 +174,20 @@ namespace TarkovPriceViewer
             TarkovTrackerCheckBox.Checked = Convert.ToBoolean(Program.settings["useTarkovTrackerAPI"]);
             hideoutUpgrades_checkBox.Checked = Convert.ToBoolean(Program.settings["showHideoutUpgrades"]);
             tarkovTrackerApiKey_textbox.Text = Program.settings["TarkovTrackerAPIKey"];
+
+            languageBox.Items.Add("en");
+            languageBox.Items.Add("ko");
+            languageBox.Items.Add("cn");
+            languageBox.Items.Add("jp");
+            languageBox.DropDownStyle = ComboBoxStyle.DropDownList;
+            languageBox.SelectedItem = Program.settings["Language"];
+            languageBox.SelectedIndexChanged += languageBox_SelectedIndexChanged;
+
+            modeBox.Items.Add("regular");
+            modeBox.Items.Add("pve");
+            modeBox.DropDownStyle = ComboBoxStyle.DropDownList;
+            modeBox.SelectedItem = Program.settings["Mode"];
+            modeBox.SelectedIndexChanged += modeBox_SelectedIndexChanged;
 
             TrayIcon.Visible = true;
             check_idle_time.Start();
@@ -502,19 +521,58 @@ namespace TarkovPriceViewer
             String text = "";
             try
             {
-                using (TesseractEngine ocr = new TesseractEngine(@"./Resources/tessdata", "eng", EngineMode.Default))//should use once
-                using (Bitmap temp = BitmapConverter.ToBitmap(textmat))
-                using (Page texts = ocr.Process(temp))
+                //var model = await OnlineFullModels.EnglishV4.DownloadAsync();
+                //var model = LocalFullModels.EnglishV4;
+
+                FullOcrModel model = null;
+                if (Program.settings["Language"] == "en")
                 {
-                    text = texts.GetText().Replace("\n", " ").Split(Program.splitcur)[0].Trim();
-
-                    if (text == "GELLER")
-                        text = "Hand drill";
-                    else if (text == "[ZEULELED")
-                        text = "Bandana";
-
-                    Debug.WriteLine("Tesseract Text : " + text);
+                    model = LocalFullModels.EnglishV4;
                 }
+                else if (Program.settings["Language"] == "ko")
+                {
+                    model = LocalFullModels.KoreanV4;
+                }
+                else if (Program.settings["Language"] == "cn")
+                {
+                    model = LocalFullModels.ChineseV4;
+                }
+                else if (Program.settings["Language"] == "jp")
+                {
+                    model = LocalFullModels.JapanV4;
+                }
+                if (model == null)
+                {
+                    return text;
+                }
+                using (PaddleOcrAll all = new PaddleOcrAll(model, PaddleDevice.Mkldnn())
+                {
+                    AllowRotateDetection = false,
+                    Enable180Classification = false,
+                })
+                {
+                    PaddleOcrResult result = all.Run(textmat);
+                    text = result.Text.Replace("\n", " ").Split(Program.splitcur)[0].Trim();
+                    Debug.WriteLine("Paddle Text : " + text);
+                    //foreach (PaddleOcrResultRegion region in result.Regions)
+                    //{
+                    //    Console.WriteLine($"Text: {region.Text}, Score: {region.Score}, RectCenter: {region.Rect.Center}, RectSize:    {region.Rect.Size}, Angle: {region.Rect.Angle}");
+                    //}
+                }
+
+                //using (TesseractEngine ocr = new TesseractEngine(@"./Resources/tessdata", "eng", EngineMode.Default))//should use once
+                //using (Bitmap temp = BitmapConverter.ToBitmap(textmat))
+                //using (Page texts = ocr.Process(temp))
+                //{
+                //    text = texts.GetText().Replace("\n", " ").Split(Program.splitcur)[0].Trim();
+
+                //    if (text == "GELLER")
+                //        text = "Hand drill";
+                //    else if (text == "[ZEULELED")
+                //        text = "Bandana";
+
+                //    Debug.WriteLine("Tesseract Text : " + text);
+                //}
             }
             catch (Exception e)
             {
@@ -788,7 +846,7 @@ namespace TarkovPriceViewer
 
         private void TransParent_Bar_Scroll(object sender, EventArgs e)
         {
-            TrackBar tb = (sender as TrackBar);
+            System.Windows.Forms.TrackBar tb = (sender as System.Windows.Forms.TrackBar);
             Program.settings["Overlay_Transparent"] = tb.Value.ToString();
             TransParent_Text.Text = Program.settings["Overlay_Transparent"] + "%";
             overlay_info.ChangeTransparent(tb.Value);
@@ -975,6 +1033,34 @@ namespace TarkovPriceViewer
         private void hideoutUpgrades_checkBox_CheckedChanged(object sender, EventArgs e)
         {
             Program.settings["showHideoutUpgrades"] = (sender as CheckBox).Checked.ToString();
+        }
+
+        private void languageBox_SelectedIndexChanged(object sender, EventArgs e)
+        {
+            if ((sender as System.Windows.Forms.ComboBox).SelectedIndex >= 0)
+            {
+                Program.settings["Language"] = (sender as System.Windows.Forms.ComboBox).SelectedItem.ToString();
+            }
+            else
+            {
+                Program.settings["Language"] = "en";
+            }
+            Task UpdateAPI = Task.Factory.StartNew(() => Program.UpdateItemListAPI(true));
+            Task UpdateTarkovTrackerAPI = Task.Factory.StartNew(() => Program.UpdateTarkovTrackerAPI(true));
+        }
+
+        private void modeBox_SelectedIndexChanged(object sender, EventArgs e)
+        {
+            if ((sender as System.Windows.Forms.ComboBox).SelectedIndex >= 0)
+            {
+                Program.settings["Mode"] = (sender as System.Windows.Forms.ComboBox).SelectedItem.ToString();
+            }
+            else
+            {
+                Program.settings["Mode"] = "regular";
+            }
+            Task UpdateAPI = Task.Factory.StartNew(() => Program.UpdateItemListAPI(true));
+            Task UpdateTarkovTrackerAPI = Task.Factory.StartNew(() => Program.UpdateTarkovTrackerAPI(true));
         }
     }
 }
