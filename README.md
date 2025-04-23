@@ -44,11 +44,18 @@ Added info on items that are needed for Hideout Upgrades, based on TarkovTracker
 Re-Added Barters & Crafts in v1.25
 </br>
 </br>
-<img src="https://i.imgur.com/Bgbwo3v.png"/>
+Can use the language setting en, ko, jp, cn And GameMode regular(PVP), PVE in v1.28
+</br>
+</br>
+<img src="https://imgur.com/8nRMZ68.png"/>
 You can change the settings how you like.
 </br>
 </br>
-If you got errors, please check you installed .NET Framework 4.7.2 (https://dotnet.microsoft.com/download/dotnet-framework/net472).
+If you got errors, please check you installed
+</br>
+.NET Framework 4.7.2 (https://dotnet.microsoft.com/download/dotnet-framework/net472)
+</br>
+Latest Visual C++ Redistributable (https://aka.ms/vs/17/release/vc_redist.x64.exe)
 
 # Notice - User
 1. It cannot be used in full screen. Borderless windowed mode is recommended.
@@ -61,7 +68,7 @@ If you got errors, please check you installed .NET Framework 4.7.2 (https://dotn
 
 # Program (or site) used and license
 1. OpenCV (https://opencv.org/license)
-2. Tesseract (https://github.com/tesseract-ocr/tesseract/blob/master/LICENSE)
+2. PaddleSharp (https://github.com/sdcb/PaddleSharp/blob/master/LICENSE)
 3. Fody (https://github.com/Fody/Fody/blob/master/License.txt)
 4. Tarkov Market (https://tarkov-market.com/)
 5. Tarkov Wiki (https://escapefromtarkov.fandom.com/wiki/Escape_from_Tarkov_Wiki)
