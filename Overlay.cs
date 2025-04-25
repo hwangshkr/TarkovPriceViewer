@@ -29,7 +29,7 @@ namespace TarkovPriceViewer
         private static bool ismoving = false;
         private static int x, y;
         public static DateTime startTime;
-        private static string waitinfForTooltipText = Program.waitingForTooltip;
+        private static string waitinfForTooltipText = MainForm.languageModel == null ? Program.languageLoading : Program.waitingForTooltip;
         private static int DotsCounter = 0;
 
         private Object _lock = new Object();
@@ -656,7 +656,7 @@ namespace TarkovPriceViewer
                         {
                             if (--compare_size > 0)
                             {
-                                itemcompare_text.Text = String.Format("{0} Left : {1}", Program.loading, compare_size);
+                                itemcompare_text.Text = String.Format("{0} Left : {1}", MainForm.languageModel == null ? Program.languageLoading : Program.waitingForTooltip, compare_size);
                             }
                             else
                             {
@@ -919,7 +919,7 @@ namespace TarkovPriceViewer
                     //waitinfForTooltipText = Program.waitingForTooltip;
                     iteminfo_ball.Rows.Clear();
                     iteminfo_ball.Visible = false;
-                    iteminfo_text.Text = Program.loading;
+                    iteminfo_text.Text = MainForm.languageModel == null ? Program.languageLoading : Program.waitingForTooltip;
                     iteminfo_panel.Location = new Point(point.X + 20, point.Y + 20);
                     iteminfo_panel.Visible = true;
                 }
@@ -927,7 +927,7 @@ namespace TarkovPriceViewer
             Invoke(show);
         }
 
-        public void ShowWaitinfForTooltipInfo(Point point, CancellationToken cts_one)
+        public void ShowWaitingForTooltipInfo(Point point, CancellationToken cts_one)
         {
             Action show = delegate ()
             {
@@ -938,13 +938,16 @@ namespace TarkovPriceViewer
 
                     if (DotsCounter < 3)
                     {
-                        waitinfForTooltipText += ".";
                         DotsCounter++;
                     }
                     else
                     {
-                        waitinfForTooltipText = Program.waitingForTooltip + ".";
                         DotsCounter = 1;
+                    }
+                    waitinfForTooltipText = MainForm.languageModel == null ? Program.languageLoading : Program.waitingForTooltip;
+                    for (var i = 0; i < DotsCounter; i++)
+                    {
+                        waitinfForTooltipText += ".";
                     }
                     iteminfo_panel.Location = new Point(point.X + 20, point.Y + 20);
                     iteminfo_text.Text = waitinfForTooltipText;
@@ -1003,7 +1006,7 @@ namespace TarkovPriceViewer
                             itemcompare_panel.Visible = true;
                             itemcompare_text.Text = String.Format("{0}", Program.presscomparekey);
                         }
-                        itemcompare_text.Text = String.Format("{0} Left : {1}", Program.loading, ++compare_size);
+                        itemcompare_text.Text = String.Format("{0} Left : {1}", MainForm.languageModel == null ? Program.languageLoading : Program.waitingForTooltip, ++compare_size);
                     }
                 }
             };

@@ -28,7 +28,7 @@ namespace TarkovPriceViewer
         public static readonly HashSet<String> BEType = new HashSet<String> { "Round", "Slug", "Buckshot", "Grenade launcher cartridge" };
         public static readonly String setting_path = @"settings.json";
         public static readonly String appname = "EscapeFromTarkov";
-        public static readonly String loading = "Loading...";
+        public static readonly String languageLoading = "Wait Language Model Loading";
         public static readonly String notfound = "Item Name Not Found.";
         public static readonly String waitingForTooltip = "Loading";
         public static readonly String noflea = "Item not Found on the Flea Market.";

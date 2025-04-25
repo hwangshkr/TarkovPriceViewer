@@ -2,7 +2,8 @@
 using OpenCvSharp.Extensions;
 using Sdcb.PaddleInference;
 using Sdcb.PaddleOCR;
-using Sdcb.PaddleOCR.Models.Local;
+using Sdcb.PaddleOCR.Models;
+using Sdcb.PaddleOCR.Models.Online;
 using System;
 using System.Diagnostics;
 using System.Drawing;
@@ -104,6 +105,8 @@ namespace TarkovPriceViewer
         private static Control press_key_control = null;
         private static Scalar linecolor = new Scalar(90, 89, 82);
         private static long idle_time = 3600000;
+        private static object lockObject = new object();
+        public static RecognizationModel languageModel = null;
         public static DateTime KeyPressedTime;
         private static DateTime presstime;
         public static bool WaitingForTooltip = false;
@@ -381,7 +384,7 @@ namespace TarkovPriceViewer
             cts_info = new CancellationTokenSource();
 
             if (timer.Enabled || WaitingForTooltip)
-                overlay_info.ShowWaitinfForTooltipInfo(point, cts_info.Token);
+                overlay_info.ShowWaitingForTooltipInfo(point, cts_info.Token);
             else
                 overlay_info.ShowLoadingInfo(point, cts_info.Token);
 
@@ -514,36 +517,41 @@ namespace TarkovPriceViewer
             Invoke(show);
         }
 
-        private LocalRecognizationModel getPaddleModel()
+        private void getPaddleModel()
         {
-            LocalRecognizationModel model = null;
-            if (Program.settings["Language"] == "en")
-            {
-                model = LocalRecognizationModel.EnglishV4;
-            }
-            else if (Program.settings["Language"] == "ko")
-            {
-                model = LocalRecognizationModel.KoreanV4;
-            }
-            else if (Program.settings["Language"] == "cn")
-            {
-                model = LocalRecognizationModel.ChineseV4;
-            }
-            else if (Program.settings["Language"] == "jp")
-            {
-                model = LocalRecognizationModel.JapanV4;
-            }
-            return model;
+            Task getModel = Task.Run(async () => {
+                Debug.WriteLine("Download the paddle language model.");
+                RecognizationModel model;
+                if (Program.settings["Language"] == "ko")
+                {
+                    model = await LocalDictOnlineRecognizationModel.KoreanV4.DownloadAsync();
+                }
+                else if (Program.settings["Language"] == "cn")
+                {
+                    model = await LocalDictOnlineRecognizationModel.ChineseV4.DownloadAsync();
+                }
+                else if (Program.settings["Language"] == "jp")
+                {
+                    model = await LocalDictOnlineRecognizationModel.JapanV4.DownloadAsync();
+                }
+                model = await LocalDictOnlineRecognizationModel.EnglishV4.DownloadAsync();
+
+                lock (lockObject)
+                {
+                    Debug.WriteLine("language model setted.");
+                    languageModel = model;
+                }
+            });
         }
 
         private void PaddleRecognizer(Action<PaddleOcrRecognizer> action)
         {
-            LocalRecognizationModel model = getPaddleModel();
-            if (model == null)
+            getPaddleModel();
+            if (languageModel == null)
             {
                 return;
             }
-            using (var recog = new PaddleOcrRecognizer(model, PaddleDevice.Mkldnn()))
+            using (var recog = new PaddleOcrRecognizer(languageModel, PaddleDevice.Mkldnn()))
             {
                 action?.Invoke(recog);
             }
@@ -1032,6 +1040,10 @@ namespace TarkovPriceViewer
             else
             {
                 Program.settings["Language"] = "en";
+            }
+            lock (lockObject)
+            {
+                languageModel = null;
             }
             PaddleRecognizer(null);//init ocr
             Task UpdateAPI = Task.Factory.StartNew(() => Program.UpdateItemListAPI(true));

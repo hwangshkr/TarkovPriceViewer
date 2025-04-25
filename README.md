@@ -50,6 +50,9 @@ Can use the language setting en, ko, jp, cn And GameMode regular(PVP), PVE in v1
 Speed up ocr in v1.29
 </br>
 </br>
+Use online language Paddle OCR for reducing release file size. in v1.30
+</br>
+</br>
 <img src="https://imgur.com/8nRMZ68.png"/>
 You can change the settings how you like.
 </br>
