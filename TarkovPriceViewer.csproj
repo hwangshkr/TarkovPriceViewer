@@ -175,20 +175,17 @@
     <Reference Include="Sdcb.PaddleOCR.Models.Local, Version=2.7.0.0, Culture=neutral, processorArchitecture=MSIL">
       <HintPath>packages\Sdcb.PaddleOCR.Models.Local.2.7.0\lib\netstandard2.0\Sdcb.PaddleOCR.Models.Local.dll</HintPath>
     </Reference>
-    <Reference Include="Sdcb.PaddleOCR.Models.LocalV3, Version=2.7.0.0, Culture=neutral, processorArchitecture=MSIL">
-      <HintPath>packages\Sdcb.PaddleOCR.Models.LocalV3.2.7.0\lib\netstandard2.0\Sdcb.PaddleOCR.Models.LocalV3.dll</HintPath>
+    <Reference Include="Sdcb.PaddleOCR.Models.LocalV3, Version=2.7.0.1, Culture=neutral, processorArchitecture=MSIL">
+      <HintPath>packages\Sdcb.PaddleOCR.Models.LocalV3.2.7.0.1\lib\netstandard2.0\Sdcb.PaddleOCR.Models.LocalV3.dll</HintPath>
     </Reference>
-    <Reference Include="Sdcb.PaddleOCR.Models.LocalV4, Version=2.7.0.0, Culture=neutral, processorArchitecture=MSIL">
-      <HintPath>packages\Sdcb.PaddleOCR.Models.LocalV4.2.7.0\lib\netstandard2.0\Sdcb.PaddleOCR.Models.LocalV4.dll</HintPath>
+    <Reference Include="Sdcb.PaddleOCR.Models.LocalV4, Version=2.7.0.1, Culture=neutral, processorArchitecture=MSIL">
+      <HintPath>packages\Sdcb.PaddleOCR.Models.LocalV4.2.7.0.1\lib\netstandard2.0\Sdcb.PaddleOCR.Models.LocalV4.dll</HintPath>
     </Reference>
-    <Reference Include="Sdcb.PaddleOCR.Models.Online, Version=2.7.0.1, Culture=neutral, processorArchitecture=MSIL">
-      <HintPath>packages\Sdcb.PaddleOCR.Models.Online.2.7.0.1\lib\netstandard2.0\Sdcb.PaddleOCR.Models.Online.dll</HintPath>
+    <Reference Include="Sdcb.PaddleOCR.Models.Shared, Version=2.7.0.1, Culture=neutral, processorArchitecture=MSIL">
+      <HintPath>packages\Sdcb.PaddleOCR.Models.Shared.2.7.0.1\lib\netstandard2.0\Sdcb.PaddleOCR.Models.Shared.dll</HintPath>
     </Reference>
-    <Reference Include="Sdcb.PaddleOCR.Models.Shared, Version=2.7.0.0, Culture=neutral, processorArchitecture=MSIL">
-      <HintPath>packages\Sdcb.PaddleOCR.Models.Shared.2.7.0\lib\netstandard2.0\Sdcb.PaddleOCR.Models.Shared.dll</HintPath>
-    </Reference>
-    <Reference Include="SharpCompress, Version=0.33.0.0, Culture=neutral, PublicKeyToken=afb0a02973931d96, processorArchitecture=MSIL">
-      <HintPath>packages\SharpCompress.0.33.0\lib\net462\SharpCompress.dll</HintPath>
+    <Reference Include="SharpCompress, Version=0.39.0.0, Culture=neutral, PublicKeyToken=afb0a02973931d96, processorArchitecture=MSIL">
+      <HintPath>packages\SharpCompress.0.39.0\lib\netstandard2.0\SharpCompress.dll</HintPath>
     </Reference>
     <Reference Include="SixLabors.Fonts, Version=1.0.0.0, Culture=neutral, PublicKeyToken=d998eea7b14cab13, processorArchitecture=MSIL">
       <HintPath>packages\SixLabors.Fonts.1.0.1\lib\netstandard2.0\SixLabors.Fonts.dll</HintPath>
@@ -394,6 +391,9 @@
       <Private>True</Private>
     </Reference>
     <Reference Include="WindowsBase" />
+    <Reference Include="ZstdSharp, Version=0.8.5.0, Culture=neutral, PublicKeyToken=8d151af33a4ad5cf, processorArchitecture=MSIL">
+      <HintPath>packages\ZstdSharp.Port.0.8.5\lib\net462\ZstdSharp.dll</HintPath>
+    </Reference>
   </ItemGroup>
   <ItemGroup>
     <Compile Include="Ballistic.cs" />

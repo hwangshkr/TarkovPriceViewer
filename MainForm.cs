@@ -1,7 +1,8 @@
 ﻿using OpenCvSharp;
 using OpenCvSharp.Extensions;
+using Sdcb.PaddleInference;
+using Sdcb.PaddleOCR;
 using Sdcb.PaddleOCR.Models.Local;
-using Sdcb.PaddleOCR.Models;
 using System;
 using System.Diagnostics;
 using System.Drawing;
@@ -12,10 +13,6 @@ using System.Threading.Tasks;
 using System.Timers;
 using System.Windows.Forms;
 using static TarkovPriceViewer.TarkovAPI;
-using Sdcb.PaddleInference;
-using Sdcb.PaddleOCR;
-using Sdcb.PaddleOCR.Models.Online;
-using static System.Windows.Forms.VisualStyles.VisualStyleElement;
 
 namespace TarkovPriceViewer
 {
@@ -188,6 +185,8 @@ namespace TarkovPriceViewer
             modeBox.DropDownStyle = ComboBoxStyle.DropDownList;
             modeBox.SelectedItem = Program.settings["Mode"];
             modeBox.SelectedIndexChanged += modeBox_SelectedIndexChanged;
+
+            PaddleRecognizer(null);//init ocr
 
             TrayIcon.Visible = true;
             check_idle_time.Start();
@@ -515,68 +514,57 @@ namespace TarkovPriceViewer
             Invoke(show);
         }
 
-        private String getTesseract(Mat textmat)
+        private LocalRecognizationModel getPaddleModel()
+        {
+            LocalRecognizationModel model = null;
+            if (Program.settings["Language"] == "en")
+            {
+                model = LocalRecognizationModel.EnglishV4;
+            }
+            else if (Program.settings["Language"] == "ko")
+            {
+                model = LocalRecognizationModel.KoreanV4;
+            }
+            else if (Program.settings["Language"] == "cn")
+            {
+                model = LocalRecognizationModel.ChineseV4;
+            }
+            else if (Program.settings["Language"] == "jp")
+            {
+                model = LocalRecognizationModel.JapanV4;
+            }
+            return model;
+        }
+
+        private void PaddleRecognizer(Action<PaddleOcrRecognizer> action)
+        {
+            LocalRecognizationModel model = getPaddleModel();
+            if (model == null)
+            {
+                return;
+            }
+            using (var recog = new PaddleOcrRecognizer(model, PaddleDevice.Mkldnn()))
+            {
+                action?.Invoke(recog);
+            }
+        }
+
+        private String getPaddleOCR(Mat textmat)
         {
             GettingItemInfo = true;
             String text = "";
             try
             {
-                //var model = await OnlineFullModels.EnglishV4.DownloadAsync();
-                //var model = LocalFullModels.EnglishV4;
-
-                FullOcrModel model = null;
-                if (Program.settings["Language"] == "en")
+                PaddleRecognizer(new Action<PaddleOcrRecognizer>((recog) =>
                 {
-                    model = LocalFullModels.EnglishV4;
-                }
-                else if (Program.settings["Language"] == "ko")
-                {
-                    model = LocalFullModels.KoreanV4;
-                }
-                else if (Program.settings["Language"] == "cn")
-                {
-                    model = LocalFullModels.ChineseV4;
-                }
-                else if (Program.settings["Language"] == "jp")
-                {
-                    model = LocalFullModels.JapanV4;
-                }
-                if (model == null)
-                {
-                    return text;
-                }
-                using (PaddleOcrAll all = new PaddleOcrAll(model, PaddleDevice.Mkldnn())
-                {
-                    AllowRotateDetection = false,
-                    Enable180Classification = false,
-                })
-                {
-                    PaddleOcrResult result = all.Run(textmat);
+                    var result = recog.Run(textmat);
                     text = result.Text.Replace("\n", " ").Split(Program.splitcur)[0].Trim();
                     Debug.WriteLine("Paddle Text : " + text);
-                    //foreach (PaddleOcrResultRegion region in result.Regions)
-                    //{
-                    //    Console.WriteLine($"Text: {region.Text}, Score: {region.Score}, RectCenter: {region.Rect.Center}, RectSize:    {region.Rect.Size}, Angle: {region.Rect.Angle}");
-                    //}
-                }
-
-                //using (TesseractEngine ocr = new TesseractEngine(@"./Resources/tessdata", "eng", EngineMode.Default))//should use once
-                //using (Bitmap temp = BitmapConverter.ToBitmap(textmat))
-                //using (Page texts = ocr.Process(temp))
-                //{
-                //    text = texts.GetText().Replace("\n", " ").Split(Program.splitcur)[0].Trim();
-
-                //    if (text == "GELLER")
-                //        text = "Hand drill";
-                //    else if (text == "[ZEULELED")
-                //        text = "Bandana";
-
-                //    Debug.WriteLine("Tesseract Text : " + text);
-                //}
+                }));
             }
             catch (Exception e)
             {
-                Debug.WriteLine("Tesseract error: " + e.Message);
+                Debug.WriteLine("Paddle error: " + e.Message);
                 GettingItemInfo = false;
             }
             GettingItemInfo = false;
@@ -603,8 +591,8 @@ namespace TarkovPriceViewer
                             using (Mat temp = ScreenMat.SubMat(rect2))
                             using (Mat temp2 = temp.Threshold(0, 255, ThresholdTypes.BinaryInv))
                             {
-                                String text = getTesseract(temp);
-                                String text2 = getTesseract(temp2);
+                                String text = getPaddleOCR(temp);
+                                String text2 = getPaddleOCR(temp2);
 
                                 if (!text.Equals("") || !text2.Equals("")) //If tooltip text found
                                 {
@@ -991,7 +979,7 @@ namespace TarkovPriceViewer
         {
             Program.settings["TarkovTrackerAPIKey"] = tarkovTrackerApiKey_textbox.Text;
             Task.Factory.StartNew(() => Program.UpdateTarkovTrackerAPI());
-            
+
             SetHook(true);
         }
 
@@ -1045,6 +1033,7 @@ namespace TarkovPriceViewer
             {
                 Program.settings["Language"] = "en";
             }
+            PaddleRecognizer(null);//init ocr
             Task UpdateAPI = Task.Factory.StartNew(() => Program.UpdateItemListAPI(true));
             Task UpdateTarkovTrackerAPI = Task.Factory.StartNew(() => Program.UpdateTarkovTrackerAPI(true));
         }

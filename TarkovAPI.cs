@@ -4,7 +4,7 @@ using System.Collections.Generic;
 
 namespace TarkovPriceViewer
 {
-	public class ResponseShell
+    public class ResponseShell
     {
         public List<GQLError> errors { get; set; }
 
