@@ -566,8 +566,11 @@ namespace TarkovPriceViewer
                 PaddleRecognizer(new Action<PaddleOcrRecognizer>((recog) =>
                 {
                     var result = recog.Run(textmat);
-                    text = result.Text.Replace("\n", " ").Split(Program.splitcur)[0].Trim();
-                    Debug.WriteLine("Paddle Text : " + text);
+                    if (result.Score > 0.5f)
+                    {
+                        text = result.Text.Replace("\n", " ").Split(Program.splitcur)[0].Trim();
+                    }
+                    Debug.WriteLine(result.Score + " Paddle Text : " + result.Text);
                 }));
             }
             catch (Exception e)
