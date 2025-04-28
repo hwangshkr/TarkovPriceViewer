@@ -628,6 +628,11 @@ namespace TarkovPriceViewer
             char[] itemname2 = name2.ToLower().Trim().ToCharArray();
 
             var result = new Item();
+            if (Program.tarkovAPI == null)
+            {
+                Debug.WriteLine("error : no item list.");
+                return result;
+            }
             int d = 999;
             foreach (var item in Program.tarkovAPI.items)
             {
@@ -1046,8 +1051,9 @@ namespace TarkovPriceViewer
                 languageModel = null;
             }
             PaddleRecognizer(null);//init ocr
-            Task UpdateAPI = Task.Factory.StartNew(() => Program.UpdateItemListAPI(true));
-            Task UpdateTarkovTrackerAPI = Task.Factory.StartNew(() => Program.UpdateTarkovTrackerAPI(true));
+
+            Program.forceUpdateAPI = true;
+            Program.forceUpdateTrackerAPI = true;
         }
 
         private void modeBox_SelectedIndexChanged(object sender, EventArgs e)
@@ -1060,8 +1066,8 @@ namespace TarkovPriceViewer
             {
                 Program.settings["Mode"] = "regular";
             }
-            Task UpdateAPI = Task.Factory.StartNew(() => Program.UpdateItemListAPI(true));
-            Task UpdateTarkovTrackerAPI = Task.Factory.StartNew(() => Program.UpdateTarkovTrackerAPI(true));
+            Program.forceUpdateAPI = true;
+            Program.forceUpdateTrackerAPI = true;
         }
     }
 }

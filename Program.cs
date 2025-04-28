@@ -55,6 +55,9 @@ namespace TarkovPriceViewer
         public static DateTime TarkovTrackerAPILastUpdated = DateTime.Now.AddHours(-5);
         public static TarkovAPI.Data tarkovAPI;
         public static TarkovTrackerAPI.Root tarkovTrackerAPI;
+        public static bool forceUpdateAPI = false;
+        public static bool forceUpdateTrackerAPI = false;
+        private static object lockObject = new object();
 
         /// <summary>
         /// 해당 애플리케이션의 주 진입점입니다.
@@ -112,11 +115,19 @@ namespace TarkovPriceViewer
             }
         }
 
-        public static async void UpdateItemListAPI(bool force = false)
+        public static async void UpdateItemListAPI()
         {
-            //If Outdated by 15 minutes.
-            if (force || (DateTime.Now - APILastUpdated).TotalMinutes >= 15)
+            if (forceUpdateAPI)
             {
+                lock (lockObject)
+                {
+                    tarkovAPI = null;
+                }
+            }
+            //If Outdated by 15 minutes.
+            if (forceUpdateAPI || (DateTime.Now - APILastUpdated).TotalMinutes >= 15)
+            {
+                forceUpdateAPI = false;
                 try
                 {
                     Debug.WriteLine("\n--> Updating API...");
@@ -143,12 +154,15 @@ namespace TarkovPriceViewer
                         //Prettify JSON (Produces a larger file)
                         //responseContent = JToken.Parse(responseContent).ToString();
 
-                        tarkovAPI = JsonConvert.DeserializeObject<TarkovAPI.Data>(responseContent);
-                        // Check to make sure the response didn't return an error schema
-                        if (tarkovAPI.items == null)
+                        lock (lockObject)
                         {
-                            TarkovPriceViewer.ResponseShell temp = JsonConvert.DeserializeObject<TarkovPriceViewer.ResponseShell>(responseContent);
-                            tarkovAPI = temp.data;
+                            tarkovAPI = JsonConvert.DeserializeObject<TarkovAPI.Data>(responseContent);
+                            // Check to make sure the response didn't return an error schema
+                            if (tarkovAPI.items == null)
+                            {
+                                TarkovPriceViewer.ResponseShell temp = JsonConvert.DeserializeObject<TarkovPriceViewer.ResponseShell>(responseContent);
+                                tarkovAPI = temp.data;
+                            }
                         }
                         APILastUpdated = DateTime.Now;
                         finishloadingAPI = true;
@@ -159,7 +173,7 @@ namespace TarkovPriceViewer
                 catch (Exception ex)
                 {
                     MessageBox.Show("--> Error trying to update Tarkov API: " + ex.Message);
-                    Thread.Sleep(2000);
+                    Thread.Sleep(5000);
                     UpdateItemListAPI();
                 }
             }
@@ -168,12 +182,15 @@ namespace TarkovPriceViewer
                 try
                 {
                     string responseContent = File.ReadAllText(@"Resources\TarkovAPI.json");
-                    tarkovAPI = JsonConvert.DeserializeObject<TarkovAPI.Data>(responseContent);
-                    // Check to make sure the response didn't return an error schema
-                    if (tarkovAPI.items == null)
+                    lock (lockObject)
                     {
-                        TarkovPriceViewer.ResponseShell temp = JsonConvert.DeserializeObject<TarkovPriceViewer.ResponseShell>(responseContent);
-                        tarkovAPI = temp.data;
+                        tarkovAPI = JsonConvert.DeserializeObject<TarkovAPI.Data>(responseContent);
+                        // Check to make sure the response didn't return an error schema
+                        if (tarkovAPI.items == null)
+                        {
+                            TarkovPriceViewer.ResponseShell temp = JsonConvert.DeserializeObject<TarkovPriceViewer.ResponseShell>(responseContent);
+                            tarkovAPI = temp.data;
+                        }
                     }
                     Debug.WriteLine("\n--> TarkovDev API Loaded from local File! \n--> " + LastUpdated(APILastUpdated) + "\n\n");
                     finishloadingAPI = true;
@@ -181,7 +198,7 @@ namespace TarkovPriceViewer
                 catch (Exception ex)
                 {
                     MessageBox.Show("\n--> Error trying to load Tarkov API from local file: " + ex.Message);
-                    Thread.Sleep(2000);
+                    Thread.Sleep(5000);
                     UpdateItemListAPI();
                 }
             }
@@ -189,14 +206,22 @@ namespace TarkovPriceViewer
                 Debug.WriteLine("--> No need to update TarkovDev API! \n--> " + LastUpdated(APILastUpdated) + "\n\n");
         }
 
-        public static async void UpdateTarkovTrackerAPI(bool force = false)
+        public static async void UpdateTarkovTrackerAPI()
         {
+            if (forceUpdateTrackerAPI)
+            {
+                lock (lockObject)
+                {
+                    tarkovTrackerAPI = null;
+                }
+            }
             String apiKey = settings["TarkovTrackerAPIKey"];
             if (Convert.ToBoolean(Program.settings["useTarkovTrackerAPI"]) && !string.Equals(apiKey, "APIKey") && !string.IsNullOrWhiteSpace(apiKey))
             {
                 //If Outdated by 1 minutes.
-                if (force || ((DateTime.Now - TarkovTrackerAPILastUpdated).TotalMinutes >= 1))
+                if (forceUpdateTrackerAPI || ((DateTime.Now - TarkovTrackerAPILastUpdated).TotalMinutes >= 1))
                 {
+                    forceUpdateTrackerAPI = false;
                     try
                     {
                         Debug.WriteLine("\n--> Updating TarkovTracker API...");
@@ -212,19 +237,22 @@ namespace TarkovPriceViewer
                                 //Response content
                                 string responseContent = await httpResponse.Content.ReadAsStringAsync();
 
-                                tarkovTrackerAPI = JsonConvert.DeserializeObject<TarkovTrackerAPI.Root>(responseContent);
+                                lock (lockObject)
+                                {
+                                    tarkovTrackerAPI = JsonConvert.DeserializeObject<TarkovTrackerAPI.Root>(responseContent);
 
-                                TarkovTrackerAPILastUpdated = DateTime.Now;
-                                finishloadingTarkovTrackerAPI = true;
-                                Debug.WriteLine("\n--> TarkovTracker API Updated!");
-                                //File.WriteAllText(@"Resources\TarkovTrackerAPI.json", responseContent);
+                                    TarkovTrackerAPILastUpdated = DateTime.Now;
+                                    finishloadingTarkovTrackerAPI = true;
+                                    Debug.WriteLine("\n--> TarkovTracker API Updated!");
+                                    //File.WriteAllText(@"Resources\TarkovTrackerAPI.json", responseContent);
+                                }
                             }
                         }
                     }
                     catch (Exception ex)
                     {
                         //MessageBox.Show("--> Error trying to update TarkovTracker API: " + ex.Message);
-                        Thread.Sleep(500);
+                        Thread.Sleep(5000);
                         UpdateTarkovTrackerAPI();
                     }
                 }
@@ -281,7 +309,7 @@ namespace TarkovPriceViewer
                 }
                 String st;
                 settings.Remove("Version");//force
-                settings.Add("Version", "v1.28");//force
+                settings.Add("Version", "v1.31");//force
                 if (!settings.TryGetValue("MinimizetoTrayWhenStartup", out st))
                 {
                     settings.Add("MinimizetoTrayWhenStartup", "false");
