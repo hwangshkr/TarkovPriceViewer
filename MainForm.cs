@@ -534,7 +534,10 @@ namespace TarkovPriceViewer
                 {
                     model = await LocalDictOnlineRecognizationModel.JapanV4.DownloadAsync();
                 }
-                model = await LocalDictOnlineRecognizationModel.EnglishV4.DownloadAsync();
+                else
+                {
+                    model = await LocalDictOnlineRecognizationModel.EnglishV4.DownloadAsync();
+                }
 
                 lock (lockObject)
                 {
@@ -584,6 +587,7 @@ namespace TarkovPriceViewer
 
         private void FindItemAPI(Bitmap fullimage, bool isiteminfo, CancellationToken cts_one)
         {
+            int a = 1;
             Item item = new Item();
             using (Mat ScreenMat_original = BitmapConverter.ToMat(fullimage))
             using (Mat ScreenMat = ScreenMat_original.CvtColor(ColorConversionCodes.BGRA2BGR))
