@@ -119,6 +119,8 @@ namespace TarkovPriceViewer
         private static long idle_time = 3600000;
         private static object lockObject = new object();
         public static RecognizationModel languageModel = null;
+        private static PaddleOcrRecognizer ocrRecognizer = null;
+        private static readonly object ocrLock = new object();
         public static DateTime KeyPressedTime;
         private static DateTime presstime;
         public static bool WaitingForTooltip = false;
@@ -160,6 +162,20 @@ namespace TarkovPriceViewer
                     point = Control.MousePosition;
                     LoadingItemInfo();
                 }
+            }
+        }
+
+        private void PaddleRecognizer(Action<PaddleOcrRecognizer> action)
+        {
+            EnsureRecognizer();
+            if (ocrRecognizer == null)
+            {
+                return;
+            }
+
+            lock (ocrLock)
+            {
+                action?.Invoke(ocrRecognizer);
             }
         }
 
@@ -646,16 +662,39 @@ namespace TarkovPriceViewer
             });
         }
 
-        private void PaddleRecognizer(Action<PaddleOcrRecognizer> action)
+        private void EnsureRecognizer()
         {
             getPaddleModel();
             if (languageModel == null)
             {
                 return;
             }
-            using (var recog = new PaddleOcrRecognizer(languageModel, PaddleDevice.Mkldnn()))
+
+            if (ocrRecognizer == null)
             {
-                action?.Invoke(recog);
+                lock (ocrLock)
+                {
+                    if (ocrRecognizer == null)
+                    {
+                        try
+                        {
+                            ocrRecognizer = new PaddleOcrRecognizer(languageModel, PaddleDevice.Gpu());
+                        }
+                        catch (Exception e)
+                        {
+                            Debug.WriteLine("Error creating PaddleOcrRecognizer: " + e.Message);
+                            try
+                            {
+                                ocrRecognizer = new PaddleOcrRecognizer(languageModel, PaddleDevice.Mkldnn());
+                            }
+                            catch (Exception ex)
+                            {
+                                Debug.WriteLine("Error creating CPU PaddleOcrRecognizer: " + ex.Message);
+                                ocrRecognizer = null;
+                            }
+                        }
+                    }
+                }
             }
         }
 
@@ -665,15 +704,22 @@ namespace TarkovPriceViewer
             String text = "";
             try
             {
-                PaddleRecognizer(new Action<PaddleOcrRecognizer>((recog) =>
+                EnsureRecognizer();
+                if (ocrRecognizer == null)
                 {
-                    var result = recog.Run(textmat);
+                    GettingItemInfo = false;
+                    return text;
+                }
+
+                lock (ocrLock)
+                {
+                    var result = ocrRecognizer.Run(textmat);
                     if (result.Score > 0.5f)
                     {
                         text = result.Text.Replace("\n", " ").Split(Program.splitcur)[0].Trim();
                     }
                     Debug.WriteLine(result.Score + " Paddle Text : " + result.Text);
-                }));
+                }
             }
             catch (Exception e)
             {
