@@ -50,7 +50,7 @@ namespace TarkovPriceViewer
         public static readonly char dollar = '$';
         public static readonly char euro = '€';
         public static readonly char[] splitcur = new char[] { rouble, dollar, euro };
-        public const string WorthPerSlotThresholdKey = "Worth_Per_Slot_Threshold";
+        public const string WorthPerSlotThresholdKey = "WorthPerSlotThreshold";
         public const int WorthPerSlotThresholdDefault = 7500;
         public static readonly Regex inraid_filter = new Regex(@"in raid");
         public static readonly Regex money_filter = new Regex(@"([\d,]+[₽\$€]|[₽\$€][\d,]+)");
