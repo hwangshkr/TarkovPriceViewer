@@ -422,6 +422,7 @@
     <Compile Include="TPVWebClient.cs">
       <SubType>Component</SubType>
     </Compile>
+    <Compile Include="LootTierMapping.cs" />
     <EmbeddedResource Include="KeyPressCheck.resx">
       <DependentUpon>KeyPressCheck.cs</DependentUpon>
     </EmbeddedResource>

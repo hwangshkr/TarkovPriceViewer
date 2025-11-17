@@ -34,6 +34,8 @@ namespace TarkovPriceViewer
 
         private Object _lock = new Object();
 
+        private static readonly Dictionary<string, string> LootTierByName = TarkovPriceViewer.LootTierMapping.ByName;
+
         public Overlay(bool _isinfoform)
         {
             InitializeComponent();
@@ -609,6 +611,13 @@ namespace TarkovPriceViewer
             if (item == null)
                 return;
 
+            string mappedTier;
+            if (!string.IsNullOrEmpty(item.name) && LootTierByName.TryGetValue(item.name, out mappedTier))
+            {
+                item.lootTier = "[★] Loot Tier " + mappedTier + " (tarkov.dev)";
+                return;
+            }
+
             decimal? valuePerSlot = GetValuePerSlot(item);
 
             if (valuePerSlot == null)
@@ -617,24 +626,25 @@ namespace TarkovPriceViewer
             }
             else if (item.types == null || !item.types.Exists(e => e.Equals("ammo")))
             {
+                string slotTier = null;
+
                 if (valuePerSlot < 8500)
-                    item.lootTier = "Loot Tier F";
+                    slotTier = "F";
                 else if (valuePerSlot >= 8500 && valuePerSlot < 21000)
-                    item.lootTier = "Loot Tier E";
+                    slotTier = "E";
                 else if (valuePerSlot >= 21000 && valuePerSlot < 26750)
-                    item.lootTier = "Loot Tier D";
+                    slotTier = "D";
                 else if (valuePerSlot >= 26750 && valuePerSlot < 34250)
-                    item.lootTier = "Loot Tier C";
+                    slotTier = "C";
                 else if (valuePerSlot >= 34250 && valuePerSlot < 45500)
-                    item.lootTier = "Loot Tier B";
+                    slotTier = "B";
                 else if (valuePerSlot >= 45500 && valuePerSlot < 63000)
-                    item.lootTier = "Loot Tier A";
-                else if (valuePerSlot >= 63000 && valuePerSlot < 100000)
-                    item.lootTier = "Loot Tier S";
-                else if (valuePerSlot >= 100000 && valuePerSlot < 500000)
-                    item.lootTier = "Loot Tier S+";
-                else if (valuePerSlot >= 500000 && valuePerSlot < 2000000)
-                    item.lootTier = "Loot Tier S++";
+                    slotTier = "A";
+                else if (valuePerSlot >= 63000)
+                    slotTier = "S";
+
+                if (slotTier != null)
+                    item.lootTier = "Loot Tier " + slotTier + " (per slot)";
             }
         }
 
