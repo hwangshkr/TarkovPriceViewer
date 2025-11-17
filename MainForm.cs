@@ -7,6 +7,7 @@ using Sdcb.PaddleOCR.Models.Online;
 using System;
 using System.Diagnostics;
 using System.Drawing;
+using System.Globalization;
 using System.Runtime.InteropServices;
 using System.Text;
 using System.Threading;
@@ -174,6 +175,15 @@ namespace TarkovPriceViewer
             TarkovTrackerCheckBox.Checked = Convert.ToBoolean(Program.settings["useTarkovTrackerAPI"]);
             hideoutUpgrades_checkBox.Checked = Convert.ToBoolean(Program.settings["showHideoutUpgrades"]);
             tarkovTrackerApiKey_textbox.Text = Program.settings["TarkovTrackerAPIKey"];
+            if (decimal.TryParse(Program.settings[Program.WorthPerSlotThresholdKey], NumberStyles.Any, CultureInfo.InvariantCulture, out var worthThreshold))
+            {
+                worthThreshold = Math.Max(worthThresholdNumeric.Minimum, Math.Min(worthThresholdNumeric.Maximum, worthThreshold));
+                worthThresholdNumeric.Value = worthThreshold;
+            }
+            else
+            {
+                worthThresholdNumeric.Value = (decimal)Program.WorthPerSlotThresholdDefault;
+            }
 
             languageBox.Items.Add("en");
             languageBox.Items.Add("ko");
@@ -956,6 +966,11 @@ namespace TarkovPriceViewer
         private void buy_from_trader_box_CheckedChanged(object sender, EventArgs e)
         {
             Program.settings["Buy_From_Trader"] = (sender as CheckBox).Checked.ToString();
+        }
+
+        private void worthThresholdNumeric_ValueChanged(object sender, EventArgs e)
+        {
+            Program.settings[Program.WorthPerSlotThresholdKey] = worthThresholdNumeric.Value.ToString(CultureInfo.InvariantCulture);
         }
 
         private void needs_box_CheckedChanged(object sender, EventArgs e)

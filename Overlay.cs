@@ -239,8 +239,9 @@ namespace TarkovPriceViewer
 
                                 if (vendorPrice > 0)
                                 {
+                                    string pricePerSlotDetails = GetPricePerSlotDetails(item, vendorPrice, mainCurrency);
                                     sb = RemoveTrailingLineBreaks(sb);
-                                    sb.Append(String.Format("\n\nBest sell to {0} --> {1}{2}", BestSellTo_vendorName, vendorPrice.ToString("N0"), mainCurrency));
+                                    sb.Append(String.Format("\n\nBest sell to {0} --> {1}{2}{3}", BestSellTo_vendorName, vendorPrice.ToString("N0"), mainCurrency, pricePerSlotDetails));
                                 }
                             }
 
@@ -293,8 +294,9 @@ namespace TarkovPriceViewer
 
                                     if (BestSellTo_vendorName != vendorName)
                                     {
+                                        string pricePerSlotDetails = GetPricePerSlotDetails(item, sortedNoFlea.priceRUB.Value, mainCurrency);
                                         sb = RemoveTrailingLineBreaks(sb);
-                                        sb.Append(String.Format("\n\nSell to {0} --> {1}{2}", vendorName, sortedNoFlea.priceRUB.Value.ToString("N0"), mainCurrency));
+                                        sb.Append(String.Format("\n\nSell to {0} --> {1}{2}{3}", vendorName, sortedNoFlea.priceRUB.Value.ToString("N0"), mainCurrency, pricePerSlotDetails));
                                         sellToText = true;
                                     }
                                 }
@@ -560,41 +562,79 @@ namespace TarkovPriceViewer
             Invoke(show);
         }
 
+        private decimal? GetValuePerSlot(Item item, decimal? priceOverride = null)
+        {
+            if (item == null)
+                return null;
+
+            int? width = null;
+            int? height = null;
+
+            if (item.types != null && item.types.Exists(e => e.Equals("gun")))
+            {
+                if (item.properties != null && item.properties.defaultWidth != null && item.properties.defaultHeight != null)
+                {
+                    width = item.properties.defaultWidth;
+                    height = item.properties.defaultHeight;
+                }
+            }
+
+            if (width == null || height == null)
+            {
+                if (item.width != null && item.height != null)
+                {
+                    width = item.width;
+                    height = item.height;
+                }
+            }
+
+            if (width == null || height == null || width.Value <= 0 || height.Value <= 0)
+                return null;
+
+            int slotCount = width.Value * height.Value;
+            if (slotCount <= 0)
+                return null;
+
+            decimal? fallbackPrice = item.lastLowPrice.HasValue ? (decimal?)item.lastLowPrice.Value : null;
+            decimal? price = priceOverride ?? fallbackPrice;
+
+            if (price == null || price.Value <= 0)
+                return null;
+
+            return price.Value / slotCount;
+        }
+
         private void SetLootTierPerSlot(Item item)
         {
-            if (item.lastLowPrice != null || item.lastLowPrice > 0)
-            {
-                float? valuePerSlot = null;
-                if (item.types.Exists(e => e.Equals("gun")))
-                    valuePerSlot = item.lastLowPrice.Value / (item.properties.defaultHeight.Value * item.properties.defaultWidth.Value);
-                else if (item.height != null && item.width != null)
-                    valuePerSlot = item.lastLowPrice.Value / (item.height.Value * item.width.Value);
+            if (item == null)
+                return;
 
-                if (valuePerSlot == null)
-                {
-                    item.lootTier = "No";
-                }
-                else if (!item.types.Exists(e => e.Equals("ammo")))
-                {
-                    if (valuePerSlot < 8500)
-                        item.lootTier = "Loot Tier F";
-                    else if (valuePerSlot >= 8500 && valuePerSlot < 21000)
-                        item.lootTier = "Loot Tier E";
-                    else if (valuePerSlot >= 21000 && valuePerSlot < 26750)
-                        item.lootTier = "Loot Tier D";
-                    else if (valuePerSlot >= 26750 && valuePerSlot < 34250)
-                        item.lootTier = "Loot Tier C";
-                    else if (valuePerSlot >= 34250 && valuePerSlot < 45500)
-                        item.lootTier = "Loot Tier B";
-                    else if (valuePerSlot >= 45500 && valuePerSlot < 63000)
-                        item.lootTier = "Loot Tier A";
-                    else if (valuePerSlot >= 63000 && valuePerSlot < 100000)
-                        item.lootTier = "Loot Tier S";
-                    else if (valuePerSlot >= 100000 && valuePerSlot < 500000)
-                        item.lootTier = "Loot Tier S+";
-                    else if (valuePerSlot >= 500000 && valuePerSlot < 2000000)
-                        item.lootTier = "Loot Tier S++";
-                }
+            decimal? valuePerSlot = GetValuePerSlot(item);
+
+            if (valuePerSlot == null)
+            {
+                item.lootTier = "No";
+            }
+            else if (item.types == null || !item.types.Exists(e => e.Equals("ammo")))
+            {
+                if (valuePerSlot < 8500)
+                    item.lootTier = "Loot Tier F";
+                else if (valuePerSlot >= 8500 && valuePerSlot < 21000)
+                    item.lootTier = "Loot Tier E";
+                else if (valuePerSlot >= 21000 && valuePerSlot < 26750)
+                    item.lootTier = "Loot Tier D";
+                else if (valuePerSlot >= 26750 && valuePerSlot < 34250)
+                    item.lootTier = "Loot Tier C";
+                else if (valuePerSlot >= 34250 && valuePerSlot < 45500)
+                    item.lootTier = "Loot Tier B";
+                else if (valuePerSlot >= 45500 && valuePerSlot < 63000)
+                    item.lootTier = "Loot Tier A";
+                else if (valuePerSlot >= 63000 && valuePerSlot < 100000)
+                    item.lootTier = "Loot Tier S";
+                else if (valuePerSlot >= 100000 && valuePerSlot < 500000)
+                    item.lootTier = "Loot Tier S+";
+                else if (valuePerSlot >= 500000 && valuePerSlot < 2000000)
+                    item.lootTier = "Loot Tier S++";
             }
         }
 
@@ -908,6 +948,13 @@ namespace TarkovPriceViewer
                 iteminfo_text.Select(m.Index, m.Length);
                 iteminfo_text.SelectionColor = Color.Orange;
             }
+
+            mc = new Regex("WORTH").Matches(iteminfo_text.Text);
+            foreach (Match m in mc)
+            {
+                iteminfo_text.Select(m.Index, m.Length);
+                iteminfo_text.SelectionColor = Color.LimeGreen;
+            }
         }
 
         public void ShowLoadingInfo(Point point, CancellationToken cts_one)
@@ -1116,6 +1163,20 @@ namespace TarkovPriceViewer
             }
 
             return input;
+        }
+
+        private string GetPricePerSlotDetails(Item item, int vendorPrice, string mainCurrency)
+        {
+            if (item == null || vendorPrice <= 0)
+                return string.Empty;
+
+            decimal? pricePerSlot = GetValuePerSlot(item, vendorPrice);
+            if (!pricePerSlot.HasValue)
+                return string.Empty;
+
+            string worthSuffix = pricePerSlot.Value >= Program.GetWorthPerSlotThreshold() ? " WORTH" : string.Empty;
+
+            return String.Format(" ({0}{1}/slot){2}", pricePerSlot.Value.ToString("N0"), mainCurrency, worthSuffix);
         }
     }
 

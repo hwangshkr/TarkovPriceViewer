@@ -4,6 +4,7 @@ using System.Collections.Generic;
 using System.Diagnostics;
 using System.Drawing;
 using System.IO;
+using System.Globalization;
 using System.Net.Http;
 using System.Net.Http.Headers;
 using System.Text.RegularExpressions;
@@ -49,6 +50,8 @@ namespace TarkovPriceViewer
         public static readonly char dollar = '$';
         public static readonly char euro = '€';
         public static readonly char[] splitcur = new char[] { rouble, dollar, euro };
+        public const string WorthPerSlotThresholdKey = "Worth_Per_Slot_Threshold";
+        public const int WorthPerSlotThresholdDefault = 7500;
         public static readonly Regex inraid_filter = new Regex(@"in raid");
         public static readonly Regex money_filter = new Regex(@"([\d,]+[₽\$€]|[₽\$€][\d,]+)");
         public static DateTime APILastUpdated = DateTime.Now.AddHours(-5);
@@ -386,11 +389,26 @@ namespace TarkovPriceViewer
                 {
                     settings.Add("Mode", "regular");
                 }
+                if (!settings.TryGetValue(WorthPerSlotThresholdKey, out st))
+                {
+                    settings.Add(WorthPerSlotThresholdKey, WorthPerSlotThresholdDefault.ToString(CultureInfo.InvariantCulture));
+                }
             }
             catch (Exception e)
             {
                 Debug.WriteLine("Error 12: " + e.Message);
             }
+        }
+
+        public static int GetWorthPerSlotThreshold()
+        {
+            if (settings.TryGetValue(WorthPerSlotThresholdKey, out var value) &&
+                int.TryParse(value, NumberStyles.Any, CultureInfo.InvariantCulture, out var threshold))
+            {
+                return threshold;
+            }
+
+            return WorthPerSlotThresholdDefault;
         }
 
         public static void SaveSettings()
