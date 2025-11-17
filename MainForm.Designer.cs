@@ -813,7 +813,7 @@ namespace TarkovPriceViewer
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
             this.AutoSizeMode = System.Windows.Forms.AutoSizeMode.GrowAndShrink;
             this.BackColor = System.Drawing.Color.White;
-            this.ClientSize = new System.Drawing.Size(621, 470);
+            this.ClientSize = new System.Drawing.Size(621, 475);
             this.Controls.Add(this.label4);
             this.Controls.Add(this.modeBox);
             this.Controls.Add(this.label3);
