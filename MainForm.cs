@@ -89,6 +89,17 @@ namespace TarkovPriceViewer
         private static readonly int WM_KEYUP = 0x101;
         private static readonly int WH_MOUSE_LL = 14;
         private static readonly int WM_MOUSEMOVE = 0x200;
+        private static readonly int WM_LBUTTONUP = 0x0202;
+        private static readonly int WM_RBUTTONUP = 0x0205;
+        private static readonly int WM_MBUTTONUP = 0x0208;
+        private static readonly int WM_XBUTTONUP = 0x020C;
+        private const int MOUSE_LEFT = 1001;
+        private const int MOUSE_RIGHT = 1002;
+        private const int MOUSE_MIDDLE = 1003;
+        private const int MOUSE_X1 = 1004;
+        private const int MOUSE_X2 = 1005;
+        private const int XBUTTON1 = 0x0001;
+        private const int XBUTTON2 = 0x0002;
         private static bool isinfoclosed = true;
         private static bool iscompareclosed = true;
         private static LowLevelProc _proc_keyboard = null;
@@ -166,9 +177,9 @@ namespace TarkovPriceViewer
             buy_from_trader_box.Checked = Convert.ToBoolean(Program.settings["Buy_From_Trader"]);
             needs_box.Checked = Convert.ToBoolean(Program.settings["Needs"]);
             barters_and_crafts_box.Checked = Convert.ToBoolean(Program.settings["Barters_and_Crafts"]);
-            ShowOverlay_Button.Text = ((Keys)Int32.Parse(Program.settings["ShowOverlay_Key"])).ToString();
-            HideOverlay_Button.Text = ((Keys)Int32.Parse(Program.settings["HideOverlay_Key"])).ToString();
-            CompareOverlay_Button.Text = ((Keys)Int32.Parse(Program.settings["CompareOverlay_Key"])).ToString();
+            ShowOverlay_Button.Text = GetKeybindText(Program.settings["ShowOverlay_Key"]);
+            HideOverlay_Button.Text = GetKeybindText(Program.settings["HideOverlay_Key"]);
+            CompareOverlay_Button.Text = GetKeybindText(Program.settings["CompareOverlay_Key"]);
             TransParent_Bar.Value = Int32.Parse(Program.settings["Overlay_Transparent"]);
             TransParent_Text.Text = Program.settings["Overlay_Transparent"];
             TarkovTrackerCheckBox.Checked = Convert.ToBoolean(Program.settings["useTarkovTrackerAPI"]);
@@ -218,10 +229,7 @@ namespace TarkovPriceViewer
                     _proc_keyboard = hookKeyboardProc;
                     hhook_keyboard = SetWindowsHookEx(WH_KEYBOARD_LL, _proc_keyboard, h_instance, 0);
                 }
-                if (Convert.ToBoolean(Program.settings["CloseOverlayWhenMouseMoved"]))
-                {
-                    setMouseHook();
-                }
+                setMouseHook();
             }
             catch (Exception e)
             {
@@ -279,35 +287,7 @@ namespace TarkovPriceViewer
                             if ((Program.finishloadingTarkovTrackerAPI && Convert.ToBoolean(Program.settings["useTarkovTrackerAPI"])) || !Convert.ToBoolean(Program.settings["useTarkovTrackerAPI"]))
                             {
                                 int vkCode = Marshal.ReadInt32(lParam);
-                                if (vkCode == Int32.Parse(Program.settings["ShowOverlay_Key"]))
-                                {
-                                    KeyPressedTime = DateTime.Now;
-                                    Debug.WriteLine("\n\n----------------" + Program.settings["ShowOverlay_Key"] + " Key Pressed -----------------");
-                                    if ((!timer.Enabled || !WaitingForTooltip) && (KeyPressedTime - presstime).TotalMilliseconds >= 200)
-                                    {
-                                        point = Control.MousePosition;
-                                        WaitingForTooltip = true; timer.Start();
-                                        LoadingItemInfo();
-                                    }
-                                    else if ((KeyPressedTime - presstime).TotalMilliseconds < 200)
-                                    {
-                                        Debug.WriteLine("Key pressed in less than 200 milliseconds.");
-                                    }
-                                    presstime = KeyPressedTime;
-                                }
-                                else if (vkCode == Int32.Parse(Program.settings["CompareOverlay_Key"]))
-                                {
-                                    point = Control.MousePosition;
-                                    LoadingItemCompare();
-                                }
-                                else if (vkCode == Int32.Parse(Program.settings["HideOverlay_Key"])
-                                    || vkCode == 9 //tab
-                                    || vkCode == 27 //esc
-                                    )
-                                {
-                                    CloseItemInfo();
-                                    CloseItemCompare();
-                                }
+                                HandleGlobalKeyOrMouse(vkCode);
                             }
                             else
                             {
@@ -330,18 +310,102 @@ namespace TarkovPriceViewer
             return CallNextHookEx(hhook_keyboard, code, (int)wParam, lParam);
         }
 
+        private void HandleGlobalKeyOrMouse(int code)
+        {
+            try
+            {
+                int showKey = Int32.Parse(Program.settings["ShowOverlay_Key"]);
+                int compareKey = Int32.Parse(Program.settings["CompareOverlay_Key"]);
+                int hideKey = Int32.Parse(Program.settings["HideOverlay_Key"]);
+
+                if (code == showKey)
+                {
+                    KeyPressedTime = DateTime.Now;
+                    Debug.WriteLine("\n\n----------------" + Program.settings["ShowOverlay_Key"] + " Key Pressed -----------------");
+                    if ((!timer.Enabled || !WaitingForTooltip) && (KeyPressedTime - presstime).TotalMilliseconds >= 200)
+                    {
+                        point = Control.MousePosition;
+                        WaitingForTooltip = true; timer.Start();
+                        LoadingItemInfo();
+                    }
+                    else if ((KeyPressedTime - presstime).TotalMilliseconds < 200)
+                    {
+                        Debug.WriteLine("Key pressed in less than 200 milliseconds.");
+                    }
+                    presstime = KeyPressedTime;
+                }
+                else if (code == compareKey)
+                {
+                    point = Control.MousePosition;
+                    LoadingItemCompare();
+                }
+                else if (code == hideKey
+                    || code == 9 //tab
+                    || code == 27 //esc
+                    )
+                {
+                    CloseItemInfo();
+                    CloseItemCompare();
+                }
+            }
+            catch (Exception e)
+            {
+                Debug.WriteLine(e.Message);
+            }
+        }
+
         private IntPtr hookMouseProc(int code, IntPtr wParam, IntPtr lParam)
         {
             try
             {
-                if (!isinfoclosed && code >= 0
-                    && wParam == (IntPtr)WM_MOUSEMOVE
-                    && (Math.Abs(Control.MousePosition.X - point.X) > 60 || Math.Abs(Control.MousePosition.Y - point.Y) > 60))
+                if (code >= 0)
                 {
-                    timer.Stop(); WaitingForTooltip = false; repeatCount = 0;
-                    CloseItemInfo();
-                    Task UpdateAPI = Task.Factory.StartNew(() => Program.UpdateItemListAPI());
-                    Task UpdateTarkovTrackerAPI = Task.Factory.StartNew(() => Program.UpdateTarkovTrackerAPI());
+                    if (!isinfoclosed
+                        && Convert.ToBoolean(Program.settings["CloseOverlayWhenMouseMoved"]) 
+                        && wParam == (IntPtr)WM_MOUSEMOVE
+                        && (Math.Abs(Control.MousePosition.X - point.X) > 60 || Math.Abs(Control.MousePosition.Y - point.Y) > 60))
+                    {
+                        timer.Stop(); WaitingForTooltip = false; repeatCount = 0;
+                        CloseItemInfo();
+                        Task UpdateAPI = Task.Factory.StartNew(() => Program.UpdateItemListAPI());
+                        Task UpdateTarkovTrackerAPI = Task.Factory.StartNew(() => Program.UpdateTarkovTrackerAPI());
+                    }
+
+                    if (press_key_control == null)
+                    {
+                        int mouseCode = 0;
+
+                        if (wParam == (IntPtr)WM_LBUTTONUP)
+                        {
+                            mouseCode = MOUSE_LEFT;
+                        }
+                        else if (wParam == (IntPtr)WM_RBUTTONUP)
+                        {
+                            mouseCode = MOUSE_RIGHT;
+                        }
+                        else if (wParam == (IntPtr)WM_MBUTTONUP)
+                        {
+                            mouseCode = MOUSE_MIDDLE;
+                        }
+                        else if (wParam == (IntPtr)WM_XBUTTONUP)
+                        {
+                            int mouseData = Marshal.ReadInt32(lParam, 8);
+                            int buttonFlag = (mouseData >> 16) & 0xffff;
+                            if (buttonFlag == XBUTTON1)
+                            {
+                                mouseCode = MOUSE_X1;
+                            }
+                            else if (buttonFlag == XBUTTON2)
+                            {
+                                mouseCode = MOUSE_X2;
+                            }
+                        }
+
+                        if (mouseCode != 0)
+                        {
+                            HandleGlobalKeyOrMouse(mouseCode);
+                        }
+                    }
                 }
             }
             catch (Exception e)
@@ -349,6 +413,31 @@ namespace TarkovPriceViewer
                 Debug.WriteLine(e.Message);
             }
             return CallNextHookEx(hhook_mouse, code, (int)wParam, lParam);
+        }
+
+        private string GetKeybindText(string value)
+        {
+            int code;
+            if (!int.TryParse(value, out code))
+            {
+                return value;
+            }
+
+            switch (code)
+            {
+                case MOUSE_LEFT:
+                    return "Mouse Left";
+                case MOUSE_RIGHT:
+                    return "Mouse Right";
+                case MOUSE_MIDDLE:
+                    return "Mouse Middle";
+                case MOUSE_X1:
+                    return "Mouse X1";
+                case MOUSE_X2:
+                    return "Mouse X2";
+                default:
+                    return ((Keys)code).ToString();
+            }
         }
 
         private uint GetIdleTime()
@@ -824,6 +913,12 @@ namespace TarkovPriceViewer
                 if (keycode != null)
                 {
                     press_key_control.Text = keycode.ToString();
+                }
+                else
+                {
+                    ShowOverlay_Button.Text = GetKeybindText(Program.settings["ShowOverlay_Key"]);
+                    HideOverlay_Button.Text = GetKeybindText(Program.settings["HideOverlay_Key"]);
+                    CompareOverlay_Button.Text = GetKeybindText(Program.settings["CompareOverlay_Key"]);
                 }
                 press_key_control = null;
             }
