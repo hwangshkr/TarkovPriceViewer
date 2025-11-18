@@ -129,6 +129,7 @@ namespace TarkovPriceViewer
 
         public class ItemRequirement
         {
+            public string id { get; set; }
             public Item item { get; set; }
             public int? count { get; set; }
         }

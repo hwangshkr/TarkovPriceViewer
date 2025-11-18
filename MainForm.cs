@@ -503,6 +503,7 @@ namespace TarkovPriceViewer
             else
                 overlay_info.ShowLoadingInfo(point, cts_info.Token);
 
+            Task.Factory.StartNew(() => Program.UpdateTarkovTrackerAPI());
             Task task = Task.Factory.StartNew(() => FindItemTask(true, cts_info.Token));
         }
 

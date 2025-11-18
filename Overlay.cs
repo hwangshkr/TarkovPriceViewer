@@ -351,7 +351,20 @@ namespace TarkovPriceViewer
                                             {
                                                 if (obj.type == "giveItem" && obj.foundInRaid == true && obj.items != null && obj.items.Any(i => i.id == item.id))
                                                 {
-                                                    if (obj.count != null) totalCount += obj.count.Value;
+                                                    int needed = obj.count ?? 0;
+                                                    if (Program.tarkovTrackerAPI.data.taskObjectivesProgress != null)
+                                                    {
+                                                        var progress = Program.tarkovTrackerAPI.data.taskObjectivesProgress.FirstOrDefault(p => p.id == obj.id);
+                                                        if (progress != null)
+                                                        {
+                                                            if (progress.complete == true)
+                                                                needed = 0;
+                                                            else if (progress.count != null)
+                                                                needed -= progress.count.Value;
+                                                        }
+                                                    }
+                                                    if (needed < 0) needed = 0;
+                                                    totalCount += needed;
                                                 }
                                             }
                                         }
@@ -439,8 +452,23 @@ namespace TarkovPriceViewer
                                                 if (item.id == itemReq.item.id && !Program.tarkovTrackerAPI.data.hideoutModulesProgress.Any(e => e.id.Equals(stationLevel.id)))
                                                 {
                                                     int count = itemReq.count ?? 0;
-                                                    upgradesList.Add(new hideoutUpgrades() { Name = station.name, Level = stationLevel.level, Count = count });
-                                                    grandTotal += count;
+                                                    if (Program.tarkovTrackerAPI.data.hideoutPartsProgress != null && itemReq.id != null)
+                                                    {
+                                                        var progress = Program.tarkovTrackerAPI.data.hideoutPartsProgress.FirstOrDefault(p => p.id == itemReq.id);
+                                                        if (progress != null)
+                                                        {
+                                                            if (progress.complete == true)
+                                                                count = 0;
+                                                            else if (progress.count != null)
+                                                                count -= progress.count.Value;
+                                                        }
+                                                    }
+                                                    if (count < 0) count = 0;
+                                                    if (count > 0)
+                                                    {
+                                                        upgradesList.Add(new hideoutUpgrades() { Name = station.name, Level = stationLevel.level, Count = count });
+                                                        grandTotal += count;
+                                                    }
                                                 }
                                             }
                                         }
