@@ -1,4 +1,4 @@
-# <img width="36" align="center" src="https://user-images.githubusercontent.com/32073152/126047438-2f1b7e59-ca31-43f2-bcf6-00b2f00e408c.png"/> Tarkov Price Viewer v1.34
+# <img width="36" align="center" src="https://user-images.githubusercontent.com/32073152/126047438-2f1b7e59-ca31-43f2-bcf6-00b2f00e408c.png"/> Tarkov Price Viewer v1.35
 This Overlay software is meant to help new players.
 You can easily distinguish all the strengths and weaknesses of all the ammo in the game.
 It is especially good to find out the market price in advance when the flea market is not open yet. 
@@ -51,6 +51,18 @@ Speed up ocr in v1.29
 </br>
 </br>
 Use online language Paddle OCR for reducing release file size. in v1.30
+</br>
+</br>
+Improvements in v1.34:
+- **Loot Tiers**: Aligned with tarkov.dev. Now shows `[★] Loot Tier X (tarkov.dev)` for curated tiers and `(per slot)` for calculated ones.
+- **Worth Indicator**: Added configurable "WORTH" tag for high-value-per-slot items.
+- **Performance**: Optimized OCR engine for faster scanning.
+</br>
+</br>
+Updated TarkovTracker integration in v1.35:
+- **Real-time Progress**: Item counts now sync with TarkovTracker every 10 seconds to show exactly how many items you still need.
+- **Smart Counting**: Overlay subtracts turned-in items and hides completed objectives.
+- **Found in Raid**: Tasks are now filtered to only show those requiring "Found in Raid" items.
 </br>
 </br>
 <img src="https://imgur.com/8nRMZ68.png"/>
