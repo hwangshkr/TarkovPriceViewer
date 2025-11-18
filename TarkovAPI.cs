@@ -150,6 +150,10 @@ namespace TarkovPriceViewer
             public string id { get; set; }
             public string description { get; set; }
             public List<Map> maps { get; set; }
+            public string type { get; set; }
+            public int? count { get; set; }
+            public bool? foundInRaid { get; set; }
+            public List<Item> items { get; set; }
         }
 
         public class Properties
