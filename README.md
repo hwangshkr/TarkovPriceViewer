@@ -8,18 +8,21 @@ Most of the information for this program (names, prices, wiki links, etc.) was p
 
 # How to use
 <img src="https://i.imgur.com/bluk1dQ.gif"/>
+
 Hover the item and press the shortcut key (default: F9). 
 By default, it disappears when you move the mouse, and this can be removed from the settings. 
 It disappears even if you press the shortcut key (default: F10).
 </br>
 </br>
 <img src="https://user-images.githubusercontent.com/32073152/130593787-f0979114-46cf-47cb-93f3-2f364195e7e9.gif"/>
+
 This program can also be used for comparing the price of parts in Edit Preset.</br>
 This is the experiential function since version 1.06. You can compare some options of items with the shortcut key (default: F8).</br>
 Sorting function is added since Version 1.08.</br>
 </br>
 </br>
 <img src="https://i.imgur.com/iLxEsIc.png"/>
+
 Ballistics added since Version 1.08.
 </br>
 </br>
@@ -27,16 +30,19 @@ Ballistics added since Version 1.08.
 <img src="https://i.imgur.com/Xru5QA5.png"/>
 <img src="https://i.imgur.com/GKyoYLl.png"/>
 <img src="https://i.imgur.com/Sn7DPlO.png"/>
+
 Loot Tiers added in v1.21
 </br>
 </br>
 <img src="https://i.imgur.com/Z58iBos.png"/>
 <img src="https://i.imgur.com/Y4hGpaj.png"/>
 <img src="https://i.imgur.com/2ZvATWX.png"/>
+
 Added item Class (Armours, Helmets, etc) and Key use locations in v1.23
 </br>
 </br>
 <img src="https://i.imgur.com/QemMxGG.png"/>
+
 Added info on items that are needed for Hideout Upgrades, based on TarkovTracker progress in v1.24
 </br>
 </br>
@@ -55,17 +61,35 @@ Use online language Paddle OCR for reducing release file size. in v1.30
 </br>
 Improvements in v1.34:
 - **Loot Tiers**: Aligned with tarkov.dev. Now shows `[★] Loot Tier X (tarkov.dev)` for curated tiers and `(per slot)` for calculated ones.
+
+<img src="https://imgur.com/Rbc2jR7.png"/>
+<img src="https://imgur.com/tgvJd0t.png"/>
+
 - **Worth Indicator**: Added configurable "WORTH" tag for high-value-per-slot items.
+
+<img src="https://imgur.com/jgEy72D.png"/>
+
 - **Performance**: Optimized OCR engine for faster scanning.
+
+<img src="https://imgur.com/5p5fiAy.gif"/>
+
 </br>
-</br>
+<br/>
+
 Updated TarkovTracker integration in v1.35:
 - **Real-time Progress**: Item counts now sync with TarkovTracker every 10 seconds to show exactly how many items you still need.
 - **Smart Counting**: Overlay subtracts turned-in items and hides completed objectives.
+
+<img src="https://imgur.com/mqvdTvn.png"/>
+
 - **Found in Raid**: Tasks are now filtered to only show those requiring "Found in Raid" items.
 </br>
-</br>
-<img src="https://imgur.com/8nRMZ68.png"/>
+<br/>
+
+Settings
+<br/>
+<img src="https://imgur.com/x86dvF0.png"/>
+<br/>
 You can change the settings how you like.
 </br>
 </br>
