@@ -90,7 +90,6 @@ namespace TarkovPriceViewer
             _ocrService = _host.Services.GetRequiredService<IOcrService>();
 
             LoadSettings();
-            EnsureResourcesDirectory();
 
             _ = LoadBallisticsDataAsync();
             // Eagerly preload TarkovDev and TarkovTracker so the first scan has all required data
