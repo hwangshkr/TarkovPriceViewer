@@ -90,6 +90,7 @@ namespace TarkovPriceViewer
             _ocrService = _host.Services.GetRequiredService<IOcrService>();
 
             LoadSettings();
+            EnsureResourcesDirectory();
 
             _ = LoadBallisticsDataAsync();
             // Eagerly preload TarkovDev and TarkovTracker so the first scan has all required data
@@ -321,6 +322,8 @@ namespace TarkovPriceViewer
                     return $"Updated: {(int)elapsed.TotalDays} days ago";
             }
         }
+
+        public static AppSettings AppSettings => _settingsService.Settings;
 
         public static void LoadSettings()
         {
