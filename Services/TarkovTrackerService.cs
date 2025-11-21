@@ -1185,52 +1185,12 @@ namespace TarkovPriceViewer.Services
 
         public TrackerUpdateResult TryIncrementCurrentObjectiveForCurrentItem(Item item, Data tarkovData)
         {
-            var objective = SelectTaskObjectiveForDelta(item, tarkovData, +1);
-            if (objective == null)
-            {
-                return TrackerUpdateResult.Fail(TrackerUpdateFailureReason.NoObjectiveForItem);
-            }
-
-            if (objective.Remaining <= 0)
-            {
-                return TrackerUpdateResult.Fail(TrackerUpdateFailureReason.AlreadyCompleted, objective);
-            }
-
-            var updated = new CurrentTrackedObjective
-            {
-                ObjectiveId = objective.ObjectiveId,
-                ItemId = objective.ItemId,
-                RequiredCount = objective.RequiredCount,
-                CurrentCount = objective.CurrentCount + 1
-            };
-
-            Debug.WriteLine($"[TarkovTracker] Increment objective {updated.ObjectiveId} for item {updated.ItemId}: {objective.CurrentCount} -> {updated.CurrentCount}");
-            return TrackerUpdateResult.Ok(updated);
+            return TryChangeCurrentObjectiveForCurrentItem(item, tarkovData, +1);
         }
 
         public TrackerUpdateResult TryDecrementCurrentObjectiveForCurrentItem(Item item, Data tarkovData)
         {
-            var objective = SelectTaskObjectiveForDelta(item, tarkovData, -1);
-            if (objective == null)
-            {
-                return TrackerUpdateResult.Fail(TrackerUpdateFailureReason.NoObjectiveForItem);
-            }
-
-            if (objective.CurrentCount <= 0)
-            {
-                return TrackerUpdateResult.Fail(TrackerUpdateFailureReason.NoProgressToRemove, objective);
-            }
-
-            var updated = new CurrentTrackedObjective
-            {
-                ObjectiveId = objective.ObjectiveId,
-                ItemId = objective.ItemId,
-                RequiredCount = objective.RequiredCount,
-                CurrentCount = objective.CurrentCount - 1
-            };
-
-            Debug.WriteLine($"[TarkovTracker] Decrement objective {updated.ObjectiveId} for item {updated.ItemId}: {objective.CurrentCount} -> {updated.CurrentCount}");
-            return TrackerUpdateResult.Ok(updated);
+            return TryChangeCurrentObjectiveForCurrentItem(item, tarkovData, -1);
         }
 
         public TrackerUpdateResult TryChangeCurrentObjectiveForCurrentItem(Item item, Data tarkovData, int delta)
@@ -1293,122 +1253,101 @@ namespace TarkovPriceViewer.Services
             }
 
             var trackerData = TrackerData.data;
-            var usedInTasks = item.usedInTasks;
-            if (usedInTasks == null || usedInTasks.Count == 0)
+            var candidates = GetOrderedTaskObjectivesForItem(item, trackerData);
+            if (candidates.Count == 0)
             {
                 return null;
             }
 
-            // Order by ascending player level (earliest upgrade first)
-            var orderedTasks = usedInTasks
-                .Where(t => t.objectives != null)
-                .OrderBy(t => t.minPlayerLevel ?? int.MaxValue)
-                .ToList();
-
             if (delta > 0)
             {
-                // For +1: first task/objective that is not yet complete
-                foreach (var task in orderedTasks)
+                // For +1: first objective that is not yet complete
+                foreach (var c in candidates)
                 {
-                    // Saltar tasks completadas
-                    if (trackerData.tasksProgress != null &&
-                        trackerData.tasksProgress.Exists(e => e.id == task.id && e.complete == true))
-                        continue;
-
-                    foreach (var obj in task.objectives)
+                    if (c.current < c.required)
                     {
-                        if (obj.type == "findItem" && obj.foundInRaid == true && obj.items != null && obj.items.Any(i => i.id == item.id))
+                        return new CurrentTrackedObjective
                         {
-                            int required = obj.count ?? 0;
-                            int current = 0;
-
-                            if (trackerData.taskObjectivesProgress != null && obj.id != null)
-                            {
-                                var progress = trackerData.taskObjectivesProgress.FirstOrDefault(p => p.id == obj.id);
-                                if (progress != null)
-                                {
-                                    if (progress.complete == true)
-                                    {
-                                        current = required;
-                                    }
-                                    else if (progress.count != null)
-                                    {
-                                        current = progress.count.Value;
-                                    }
-                                }
-                            }
-
-                            if (current < required)
-                            {
-                                return new CurrentTrackedObjective
-                                {
-                                    ObjectiveId = obj.id,
-                                    ItemId = item.id,
-                                    RequiredCount = required,
-                                    CurrentCount = current
-                                };
-                            }
-                        }
+                            ObjectiveId = c.objectiveId,
+                            ItemId = item.id,
+                            RequiredCount = c.required,
+                            CurrentCount = c.current
+                        };
                     }
                 }
             }
             else // delta < 0
             {
-                // For -1: last task/objective (by ascending order) with progress > 0
-                for (int ti = orderedTasks.Count - 1; ti >= 0; ti--)
+                // For -1: last objective (by ascending level order) with progress > 0
+                for (int i = candidates.Count - 1; i >= 0; i--)
                 {
-                    var task = orderedTasks[ti];
-
-                    // Saltar tasks completadas si no tienen progreso parcial
-                    if (trackerData.tasksProgress != null &&
-                        trackerData.tasksProgress.Exists(e => e.id == task.id && e.complete == true))
+                    var c = candidates[i];
+                    if (c.current > 0)
                     {
-                        // Aun así puede haber objetivos con count intermedio, comprobamos abajo
-                    }
-
-                    if (task.objectives == null)
-                        continue;
-
-                    for (int oi = task.objectives.Count - 1; oi >= 0; oi--)
-                    {
-                        var obj = task.objectives[oi];
-                        if (obj.type != "findItem" || obj.foundInRaid != true || obj.items == null || !obj.items.Any(i => i.id == item.id))
-                            continue;
-
-                        int required = obj.count ?? 0;
-                        int current = 0;
-
-                        if (trackerData.taskObjectivesProgress != null && obj.id != null)
+                        return new CurrentTrackedObjective
                         {
-                            var progress = trackerData.taskObjectivesProgress.FirstOrDefault(p => p.id == obj.id);
-                            if (progress != null)
-                            {
-                                if (progress.complete == true)
-                                {
-                                    current = required;
-                                }
-                                else if (progress.count != null)
-                                {
-                                    current = progress.count.Value;
-                                }
-                            }
-                        }
-
-                        if (current > 0)
-                        {
-                            return new CurrentTrackedObjective
-                            {
-                                ObjectiveId = obj.id,
-                                ItemId = item.id,
-                                RequiredCount = required,
-                                CurrentCount = current
-                            };
-                        }
+                            ObjectiveId = c.objectiveId,
+                            ItemId = item.id,
+                            RequiredCount = c.required,
+                            CurrentCount = c.current
+                        };
                     }
                 }
             }
 
             return null;
+        }
+
+        private List<(string objectiveId, int required, int current)> GetOrderedTaskObjectivesForItem(Item item, TarkovTrackerAPI.Data trackerData)
+        {
+            var result = new List<(string objectiveId, int required, int current)>();
+
+            var usedInTasks = item.usedInTasks;
+            if (usedInTasks == null || usedInTasks.Count == 0)
+            {
+                return result;
+            }
+
+            // Order tasks by ascending player level (earliest upgrade first)
+            var orderedTasks = usedInTasks
+                .Where(t => t.objectives != null)
+                .OrderBy(t => t.minPlayerLevel ?? int.MaxValue)
+                .ToList();
+
+            foreach (var task in orderedTasks)
+            {
+                if (task.objectives == null)
+                    continue;
+
+                foreach (var obj in task.objectives)
+                {
+                    if (obj.type != "findItem" || obj.foundInRaid != true || obj.items == null || !obj.items.Any(i => i.id == item.id))
+                        continue;
+
+                    int required = obj.count ?? 0;
+                    int current = 0;
+
+                    if (trackerData.taskObjectivesProgress != null && obj.id != null)
+                    {
+                        var progress = trackerData.taskObjectivesProgress.FirstOrDefault(p => p.id == obj.id);
+                        if (progress != null)
+                        {
+                            if (progress.complete == true)
+                            {
+                                current = required;
+                            }
+                            else if (progress.count != null)
+                            {
+                                current = progress.count.Value;
+                            }
+                        }
+                    }
+
+                    result.Add((obj.id, required, current));
+                }
+            }
+
+            return result;
         }
 
         public TrackerUpdateResult ApplyLocalChangeForCurrentItem(Item item, Data tarkovData, int delta)
@@ -1845,6 +1784,11 @@ namespace TarkovPriceViewer.Services
             return null;
         }
 
+        /// <summary>
+        /// Increment the current objective for an item and send the update immediately to the API.
+        /// This bypasses the background flush mechanism and is intended for manual or testing scenarios.
+        /// For normal gameplay use the local path (ApplyLocalChangeForCurrentItem + periodic flush).
+        /// </summary>
         public async Task<TrackerUpdateResult> IncrementObjectiveAndSyncAsync(Item item, Data tarkovData, CancellationToken cancellationToken = default)
         {
             var validation = TryIncrementCurrentObjectiveForCurrentItem(item, tarkovData);
@@ -1864,6 +1808,24 @@ namespace TarkovPriceViewer.Services
             return validation;
         }
 
+        public void Dispose()
+        {
+            try
+            {
+                _cts.Cancel();
+                _cts.Dispose();
+            }
+            catch (Exception)
+            {
+                // Ignore dispose-time exceptions
+            }
+        }
+
+        /// <summary>
+        /// Decrement the current objective for an item and send the update immediately to the API.
+        /// This bypasses the background flush mechanism and is intended for manual or testing scenarios.
+        /// For normal gameplay use the local path (ApplyLocalChangeForCurrentItem + periodic flush).
+        /// </summary>
         public async Task<TrackerUpdateResult> DecrementObjectiveAndSyncAsync(Item item, Data tarkovData, CancellationToken cancellationToken = default)
         {
             var validation = TryDecrementCurrentObjectiveForCurrentItem(item, tarkovData);
@@ -1882,6 +1844,11 @@ namespace TarkovPriceViewer.Services
             return validation;
         }
 
+        /// <summary>
+        /// Change the current objective for an item by a delta and send the update immediately to the API.
+        /// This bypasses the background flush mechanism and is intended for manual or testing scenarios.
+        /// For normal gameplay use the local path (ApplyLocalChangeForCurrentItem + periodic flush).
+        /// </summary>
         public async Task<TrackerUpdateResult> ChangeObjectiveAndSyncAsync(Item item, Data tarkovData, int delta, CancellationToken cancellationToken = default)
         {
             var validation = TryChangeCurrentObjectiveForCurrentItem(item, tarkovData, delta);
