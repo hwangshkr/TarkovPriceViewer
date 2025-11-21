@@ -707,6 +707,7 @@ namespace TarkovPriceViewer.UI
 			CompareOverlay_Desc2.TabIndex = 0;
 			CompareOverlay_Desc2.Text = "※ Experiential";
 			// 
+			// 
 			// panel7
 			// 
 			panel7.Controls.Add(RandomItem);
