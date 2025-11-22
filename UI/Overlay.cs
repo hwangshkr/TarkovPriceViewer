@@ -1475,6 +1475,24 @@ namespace TarkovPriceViewer.UI
                     // If anything goes wrong, fall back to the global threshold
                 }
 
+                // For ammo items, use a separate worth threshold so typical bullet prices
+                // (e.g. 800–1500 ₽/round) can still trigger worth highlighting.
+                try
+                {
+                    if (item != null && item.types != null && item.types.Exists(t => t == "ammo"))
+                    {
+                        int ammoThreshold = _settingsService?.Settings.AmmoWorthThreshold ?? 0;
+                        if (ammoThreshold > 0)
+                        {
+                            threshold = ammoThreshold;
+                        }
+                    }
+                }
+                catch
+                {
+                    // If anything goes wrong, fall back to the global threshold
+                }
+
                 // Look across the full text for patterns like:
                 //   123 456 ₽ ... (12 345 ₽/Slot)
                 var matches = Regex.Matches(text, @"(?<main>\d[\d.,]*\s*₽).*?\((?<slot>\d[\d.,]*\s*₽/Slot\))");
