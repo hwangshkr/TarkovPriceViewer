@@ -1321,7 +1321,7 @@ namespace TarkovPriceViewer.Services
 
                 foreach (var obj in task.objectives)
                 {
-                    if (obj.type != "findItem" || obj.foundInRaid != true || obj.items == null || !obj.items.Any(i => i.id == item.id))
+                    if (obj.type != "giveItem" || obj.foundInRaid != true || obj.items == null || !obj.items.Any(i => i.id == item.id))
                         continue;
 
                     int required = obj.count ?? 0;
