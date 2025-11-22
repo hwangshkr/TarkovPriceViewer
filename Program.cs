@@ -322,8 +322,6 @@ namespace TarkovPriceViewer
             }
         }
 
-        public static AppSettings AppSettings => _settingsService.Settings;
-
         public static void LoadSettings()
         {
             try
