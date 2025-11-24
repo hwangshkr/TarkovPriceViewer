@@ -112,7 +112,6 @@ namespace TarkovPriceViewer.UI
 			panel6.SuspendLayout();
 			panel7.SuspendLayout();
 			panel8.SuspendLayout();
-			((System.ComponentModel.ISupportInitialize)ProfitVsFleaTolerance).BeginInit();
 			SuspendLayout();
 			// 
 			// TrayIcon
@@ -957,7 +956,6 @@ namespace TarkovPriceViewer.UI
 			panel7.PerformLayout();
 			panel8.ResumeLayout(false);
 			panel8.PerformLayout();
-			((System.ComponentModel.ISupportInitialize)ProfitVsFleaTolerance).EndInit();
 			ResumeLayout(false);
 			PerformLayout();
 
