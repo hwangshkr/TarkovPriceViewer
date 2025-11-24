@@ -58,13 +58,13 @@ namespace TarkovPriceViewer.UI
                             Program.AppSettings.ToggleFavoriteItemKeyBind = bind;
                             break;
                         case 4:
-                            Program.AppSettings.IncreaseTrackerCountKey = (int)e.KeyCode;
+                            Program.AppSettings.IncreaseTrackerCountKeyBind = bind;
                             break;
                         case 5:
-                            Program.AppSettings.DecreaseTrackerCountKey = (int)e.KeyCode;
+                            Program.AppSettings.DecreaseTrackerCountKeyBind = bind;
                             break;
                         case 6:
-                            Program.AppSettings.ToggleFavoriteItemKey = (int)e.KeyCode;
+                            Program.AppSettings.ToggleFavoriteItemKeyBind = bind;
                             break;
                     }
                     // Persist key changes immediately so they survive future loads
@@ -125,13 +125,13 @@ namespace TarkovPriceViewer.UI
                         Program.AppSettings.ToggleFavoriteItemKeyBind = bind;
                         break;
                     case 4:
-                        Program.AppSettings.IncreaseTrackerCountKey = mouseCode;
+                        Program.AppSettings.IncreaseTrackerCountKeyBind = bind;
                         break;
                     case 5:
-                        Program.AppSettings.DecreaseTrackerCountKey = mouseCode;
+                        Program.AppSettings.DecreaseTrackerCountKeyBind = bind;
                         break;
                     case 6:
-                        Program.AppSettings.ToggleFavoriteItemKey = mouseCode;
+                        Program.AppSettings.ToggleFavoriteItemKeyBind = bind;
                         break;
                 }
 
