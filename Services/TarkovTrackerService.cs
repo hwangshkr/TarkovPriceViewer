@@ -1094,7 +1094,7 @@ namespace TarkovPriceViewer.Services
                 var json = JsonConvert.SerializeObject(payload);
                 using var content = new StringContent(json, Encoding.UTF8, "application/json");
 
-                var url = $"https://tarkovtracker.io/api/v2/progress/task/objective/{updatedObjective.ObjectiveId}";
+                var url = $"{TarkovTrackerBaseUrl}/progress/task/objective/{updatedObjective.ObjectiveId}";
                 Debug.WriteLine($"[TarkovTracker] Updating objective via {url} -> count={updatedObjective.CurrentCount}, state={state}");
 
                 // OpenAPI specifies POST for this endpoint
