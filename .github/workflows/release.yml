@@ -117,7 +117,7 @@ jobs:
       - name: Build artifacts
         run: |
           dotnet restore
-          dotnet publish -c Release -r win-x64 --self-contained false -p:PublishSingleFile=true -o ./publish
+          dotnet publish
 
       - name: Generate release notes
         id: notes
