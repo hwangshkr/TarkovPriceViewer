@@ -2,7 +2,7 @@
 using System;
 using System.Collections.Generic;
 
-namespace TarkovPriceViewer
+namespace TarkovPriceViewer.Models
 {
     public class ResponseShell
     {
@@ -104,6 +104,7 @@ namespace TarkovPriceViewer
             public Ballistic ballistic = null;
             public string lootTier = null;
             public string className = null;
+            public string ammoTier = null;
             public String[] Data()
             {
                 return (new String[] {
@@ -129,6 +130,7 @@ namespace TarkovPriceViewer
 
         public class ItemRequirement
         {
+            public string id { get; set; }
             public Item item { get; set; }
             public int? count { get; set; }
         }
@@ -150,6 +152,10 @@ namespace TarkovPriceViewer
             public string id { get; set; }
             public string description { get; set; }
             public List<Map> maps { get; set; }
+            public string type { get; set; }
+            public int? count { get; set; }
+            public bool? foundInRaid { get; set; }
+            public List<Item> items { get; set; }
         }
 
         public class Properties

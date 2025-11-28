@@ -1,7 +1,7 @@
 using System;
 using System.Collections.Generic;
 
-namespace TarkovPriceViewer
+namespace TarkovPriceViewer.Models
 {
     internal enum LootTier
     {

@@ -1,5 +1,5 @@
 ﻿
-namespace TarkovPriceViewer
+namespace TarkovPriceViewer.UI
 {
     partial class Overlay
     {
