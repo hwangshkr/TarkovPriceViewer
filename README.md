@@ -1,4 +1,4 @@
-# <img width="36" align="center" src="https://user-images.githubusercontent.com/32073152/126047438-2f1b7e59-ca31-43f2-bcf6-00b2f00e408c.png"/> Tarkov Price Viewer v1.35
+# <img width="36" align="center" src="https://user-images.githubusercontent.com/32073152/126047438-2f1b7e59-ca31-43f2-bcf6-00b2f00e408c.png"/> Tarkov Price Viewer v2.0
 This Overlay software is meant to help new players.
 You can easily distinguish all the strengths and weaknesses of all the ammo in the game.
 It is especially good to find out the market price in advance when the flea market is not open yet. 
@@ -86,7 +86,7 @@ Since version 1.06 you can compare some options of items with the shortcut key (
 
 <img src="https://imgur.com/5p5fiAy.gif"/>
 
-### v1.35 – TarkovTracker & Hideout Integration
+### v2.0 – TarkovTracker & Hideout Integration
 
 - **Tracker-aware overlay for tasks**
   - The overlay shows how many items you still need for each quest that uses the hovered item.
@@ -123,7 +123,7 @@ Since version 1.06 you can compare some options of items with the shortcut key (
   - A **Profit vs. Flea tolerance** slider controls when the overlay prefers a trader over the Flea Market, based on per-slot value.
   - The overlay shows a helper suffix like `(68% of Flea, min 40%)` next to the trader line and highlights it in green when the actual percentage meets or exceeds the configured minimum.
 
-### TarkovTracker & Hideout settings (v1.35)
+### TarkovTracker & Hideout settings (v2.0)
 
 - To use tracker-aware features you need a **TarkovTracker API key**:
   - Generate one on https://tarkovtracker.org/ and paste it in the **TarkovTracker API Key** field.
