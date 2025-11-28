@@ -125,8 +125,6 @@ jobs:
         with:
           result-encoding: string
           script: |
-            const { context, github } = require("@actions/github");
-
             const tag = `v${{ steps.ver.outputs.version }}`;
             const prevTag = `${{ steps.prev.outputs.last_tag }}`;
 
