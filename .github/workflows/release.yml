@@ -1,0 +1,208 @@
+name: Release
+
+on:
+  workflow_dispatch:
+    inputs:
+      mode:
+        description: "Release mode: auto (from commits) or manual"
+        type: choice
+        required: true
+        options: [auto, manual]
+      release_tag:
+        description: "Target version (e.g. 2.0.0). Ignored if mode=auto"
+        type: string
+        required: false
+
+permissions:
+  contents: write
+
+jobs:
+  release:
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+        with:
+          fetch-depth: 0
+          fetch-tags: true
+
+      - name: Get latest tag
+        id: prev
+        run: |
+          last_tag=$(git describe --tags --abbrev=0 2>/dev/null || echo "")
+          echo "last_tag=$last_tag" >> $GITHUB_OUTPUT
+
+      - name: Compute version (auto)
+        if: ${{ inputs.mode == 'auto' }}
+        id: auto_ver
+        uses: paulhatch/semantic-version@v5.4.0
+        with:
+          tag_prefix: "v"
+          major_pattern: "BREAKING CHANGE|!:"
+          minor_pattern: "^feat"
+          version_format: "${major}.${minor}.${patch}"
+
+      - name: Decide target version
+        id: ver
+        run: |
+          mode="${{ inputs.mode }}"
+          last_tag="${{ steps.prev.outputs.last_tag }}"
+
+          if [ "$mode" = "auto" ]; then
+            ver="${{ steps.auto_ver.outputs.version }}"
+            if [ -z "$ver" ]; then
+              echo "Error: semantic-version did not produce a version" >&2
+              exit 1
+            fi
+          else
+            ver="${{ inputs.release_tag }}"
+            if [ -z "$ver" ]; then
+              echo "Error: release_tag is required in manual mode" >&2
+              exit 1
+            fi
+          fi
+
+          # basic semver validation X.Y or X.Y.Z (optionally with pre-release suffix)
+          if ! echo "$ver" | grep -Eq '^[0-9]+\.[0-9]+(\.[0-9]+)?([-.][0-9A-Za-z.-]+)?$'; then
+            echo "Error: version '$ver' is not a valid semver" >&2
+            exit 1
+          fi
+
+          if [ -n "$last_tag" ]; then
+            last_no_v=${last_tag#v}
+            highest=$(printf "%s\n%s\n" "$last_no_v" "$ver" | sort -V | tail -n1)
+            if [ "$highest" != "$ver" ]; then
+              echo "Error: target version '$ver' is not greater than last tag '$last_tag'" >&2
+              exit 1
+            fi
+          fi
+
+          echo "version=$ver" >> $GITHUB_OUTPUT
+
+      - name: Bump csproj version if needed
+        id: bump
+        run: |
+          NEW="${{ steps.ver.outputs.version }}"
+          FILE="TarkovPriceViewer.csproj"
+          CURRENT=$(grep -oP '(?<=<Version>)[^<]+' "$FILE" || echo "")
+
+          if [ "$CURRENT" = "$NEW" ]; then
+            echo "changed=false" >> $GITHUB_OUTPUT
+            exit 0
+          fi
+
+          sed -i "s|<Version>[^<]\+</Version>|<Version>${NEW}</Version>|" "$FILE"
+
+          git config user.name "github-actions[bot]"
+          git config user.email "github-actions[bot]@users.noreply.github.com"
+          git add "$FILE"
+          git commit -m "chore(release): bump version to ${NEW}"
+          git push
+
+          echo "changed=true" >> $GITHUB_OUTPUT
+
+      - name: Create tag
+        run: |
+          ver="${{ steps.ver.outputs.version }}"
+          tag="v${ver}"
+          git tag "$tag"
+          git push origin "$tag"
+
+      - name: Setup .NET
+        uses: actions/setup-dotnet@v4
+        with:
+          dotnet-version: 10.0.x
+
+      - name: Build artifacts
+        run: |
+          dotnet restore
+          dotnet publish -c Release -r win-x64 --self-contained false -p:PublishSingleFile=true -o ./publish
+
+      - name: Generate release notes
+        id: notes
+        uses: actions/github-script@v7
+        with:
+          result-encoding: string
+          script: |
+            const { context, github } = require("@actions/github");
+
+            const tag = `v${{ steps.ver.outputs.version }}`;
+            const prevTag = `${{ steps.prev.outputs.last_tag }}`;
+
+            async function getCommits() {
+              if (!prevTag) {
+                const commits = await github.rest.repos.listCommits({
+                  owner: context.repo.owner,
+                  repo: context.repo.repo,
+                  per_page: 100,
+                });
+                return commits.data;
+              }
+
+              const compare = await github.rest.repos.compareCommits({
+                owner: context.repo.owner,
+                repo: context.repo.repo,
+                base: prevTag,
+                head: tag,
+              });
+              return compare.data.commits || [];
+            }
+
+            function classify(message) {
+              if (/BREAKING CHANGE|!:/.test(message)) return "breaking";
+              if (/^feat(\(|:)/i.test(message)) return "features";
+              if (/^fix(\(|:)/i.test(message)) return "fixes";
+              if (/^chore(\(|:)/i.test(message)) return "chores";
+              return "others";
+            }
+
+            const sections = {
+              breaking: [],
+              features: [],
+              fixes: [],
+              chores: [],
+              others: [],
+            };
+
+            const commits = await getCommits();
+
+            for (const c of commits) {
+              const msg = c.commit.message.split("\n")[0];
+              const type = classify(msg);
+              const entry = `- ${msg} (${c.sha.substring(0,7)})`;
+              sections[type].push(entry);
+            }
+
+            let body = `## What's changed in ${tag}\n\n`;
+
+            if (sections.breaking.length) {
+              body += `### 🚨 Breaking changes\n` + sections.breaking.join("\n") + "\n\n";
+            }
+            if (sections.features.length) {
+              body += `### 🚀 Features\n` + sections.features.join("\n") + "\n\n";
+            }
+            if (sections.fixes.length) {
+              body += `### 🐛 Bug fixes\n` + sections.fixes.join("\n") + "\n\n";
+            }
+            if (sections.chores.length) {
+              body += `### 🧹 Chores\n` + sections.chores.join("\n") + "\n\n";
+            }
+            if (sections.others.length) {
+              body += `### 📦 Other changes\n` + sections.others.join("\n") + "\n\n";
+            }
+
+            if (!commits.length) {
+              body += "No changes.";
+            }
+
+            return body;
+
+      - name: Create GitHub release
+        uses: softprops/action-gh-release@v2
+        with:
+          tag_name: v${{ steps.ver.outputs.version }}
+          name: Release v${{ steps.ver.outputs.version }}
+          body: ${{ steps.notes.outputs.result }}
+          files: publish/**
+          prerelease: ${{ contains(steps.ver.outputs.version, '-') }}
