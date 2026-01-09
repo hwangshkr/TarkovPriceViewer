@@ -216,6 +216,7 @@ namespace TarkovPriceViewer
             languageBox.Items.Add("ko");
             languageBox.Items.Add("cn");
             languageBox.Items.Add("jp");
+            languageBox.Items.Add("ru");
             languageBox.DropDownStyle = ComboBoxStyle.DropDownList;
             languageBox.SelectedItem = Program.settings["Language"];
             languageBox.SelectedIndexChanged += languageBox_SelectedIndexChanged;
@@ -648,6 +649,10 @@ namespace TarkovPriceViewer
                 else if (Program.settings["Language"] == "jp")
                 {
                     model = await LocalDictOnlineRecognizationModel.JapanV4.DownloadAsync();
+                }
+                else if (Program.settings["Language"] == "ru")
+                {
+                    model = await LocalDictOnlineRecognizationModel.CyrillicV3.DownloadAsync();
                 }
                 else
                 {
