@@ -366,6 +366,13 @@ namespace TarkovPriceViewer
                                         tasks += task.name;
                                     if (task.map != null)
                                         tasks += " [" + task.map.name + "]";
+
+                                    var count = task.GetItemCount(item.id);
+                                    if (count > 0)
+                                    {
+                                        tasks += " x" + count;
+                                    }
+
                                     tasks += "\n";
                                 }
                                 sb = RemoveTrailingLineBreaks(sb);
@@ -389,7 +396,7 @@ namespace TarkovPriceViewer
                                             {
                                                 if (item.id == itemReq.item.id && !Program.tarkovTrackerAPI.data.hideoutModulesProgress.Any(e => e.id.Equals(stationLevel.id)))
                                                 {
-                                                    upgradesList.Add(new hideoutUpgrades() { Name = station.name, Level = stationLevel.level });
+                                                    upgradesList.Add(new hideoutUpgrades() { Name = station.name, Level = stationLevel.level, Count = itemReq.count, isInRaid = itemReq.isInRaid });
                                                 }
                                             }
                                         }
@@ -399,7 +406,7 @@ namespace TarkovPriceViewer
                                         var sortedUpgradesList = new List<hideoutUpgrades>(upgradesList.OrderBy(p => p.Level));
 
                                         foreach (var upgrade in sortedUpgradesList)
-                                            upgrades += "[Level " + upgrade.Level + "] " + upgrade.Name + "\n";
+                                            upgrades += "[Level " + upgrade.Level + "] " + upgrade.Name + " x" + upgrade.Count + (upgrade.isInRaid ? "(in raid)" : "") + "\n";
 
                                         sb = RemoveTrailingLineBreaks(sb);
                                         sb.Append(String.Format("\n\nNeeded for Hideout:\n{0}", upgrades));
@@ -422,7 +429,7 @@ namespace TarkovPriceViewer
                                             {
                                                 if (item.id == itemReq.item.id)
                                                 {
-                                                    upgradesList.Add(new hideoutUpgrades() { Name = station.name, Level = stationLevel.level });
+                                                    upgradesList.Add(new hideoutUpgrades() { Name = station.name, Level = stationLevel.level, Count = itemReq.count, isInRaid = itemReq.isInRaid });
                                                 }
                                             }
                                         }
@@ -433,7 +440,7 @@ namespace TarkovPriceViewer
 
                                         foreach (var upgrade in sortedUpgradesList)
                                         {
-                                            upgrades += "[Level " + upgrade.Level + "] " + upgrade.Name + "\n";
+                                            upgrades += "[Level " + upgrade.Level + "] " + upgrade.Name + " x" + upgrade.Count + (upgrade.isInRaid ? "(in raid)" : "") + "\n";
                                         }
 
                                         sb = RemoveTrailingLineBreaks(sb);
@@ -1194,5 +1201,8 @@ namespace TarkovPriceViewer
     {
         public string Name { get; set; }
         public int? Level { get; set; }
+        public int? Count { get; set; }
+
+        public bool isInRaid { get; set; }
     }
 }

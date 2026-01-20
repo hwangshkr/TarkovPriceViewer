@@ -541,6 +541,10 @@ namespace TarkovPriceViewer
                 {
                     try
                     {
+                        if (Program.tarkovAPI == null)
+                        {
+                            throw new Exception();
+                        }
                         Item item = Program.tarkovAPI.items[new Random().Next(Program.tarkovAPI.items.Count - 1)];
                         //item = MatchItemName("7.62x54r_7n37".ToLower().Trim().ToCharArray());
                         FindItemInfoAPI(item, isiteminfo, cts_one);

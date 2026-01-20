@@ -1,6 +1,7 @@
 ﻿using Newtonsoft.Json;
 using System;
 using System.Collections.Generic;
+using System.Linq;
 
 namespace TarkovPriceViewer
 {
@@ -129,8 +130,30 @@ namespace TarkovPriceViewer
 
         public class ItemRequirement
         {
-            public Item item { get; set; }
+            public HideoutItem item { get; set; }
             public int? count { get; set; }
+            public List<HideoutAttributes> attributes { get; set; }
+
+            public bool isInRaid
+            {
+                get
+                {
+                    var att = attributes?.FirstOrDefault();
+                    return att?.type == "foundInRaid" && att.value == "true";
+                }
+            }
+        }
+
+        public class HideoutAttributes
+        {
+            public string type { get; set; }
+            public string value { get; set; }
+        }
+
+        public class HideoutItem
+        {
+            public string id { get; set; }
+            public string name { get; set; }
         }
 
         public class Level
@@ -150,6 +173,17 @@ namespace TarkovPriceViewer
             public string id { get; set; }
             public string description { get; set; }
             public List<Map> maps { get; set; }
+
+            public bool? optional { get; set; }
+            public string type { get; set; }
+            public int? count { get; set; }
+            public List<TaskItem> items { get; set; }
+        }
+
+        public class TaskItem
+        {
+            public string id { get; set; }
+            public string name { get; set; }
         }
 
         public class Properties
@@ -185,7 +219,7 @@ namespace TarkovPriceViewer
         public class RewardItem
         {
             public Item item { get; set; }
-            public float? count { get; set; }
+            public int? count { get; set; }
             public float? quantity { get; set; }
         }
 
@@ -232,6 +266,11 @@ namespace TarkovPriceViewer
             public Map map { get; set; }
             public int? minPlayerLevel { get; set; }
             public List<TraderLevelRequirement> traderLevelRequirements { get; set; }
+
+            public int GetItemCount(string itemid)
+            {
+                return objectives?.FirstOrDefault(o => o.optional == false && (o.type == "giveQuestItem" || o.type == "plantItem") && o.items.Any(o_ => o_.id == itemid))?.count ?? 0;
+            }
         }
 
         public class Vendor
