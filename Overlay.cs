@@ -185,6 +185,18 @@ namespace TarkovPriceViewer
                             //Name
                             sb.Append(String.Format("\n{0}", item.name));
 
+                            if (Convert.ToBoolean(Program.settings["ShowTextFound"]))
+                            {
+                                if (string.IsNullOrEmpty(item.foundname1))
+                                {
+                                    sb.Append(String.Format("\n{0}", item.foundname1));
+                                }
+                                if (string.IsNullOrEmpty(item.foundname2))
+                                {
+                                    sb.Append(String.Format("\n{0}", item.foundname2));
+                                }
+                            }
+
                             //Helmet/Armour Class
                             if (item.properties != null && item.properties._class != null)
                             {

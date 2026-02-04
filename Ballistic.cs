@@ -5,24 +5,24 @@ namespace TarkovPriceViewer
 {
     public class Ballistic
     {
-        public String Name;
-        public String Damage;
-        public String PP;//Penetration_power
-        public String AD;//Armor_damage
-        public String Accuracy;
-        public String Recoil;
-        public String FC;//Fragmentation_chance
-        public String BL;//Bleed_L
-        public String BH;//Bleed_H
+        public string Name;
+        public string Damage;
+        public string PP;//Penetration_power
+        public string AD;//Armor_damage
+        public string Accuracy;
+        public string Recoil;
+        public string FC;//Fragmentation_chance
+        public string BL;//Bleed_L
+        public string BH;//Bleed_H
         //Bullet_effectiveness_against_armor_class
-        public String BE1;
-        public String BE2;
-        public String BE3;
-        public String BE4;
-        public String BE5;
-        public String BE6;
+        public string BE1;
+        public string BE2;
+        public string BE3;
+        public string BE4;
+        public string BE5;
+        public string BE6;
 
-        public String Special;//subsonic or tracer
+        public string Special;//subsonic or tracer
 
         public List<Ballistic> Calibarlist;
 

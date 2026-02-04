@@ -92,6 +92,7 @@ namespace TarkovPriceViewer
             this.label3 = new System.Windows.Forms.Label();
             this.modeBox = new System.Windows.Forms.ComboBox();
             this.label4 = new System.Windows.Forms.Label();
+            this.ShowTextFound = new System.Windows.Forms.CheckBox();
             this.TrayMenu.SuspendLayout();
             this.panel1.SuspendLayout();
             ((System.ComponentModel.ISupportInitialize)(this.TransParent_Bar)).BeginInit();
@@ -489,7 +490,7 @@ namespace TarkovPriceViewer
             // MinimizetoTrayWhenStartup
             // 
             this.MinimizetoTrayWhenStartup.AutoSize = true;
-            this.MinimizetoTrayWhenStartup.Location = new System.Drawing.Point(262, 438);
+            this.MinimizetoTrayWhenStartup.Location = new System.Drawing.Point(431, 424);
             this.MinimizetoTrayWhenStartup.Margin = new System.Windows.Forms.Padding(4, 3, 4, 3);
             this.MinimizetoTrayWhenStartup.Name = "MinimizetoTrayWhenStartup";
             this.MinimizetoTrayWhenStartup.Size = new System.Drawing.Size(181, 16);
@@ -556,7 +557,7 @@ namespace TarkovPriceViewer
             // 
             // Exit_Button
             // 
-            this.Exit_Button.Location = new System.Drawing.Point(534, 378);
+            this.Exit_Button.Location = new System.Drawing.Point(538, 446);
             this.Exit_Button.Margin = new System.Windows.Forms.Padding(4, 3, 4, 3);
             this.Exit_Button.Name = "Exit_Button";
             this.Exit_Button.Size = new System.Drawing.Size(74, 23);
@@ -754,9 +755,8 @@ namespace TarkovPriceViewer
             this.worthThresholdNumeric.Size = new System.Drawing.Size(126, 21);
             this.worthThresholdNumeric.TabIndex = 1;
             this.worthThresholdNumeric.TabStop = false;
-            this.worthThresholdNumeric.TextAlign = System.Windows.Forms.HorizontalAlignment.Left;
             this.worthThresholdNumeric.Value = new decimal(new int[] {
-            Program.GetWorthPerSlotThreshold(),
+            7500,
             0,
             0,
             0});
@@ -769,7 +769,7 @@ namespace TarkovPriceViewer
             this.worthThresholdLabel.Location = new System.Drawing.Point(10, 9);
             this.worthThresholdLabel.Margin = new System.Windows.Forms.Padding(4, 0, 4, 0);
             this.worthThresholdLabel.Name = "worthThresholdLabel";
-            this.worthThresholdLabel.Size = new System.Drawing.Size(145, 15);
+            this.worthThresholdLabel.Size = new System.Drawing.Size(157, 15);
             this.worthThresholdLabel.TabIndex = 0;
             this.worthThresholdLabel.Text = "Worth threshold (₽/slot)";
             // 
@@ -807,6 +807,19 @@ namespace TarkovPriceViewer
             this.label4.TabIndex = 21;
             this.label4.Text = "Mode";
             // 
+            // ShowTextFound
+            // 
+            this.ShowTextFound.AutoSize = true;
+            this.ShowTextFound.Location = new System.Drawing.Point(207, 446);
+            this.ShowTextFound.Margin = new System.Windows.Forms.Padding(4, 3, 4, 3);
+            this.ShowTextFound.Name = "ShowTextFound";
+            this.ShowTextFound.Size = new System.Drawing.Size(124, 16);
+            this.ShowTextFound.TabIndex = 23;
+            this.ShowTextFound.TabStop = false;
+            this.ShowTextFound.Text = "Show Text Found";
+            this.ShowTextFound.UseVisualStyleBackColor = true;
+            this.ShowTextFound.CheckedChanged += new System.EventHandler(this.ShowTextFound_CheckedChanged);
+            // 
             // MainForm
             // 
             this.AutoScaleDimensions = new System.Drawing.SizeF(7F, 12F);
@@ -814,6 +827,7 @@ namespace TarkovPriceViewer
             this.AutoSizeMode = System.Windows.Forms.AutoSizeMode.GrowAndShrink;
             this.BackColor = System.Drawing.Color.White;
             this.ClientSize = new System.Drawing.Size(621, 475);
+            this.Controls.Add(this.ShowTextFound);
             this.Controls.Add(this.label4);
             this.Controls.Add(this.modeBox);
             this.Controls.Add(this.label3);
@@ -930,6 +944,7 @@ namespace TarkovPriceViewer
         private System.Windows.Forms.Label label3;
         private System.Windows.Forms.ComboBox modeBox;
         private System.Windows.Forms.Label label4;
+        private System.Windows.Forms.CheckBox ShowTextFound;
     }
 }
 

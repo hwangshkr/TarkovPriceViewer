@@ -27,25 +27,25 @@ namespace TarkovPriceViewer
             ColorTranslator.FromHtml("#006400"),
             ColorTranslator.FromHtml("#009900") };
         public static readonly HashSet<String> BEType = new HashSet<String> { "Round", "Slug", "Buckshot", "Grenade launcher cartridge" };
-        public static readonly String setting_path = @"settings.json";
-        public static readonly String appname = "EscapeFromTarkov";
-        public static readonly String languageLoading = "Wait Language Model Loading";
-        public static readonly String notfound = "Item Name Not Found.";
-        public static readonly String waitingForTooltip = "Loading";
-        public static readonly String noflea = "Item not Found on the Flea Market.";
-        public static readonly String notfinishloading = "Ballistics Data not finished loading. \nPlease try again or check your Internet connection.";
-        public static readonly String notfinishloadingAPI = "API not finished loading. \nPlease try again or check your Internet connection.";
-        public static readonly String presscomparekey = "Please Press Compare Key.";
+        public static readonly string setting_path = @"settings.json";
+        public static readonly string appname = "EscapeFromTarkov";
+        public static readonly string languageLoading = "Wait Language Model Loading";
+        public static readonly string notfound = "Item Name Not Found.";
+        public static readonly string waitingForTooltip = "Loading";
+        public static readonly string noflea = "Item not Found on the Flea Market.";
+        public static readonly string notfinishloading = "Ballistics Data not finished loading. \nPlease try again or check your Internet connection.";
+        public static readonly string notfinishloadingAPI = "API not finished loading. \nPlease try again or check your Internet connection.";
+        public static readonly string presscomparekey = "Please Press Compare Key.";
         public static bool finishloadingballistics = false;
         public static bool finishloadingAPI = false;
         public static bool finishloadingTarkovTrackerAPI = false;
-        public static readonly String wiki = "https://escapefromtarkov.fandom.com/wiki/";
-        public static readonly String tarkov_dev = "https://tarkov.dev/";
-        public static readonly String tarkovtracker = "https://tarkovtracker.io/";
-        public static readonly String tarkovmarket = "https://tarkov-market.com/item/";
-        public static readonly String official = "https://www.escapefromtarkov.com/";
+        public static readonly string wiki = "https://escapefromtarkov.fandom.com/wiki/";
+        public static readonly string tarkov_dev = "https://tarkov.dev/";
+        public static readonly string tarkovtracker = "https://tarkovtracker.io/";
+        public static readonly string tarkovmarket = "https://tarkov-market.com/item/";
+        public static readonly string official = "https://www.escapefromtarkov.com/";
         public static readonly List<String> github = new List<string>() { "https://github.com/hwangshkr/TarkovPriceViewer", "https://github.com/Zotikus1001/TarkovPriceViewer" };
-        public static readonly String checkupdate = "/raw/main/README.md";
+        public static readonly string checkupdate = "/raw/main/README.md";
         public static readonly char rouble = '₽';
         public static readonly char dollar = '$';
         public static readonly char euro = '€';
@@ -218,7 +218,7 @@ namespace TarkovPriceViewer
                     tarkovTrackerAPI = null;
                 }
             }
-            String apiKey = settings["TarkovTrackerAPIKey"];
+            string apiKey = settings["TarkovTrackerAPIKey"];
             if (Convert.ToBoolean(Program.settings["useTarkovTrackerAPI"]) && !string.Equals(apiKey, "APIKey") && !string.IsNullOrWhiteSpace(apiKey))
             {
                 //If Outdated by 1 minutes.
@@ -299,7 +299,7 @@ namespace TarkovPriceViewer
                 {
                     File.Create(setting_path).Dispose();
                 }
-                String text = File.ReadAllText(setting_path);
+                string text = File.ReadAllText(setting_path);
                 try
                 {
                     settings = System.Text.Json.JsonSerializer.Deserialize<Dictionary<String, String>>(text);
@@ -310,12 +310,16 @@ namespace TarkovPriceViewer
                     text = "{}";
                     settings = System.Text.Json.JsonSerializer.Deserialize<Dictionary<String, String>>(text);
                 }
-                String st;
+                string st;
                 settings.Remove("Version");//force
-                settings.Add("Version", "v1.34");//force
+                settings.Add("Version", "v1.36");//force
                 if (!settings.TryGetValue("MinimizetoTrayWhenStartup", out st))
                 {
                     settings.Add("MinimizetoTrayWhenStartup", "false");
+                }
+                if (!settings.TryGetValue("ShowTextFound", out st))
+                {
+                    settings.Add("ShowTextFound", "false");
                 }
                 if (!settings.TryGetValue("CloseOverlayWhenMouseMoved", out st))
                 {
@@ -467,8 +471,8 @@ namespace TarkovPriceViewer
                                             {
                                                 first = 1;
                                             }
-                                            String name = sub_nodes[first++].InnerText.Trim();
-                                            String special = "";
+                                            string name = sub_nodes[first++].InnerText.Trim();
+                                            string special = "";
                                             if (name.EndsWith(" S T"))
                                             {
                                                 name = new Regex("(S T)$").Replace(name, "");
@@ -505,7 +509,7 @@ namespace TarkovPriceViewer
                                                 special = @"";
                                             }
                                             name = name.Replace("*", "").Trim();
-                                            String damage = sub_nodes[first++].InnerText.Trim();
+                                            string damage = sub_nodes[first++].InnerText.Trim();
                                             if (damage.Contains("x"))
                                             {
                                                 String[] temp_d = damage.Split('x');

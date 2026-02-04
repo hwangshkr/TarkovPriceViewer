@@ -1,4 +1,4 @@
-# <img width="36" align="center" src="https://user-images.githubusercontent.com/32073152/126047438-2f1b7e59-ca31-43f2-bcf6-00b2f00e408c.png"/> Tarkov Price Viewer v1.35
+# <img width="36" align="center" src="https://user-images.githubusercontent.com/32073152/126047438-2f1b7e59-ca31-43f2-bcf6-00b2f00e408c.png"/> Tarkov Price Viewer v1.36
 This Overlay software is meant to help new players.
 You can easily distinguish all the strengths and weaknesses of all the ammo in the game.
 It is especially good to find out the market price in advance when the flea market is not open yet. 
@@ -76,11 +76,12 @@ Latest Visual C++ Redistributable (https://aka.ms/vs/17/release/vc_redist.x64.ex
 1. OpenCV (https://opencv.org/license)
 2. PaddleSharp (https://github.com/sdcb/PaddleSharp/blob/master/LICENSE)
 3. Fody (https://github.com/Fody/Fody/blob/master/License.txt)
-4. Tarkov Market (https://tarkov-market.com/)
-5. Tarkov Wiki (https://escapefromtarkov.fandom.com/wiki/Escape_from_Tarkov_Wiki)
-6. Escape from Tarkov (https://www.escapefromtarkov.com/)
-7. Tarkov.dev API (https://tarkov.dev/)
-8. TarkovTracker API (https://tarkovtracker.io)
+4. Quickenshtein (https://github.com/Turnerj/Quickenshtein?tab=MIT-1-ov-file#readme)
+5. Tarkov Market (https://tarkov-market.com/)
+6. Tarkov Wiki (https://escapefromtarkov.fandom.com/wiki/Escape_from_Tarkov_Wiki)
+7. Escape from Tarkov (https://www.escapefromtarkov.com/)
+8. Tarkov.dev API (https://tarkov.dev/)
+9. TarkovTracker API (https://tarkovtracker.io)
 
 # Funny description written by ChatGPT
 Hey fellow Tarkov players, listen up! If you're struggling to keep up with all the ammo types in the game, or if you're having a hard time finding out the market price of certain items before the flea market opens, then boy do I have the perfect tool for you!

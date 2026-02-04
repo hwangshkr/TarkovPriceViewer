@@ -1,5 +1,6 @@
 ﻿using OpenCvSharp;
 using OpenCvSharp.Extensions;
+using Quickenshtein;
 using Sdcb.PaddleInference;
 using Sdcb.PaddleOCR;
 using Sdcb.PaddleOCR.Models;
@@ -186,6 +187,7 @@ namespace TarkovPriceViewer
             Version.Text = Program.settings["Version"];
             MinimizetoTrayWhenStartup.Checked = Convert.ToBoolean(Program.settings["MinimizetoTrayWhenStartup"]);
             CloseOverlayWhenMouseMoved.Checked = Convert.ToBoolean(Program.settings["CloseOverlayWhenMouseMoved"]);
+            ShowTextFound.Checked = Convert.ToBoolean(Program.settings["ShowTextFound"]);
             RandomItem.Checked = Convert.ToBoolean(Program.settings["RandomItem"]);
             last_price_box.Checked = Convert.ToBoolean(Program.settings["Show_Last_Price"]);
             day_price_box.Checked = Convert.ToBoolean(Program.settings["Show_Day_Price"]);
@@ -309,7 +311,7 @@ namespace TarkovPriceViewer
                 {
                     if (press_key_control == null)
                     {
-                        if (Program.finishloadingballistics)
+                        if (true || Program.finishloadingballistics)
                         {
                             if ((Program.finishloadingTarkovTrackerAPI && Convert.ToBoolean(Program.settings["useTarkovTrackerAPI"])) || !Convert.ToBoolean(Program.settings["useTarkovTrackerAPI"]))
                             {
@@ -707,10 +709,10 @@ namespace TarkovPriceViewer
             }
         }
 
-        private String getPaddleOCR(Mat textmat)
+        private string getPaddleOCR(Mat textmat)
         {
             GettingItemInfo = true;
-            String text = "";
+            string text = "";
             try
             {
                 EnsureRecognizer();
@@ -760,8 +762,8 @@ namespace TarkovPriceViewer
                             using (Mat temp = ScreenMat.SubMat(rect2))
                             using (Mat temp2 = temp.Threshold(0, 255, ThresholdTypes.BinaryInv))
                             {
-                                String text = getPaddleOCR(temp);
-                                String text2 = getPaddleOCR(temp2);
+                                string text = getPaddleOCR(temp);
+                                string text2 = getPaddleOCR(temp2);
 
                                 if (!text.Equals("") || !text2.Equals("")) //If tooltip text found
                                 {
@@ -785,10 +787,12 @@ namespace TarkovPriceViewer
 
         private Item MatchItemNameAPI(string name, string name2)
         {
-            char[] itemname = name.ToLower().Trim().ToCharArray();
-            char[] itemname2 = name2.ToLower().Trim().ToCharArray();
+            var itemname = name.ToLower().Trim();
+            var itemname2 = name2.ToLower().Trim();
 
             var result = new Item();
+            result.foundname1 = name;
+            result.foundname1 = name2;
             if (Program.tarkovAPI == null)
             {
                 Debug.WriteLine("error : no item list.");
@@ -797,10 +801,11 @@ namespace TarkovPriceViewer
             int d = 999;
             foreach (var item in Program.tarkovAPI.items)
             {
+                var temp = item.name.ToLower().Trim();
                 int d2;
                 if (itemname.Length > 0)
                 {
-                    d2 = levenshteinDistance(itemname, item.name.ToLower().ToCharArray());
+                    d2 = Levenshtein.GetDistance(itemname, temp);
                     if (d2 < d)
                     {
                         result = item;
@@ -814,7 +819,7 @@ namespace TarkovPriceViewer
 
                 if (itemname2.Length > 0)
                 {
-                    d2 = levenshteinDistance(itemname2, item.name.ToLower().ToCharArray());
+                    d2 = Levenshtein.GetDistance(itemname2, temp);
                     if (d2 < d)
                     {
                         result = item;
@@ -845,40 +850,6 @@ namespace TarkovPriceViewer
             if (minNumber > val2) minNumber = val2;
             if (minNumber > val3) minNumber = val3;
             return minNumber;
-        }
-
-        private int levenshteinDistance(char[] s, char[] t)
-        {
-            int m = s.Length;
-            int n = t.Length;
-
-            int[,] d = new int[m + 1, n + 1];
-
-            for (int i = 1; i < m; i++)
-            {
-                d[i, 0] = i;
-            }
-
-            for (int j = 1; j < n; j++)
-            {
-                d[0, j] = j;
-            }
-
-            for (int j = 1; j < n; j++)
-            {
-                for (int i = 1; i < m; i++)
-                {
-                    if (s[i] == t[j])
-                    {
-                        d[i, j] = d[i - 1, j - 1];
-                    }
-                    else
-                    {
-                        d[i, j] = getMinimum(d[i - 1, j], d[i, j - 1], d[i - 1, j - 1]) + 1;
-                    }
-                }
-            }
-            return d[m - 1, n - 1];
         }
 
         private void FindItemInfoAPI(Item item, bool isiteminfo, CancellationToken cts_one)
@@ -941,6 +912,11 @@ namespace TarkovPriceViewer
         private void MinimizetoTrayWhenStartup_CheckedChanged(object sender, EventArgs e)
         {
             Program.settings["MinimizetoTrayWhenStartup"] = (sender as CheckBox).Checked.ToString();
+        }
+
+        private void ShowTextFound_CheckedChanged(object sender, EventArgs e)
+        {
+            Program.settings["ShowTextFound"] = (sender as CheckBox).Checked.ToString();
         }
 
         private void Tarkov_Official_Click(object sender, EventArgs e)
@@ -1045,10 +1021,10 @@ namespace TarkovPriceViewer
                     float highv = 0;
                     foreach (var github in Program.github)
                     {
-                        String check = wc.DownloadString(github + Program.checkupdate);
+                        string check = wc.DownloadString(github + Program.checkupdate);
                         if (!check.Equals(""))
                         {
-                            String sp = check.Split('\n')[0];
+                            string sp = check.Split('\n')[0];
                             if (sp.Contains("Tarkov Price Viewer"))
                             {
                                 String[] sp2 = sp.Split(' ');
