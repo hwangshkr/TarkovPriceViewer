@@ -271,7 +271,7 @@ namespace TarkovPriceViewer
 
             public int GetItemCount(string itemid)
             {
-                return objectives?.FirstOrDefault(o => o.optional == false && (o.type == "giveQuestItem" || o.type == "plantItem") && o.items.Any(o_ => o_.id == itemid))?.count ?? 0;
+                return objectives?.FirstOrDefault(o => o.optional == false && (o.type == "giveItem" || o.type == "plantItem") && o.items.Any(o_ => o_.id == itemid))?.count ?? 0;
             }
         }
 

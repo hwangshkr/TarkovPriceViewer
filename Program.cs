@@ -16,6 +16,7 @@ namespace TarkovPriceViewer
 {
     static class Program
     {
+        private static readonly string version = "v1.37";
         private static MainForm main = null;
         public static Dictionary<String, String> settings = new Dictionary<String, String>();
         public static readonly Dictionary<String, Ballistic> blist = new Dictionary<String, Ballistic>();
@@ -62,14 +63,16 @@ namespace TarkovPriceViewer
         public static bool forceUpdateTrackerAPI = false;
         private static object lockObject = new object();
 
-        /// <summary>
-        /// 해당 애플리케이션의 주 진입점입니다.
-        /// </summary>
+        [System.Runtime.InteropServices.DllImport("user32.dll")]
+        private static extern bool SetProcessDPIAware();
+
         [STAThread]
         static void Main()
         {
+            if (Environment.OSVersion.Version.Major >= 6) SetProcessDPIAware();
             Application.EnableVisualStyles();
             Application.SetCompatibleTextRenderingDefault(false);
+
             foreach (Process process in Process.GetProcessesByName(Process.GetCurrentProcess().ProcessName))
             {
                 if (process.Id == Process.GetCurrentProcess().Id)
@@ -312,7 +315,7 @@ namespace TarkovPriceViewer
                 }
                 string st;
                 settings.Remove("Version");//force
-                settings.Add("Version", "v1.36");//force
+                settings.Add("Version", version);//force
                 if (!settings.TryGetValue("MinimizetoTrayWhenStartup", out st))
                 {
                     settings.Add("MinimizetoTrayWhenStartup", "false");

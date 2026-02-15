@@ -226,9 +226,8 @@ namespace TarkovPriceViewer
                             //Find best trader to sell to
                             if (item.sellFor.Count > 0)
                             {
-                                List<SellFor> list = new List<SellFor>(item.sellFor);
-                                List<SellFor> sortedVendor = new List<SellFor>(list.OrderByDescending(p => p.priceRUB));
-                                var lastSortedVendor = item.sellFor[0];
+                                List<SellFor> sortedVendor = item.sellFor.OrderByDescending(p => p.priceRUB).ToList();
+                                var lastSortedVendor = sortedVendor[0];
 
                                 if (sortedVendor[0].vendor.name == "Flea Market" && sortedVendor.Count > 1 && flea_profit > 0)
                                 {
@@ -262,8 +261,7 @@ namespace TarkovPriceViewer
                             //Find best trader to buy from
                             if (item.buyFor.Count > 0)
                             {
-                                List<BuyFor> list = new List<BuyFor>(item.buyFor);
-                                var sortedVendor = list.OrderBy(p => p.priceRUB).First();
+                                var sortedVendor = item.buyFor.OrderBy(p => p.priceRUB).First();
                                 BestBuyFrom_vendorName = sortedVendor.vendor.name;
 
                                 int vendorPrice = sortedVendor.priceRUB.Value;
@@ -296,7 +294,7 @@ namespace TarkovPriceViewer
                             bool sellToText = false;
                             if (Convert.ToBoolean(Program.settings["Sell_to_Trader"]) && item.sellFor.Count > 0)
                             {
-                                List<SellFor> list = new List<SellFor>(item.sellFor);
+                                List<SellFor> list = item.sellFor.ToList();
                                 list.RemoveAll(p => p.vendor.name == "Flea Market");
                                 if (list.Count > 0)
                                 {
@@ -317,7 +315,7 @@ namespace TarkovPriceViewer
                             }
                             if (Convert.ToBoolean(Program.settings["Buy_From_Trader"]) && item.buyFor.Count > 0)
                             {
-                                List<BuyFor> list = new List<BuyFor>(item.buyFor);
+                                List<BuyFor> list = item.buyFor.ToList();
                                 list.RemoveAll(p => p.vendor.name == "Flea Market");
                                 if (list.Count > 0)
                                 {
@@ -382,7 +380,7 @@ namespace TarkovPriceViewer
                                     var count = task.GetItemCount(item.id);
                                     if (count > 0)
                                     {
-                                        tasks += " x" + count;
+                                        tasks += "(x" + count + ")";
                                     }
 
                                     tasks += "\n";

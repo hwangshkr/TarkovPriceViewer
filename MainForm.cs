@@ -9,6 +9,7 @@ using System;
 using System.Diagnostics;
 using System.Drawing;
 using System.Globalization;
+using System.Linq;
 using System.Runtime.InteropServices;
 using System.Text;
 using System.Threading;
@@ -187,7 +188,6 @@ namespace TarkovPriceViewer
             Version.Text = Program.settings["Version"];
             MinimizetoTrayWhenStartup.Checked = Convert.ToBoolean(Program.settings["MinimizetoTrayWhenStartup"]);
             CloseOverlayWhenMouseMoved.Checked = Convert.ToBoolean(Program.settings["CloseOverlayWhenMouseMoved"]);
-            ShowTextFound.Checked = Convert.ToBoolean(Program.settings["ShowTextFound"]);
             RandomItem.Checked = Convert.ToBoolean(Program.settings["RandomItem"]);
             last_price_box.Checked = Convert.ToBoolean(Program.settings["Show_Last_Price"]);
             day_price_box.Checked = Convert.ToBoolean(Program.settings["Show_Day_Price"]);
@@ -548,7 +548,11 @@ namespace TarkovPriceViewer
                             throw new Exception();
                         }
                         Item item = Program.tarkovAPI.items[new Random().Next(Program.tarkovAPI.items.Count - 1)];
-                        //item = MatchItemName("7.62x54r_7n37".ToLower().Trim().ToCharArray());
+                        //item = Program.tarkovAPI.items.FirstOrDefault(o => o.name == "Power cord");
+                        //if (item == null)
+                        //{
+                        //    return 0;
+                        //}
                         FindItemInfoAPI(item, isiteminfo, cts_one);
                     }
                     catch
@@ -914,11 +918,6 @@ namespace TarkovPriceViewer
             Program.settings["MinimizetoTrayWhenStartup"] = (sender as CheckBox).Checked.ToString();
         }
 
-        private void ShowTextFound_CheckedChanged(object sender, EventArgs e)
-        {
-            Program.settings["ShowTextFound"] = (sender as CheckBox).Checked.ToString();
-        }
-
         private void Tarkov_Official_Click(object sender, EventArgs e)
         {
             Process.Start(Program.official);
@@ -1202,6 +1201,8 @@ namespace TarkovPriceViewer
 
             Program.forceUpdateAPI = true;
             Program.forceUpdateTrackerAPI = true;
+            Task.Factory.StartNew(() => Program.UpdateItemListAPI());
+            Task.Factory.StartNew(() => Program.UpdateTarkovTrackerAPI());
         }
 
         private void modeBox_SelectedIndexChanged(object sender, EventArgs e)
@@ -1216,6 +1217,8 @@ namespace TarkovPriceViewer
             }
             Program.forceUpdateAPI = true;
             Program.forceUpdateTrackerAPI = true;
+            Task.Factory.StartNew(() => Program.UpdateItemListAPI());
+            Task.Factory.StartNew(() => Program.UpdateTarkovTrackerAPI());
         }
     }
 }
