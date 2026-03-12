@@ -127,6 +127,10 @@ namespace TarkovPriceViewer
         private static DateTime presstime;
         public static bool WaitingForTooltip = false;
         public static bool GettingItemInfo = false;
+        public static string debugText1 = null;
+        public static string debugText2 = null;
+        private static readonly Mat roubleMat = BitmapConverter.ToMat(Properties.Resources.rouble);
+        private static readonly Mat dollarMat = BitmapConverter.ToMat(Properties.Resources.dollar);
 
         public MainForm()
         {
@@ -497,6 +501,8 @@ namespace TarkovPriceViewer
 
         public void LoadingItemInfo()
         {
+            debugText1 = null;
+            debugText2 = null;
             isinfoclosed = false;
             cts_info.Cancel();
             cts_info = new CancellationTokenSource();
@@ -634,7 +640,7 @@ namespace TarkovPriceViewer
             ShowtestImage("test", mat);
         }
 
-        private void ShowtestImage(String name, Mat mat)
+        private void ShowtestImage(string name, Mat mat)
         {
             Action show = delegate ()
             {
@@ -747,7 +753,6 @@ namespace TarkovPriceViewer
 
         private void FindItemAPI(Bitmap fullimage, bool isiteminfo, CancellationToken cts_one)
         {
-            int a = 1;
             Item item = new Item();
             using (Mat ScreenMat_original = BitmapConverter.ToMat(fullimage))
             using (Mat ScreenMat = ScreenMat_original.CvtColor(ColorConversionCodes.BGRA2BGR))
@@ -763,18 +768,33 @@ namespace TarkovPriceViewer
                         if (rect2.Width > 5 && rect2.Height > 10)
                         {
                             ScreenMat.Rectangle(rect2, Scalar.Black, 2);
-                            using (Mat temp = ScreenMat.SubMat(rect2))
-                            using (Mat temp2 = temp.Threshold(0, 255, ThresholdTypes.BinaryInv))
-                            {
-                                string text = getPaddleOCR(temp);
-                                string text2 = getPaddleOCR(temp2);
+                            Mat temp = ScreenMat.SubMat(rect2);
+                            Mat temp2 = temp.Threshold(0, 255, ThresholdTypes.BinaryInv);
 
-                                if (!text.Equals("") || !text2.Equals("")) //If tooltip text found
-                                {
-                                    item = MatchItemNameAPI(text, text2);
-                                    break;
-                                }
+                            int checkedMoneyY = CheckYMoneyImage(temp);
+                            if (checkedMoneyY != 0)
+                            {
+                                Rect rect = new Rect(0, 0, temp.Width, checkedMoneyY);
+                                Mat checktemp = temp;
+                                temp = temp.SubMat(rect);
+                                checktemp.Dispose();
+                                checktemp = temp2;
+                                temp2 = temp2.SubMat(rect);
+                                checktemp.Dispose();
                             }
+                            string text = getPaddleOCR(temp);
+                            string text2 = getPaddleOCR(temp2);
+
+                            if (!text.Equals("") || !text2.Equals("")) //If tooltip text found
+                            {
+                                item = MatchItemNameAPI(text, text2);
+                                debugText1 = text;
+                                debugText2 = text2;
+                                break;
+                            }
+
+                            temp.Dispose();
+                            temp2.Dispose();
                         }
                         /*else
                             timer.Start(); WaitingForTooltip = true;*/
@@ -788,63 +808,84 @@ namespace TarkovPriceViewer
             }
             fullimage.Dispose();
         }
+        private int CheckYMoneyImage(Mat image)
+        {
+            using (Mat result = new Mat())
+            {
+                Cv2.MatchTemplate(image, roubleMat, result, TemplateMatchModes.CCoeffNormed);
+                OpenCvSharp.Point minloc, maxloc;
+                double minval, maxval;
+                Cv2.MinMaxLoc(result, out minval, out maxval, out minloc, out maxloc);
+                if (maxval > 0.9)
+                {
+                    return Math.Min(minloc.Y, maxloc.Y);
+                }
+                Cv2.MatchTemplate(image, dollarMat, result, TemplateMatchModes.CCoeffNormed);
+                Cv2.MinMaxLoc(result, out minval, out maxval, out minloc, out maxloc);
+                if (maxval > 0.9)
+                {
+                    return Math.Min(minloc.Y, maxloc.Y);
+                }
+            }
+            return 0;
+        }
 
         private Item MatchItemNameAPI(string name, string name2)
         {
-            var itemname = name.ToLower().Trim();
-            var itemname2 = name2.ToLower().Trim();
-
-            var result = new Item();
-            result.foundname1 = name;
-            result.foundname1 = name2;
-            if (Program.tarkovAPI == null)
-            {
-                Debug.WriteLine("error : no item list.");
-                return result;
-            }
-            int d = 999;
-            foreach (var item in Program.tarkovAPI.items)
-            {
-                var temp = item.name.ToLower().Trim();
-                int d2;
-                if (itemname.Length > 0)
-                {
-                    d2 = Levenshtein.GetDistance(itemname, temp);
-                    if (d2 < d)
-                    {
-                        result = item;
-                        d = d2;
-                        if (d == 0)
-                        {
-                            break;
-                        }
-                    }
-                }
-
-                if (itemname2.Length > 0)
-                {
-                    d2 = Levenshtein.GetDistance(itemname2, temp);
-                    if (d2 < d)
-                    {
-                        result = item;
-                        d = d2;
-                        if (d == 0)
-                        {
-                            break;
-                        }
-                    }
-                }
-            }
-            if (result.name != null)
-            {
-                timer.Stop(); WaitingForTooltip = false; repeatCount = 0;
-            }
+            Item result = new Item();
             if (name == "Encrypted message" || name2 == "Encrypted message")
             {
-                result = new Item();
                 result.name = "Encrypted Message";
             }
-            Debug.WriteLine(d + " text match : " + result.name);
+            else
+            {
+                var itemname = name.ToLower().Trim();
+                var itemname2 = name2.ToLower().Trim();
+
+                if (Program.tarkovAPI == null)
+                {
+                    Debug.WriteLine("error : no item list.");
+                    return result;
+                }
+                int d = 999;
+                foreach (var item in Program.tarkovAPI.items)
+                {
+                    var temp = item.name.ToLower().Trim();
+                    int d2;
+                    if (itemname.Length > 0)
+                    {
+                        d2 = Levenshtein.GetDistance(itemname, temp);
+                        if (d2 < d)
+                        {
+                            result = item;
+                            d = d2;
+                            if (d == 0)
+                            {
+                                break;
+                            }
+                        }
+                    }
+
+                    if (itemname2.Length > 0)
+                    {
+                        d2 = Levenshtein.GetDistance(itemname2, temp);
+                        if (d2 < d)
+                        {
+                            result = item;
+                            d = d2;
+                            if (d == 0)
+                            {
+                                break;
+                            }
+                        }
+                    }
+                }
+                if (result.name != null)
+                {
+                    timer.Stop(); WaitingForTooltip = false; repeatCount = 0;
+                }
+                Debug.WriteLine(d + " text match : " + result.name);
+            }
             return result;
         }
 

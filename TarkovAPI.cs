@@ -83,8 +83,6 @@ namespace TarkovPriceViewer
         {
             public string id { get; set; }
             public string name { get; set; }
-            public string foundname1 { get; set; }
-            public string foundname2 { get; set; }
             public string normalizedName { get; set; }
             public List<string> types { get; set; }
             public int? lastLowPrice { get; set; }

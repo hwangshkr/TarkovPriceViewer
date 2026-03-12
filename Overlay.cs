@@ -180,20 +180,20 @@ namespace TarkovPriceViewer
                             //Loot Tier
                             SetLootTierPerSlot(item);
                             if (item.lootTier != null)
-                                sb.Append(String.Format("{0}", item.lootTier));
+                                sb.Append(String.Format("[{0}/{1}]{2}", Convert.ToString(Program.settings["Mode"]) == "regular" ? "PVP" : "PVE", Convert.ToString(Program.settings["Language"]), item.lootTier));
 
                             //Name
                             sb.Append(String.Format("\n{0}", item.name));
 
                             if (Convert.ToBoolean(Program.settings["ShowTextFound"]))
                             {
-                                if (string.IsNullOrEmpty(item.foundname1))
+                                if (!string.IsNullOrEmpty(MainForm.debugText1))
                                 {
-                                    sb.Append(String.Format("\n{0}", item.foundname1));
+                                    sb.Append(String.Format("\n{0}", MainForm.debugText1));
                                 }
-                                if (string.IsNullOrEmpty(item.foundname2))
+                                if (!string.IsNullOrEmpty(MainForm.debugText2))
                                 {
-                                    sb.Append(String.Format("\n{0}", item.foundname2));
+                                    sb.Append(String.Format("\n{0}", MainForm.debugText2));
                                 }
                             }
 
