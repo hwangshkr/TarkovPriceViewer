@@ -7,14 +7,8 @@ using System.Threading.Tasks;
 
 namespace TarkovPriceViewer
 {
-    // Fetches data from the json.tarkov.dev API (simple GET endpoints).
-    //
-    // Why: the GraphQL API (api.tarkov.dev/graphql) has been returning
-    // HTTP 503 "GraphQL server unavailable" continuously since 2026-07-21
-    // (see the-hideout/tarkov-api issue #474). The tarkov.dev website itself
-    // runs on json.tarkov.dev, which the maintainers recommend as the live
-    // replacement. This client downloads the JSON endpoints and converts them
-    // into the same TarkovAPI.Data structure the rest of the app expects.
+    // Fetches data from the json.tarkov.dev API (the JSON endpoints the
+    // tarkov.dev website runs on) and converts it into TarkovAPI.Data.
     public static class TarkovJsonApiClient
     {
         public const string BaseUrl = "https://json.tarkov.dev/";
@@ -123,10 +117,8 @@ namespace TarkovPriceViewer
 
         // ---------- Translations ----------
 
-        // The base endpoints contain translation keys; the "<path>_<lang>"
-        // endpoints contain key->string maps. The response's "translations"
-        // array holds JSONPath expressions pointing at every key that needs
-        // replacing (same mechanism the tarkov.dev website uses).
+        // The base endpoints contain translation keys, "<path>_<lang>" maps
+        // key->string, and "translations" lists JSONPaths to the keys.
         public static void ApplyTranslations(JObject root, JObject langMap, JObject enMap)
         {
             JArray translations = root["translations"] as JArray;
@@ -343,15 +335,9 @@ namespace TarkovPriceViewer
                     taskNames[taskId] = uit.name;
                 }
 
-                // Objectives are kept per linked item, filtered down to that
-                // item only. Embedding the full task (all objectives with all
-                // eligible items) into every linked item makes the object
-                // graph explode: quests accepting "any of N items" would be
-                // copied N times with N-item lists each, and serializing the
-                // cache then produces a multi-gigabyte JSON that crashes
-                // Newtonsoft's StringBuilder. The overlay only ever calls
-                // GetItemCount(item.id), which needs just the objectives that
-                // mention the item in question.
+                // Each linked item gets a slim task copy with only the
+                // objectives that mention it (all GetItemCount needs);
+                // embedding full tasks makes the serialized cache explode.
                 uit.objectives = new List<TarkovAPI.Objective>();
                 Dictionary<string, List<TarkovAPI.Objective>> objectivesByItem
                     = new Dictionary<string, List<TarkovAPI.Objective>>();
@@ -557,8 +543,7 @@ namespace TarkovPriceViewer
             return list;
         }
 
-        // A flat item reference ({id, name} only) to avoid reference cycles
-        // when the merged data is serialized to the local cache file.
+        // Flat {id, name} reference to avoid cycles in the serialized cache.
         private static TarkovAPI.Item StubItem(string id, Dictionary<string, TarkovAPI.Item> byId)
         {
             TarkovAPI.Item stub = new TarkovAPI.Item();
@@ -625,8 +610,7 @@ namespace TarkovPriceViewer
             return list;
         }
 
-        // Flea market listing fee, same formula as tarkov.dev uses
-        // (https://escapefromtarkov.fandom.com/wiki/Trading#Flea_Market)
+        // Flea market listing fee, same formula as tarkov.dev uses.
         public static int FleaFee(double basePrice, double sellPrice, double ti, double tr)
         {
             double v0 = basePrice;

@@ -25,10 +25,7 @@ namespace TarkovPriceViewer
             public List<Object> path;
         }
 
-        // The tarkov.dev API can return errors either as objects
-        // ({"errors":[{"message":"..."}]}) or as plain strings
-        // ({"errors":["GraphQL server unavailable. Try again later."]}).
-        // This converter accepts both forms instead of throwing.
+        // Accepts errors both as objects ({"message":"..."}) and as plain strings.
         public class GQLErrorConverter : JsonConverter
         {
             public override bool CanConvert(Type objectType)

@@ -8,16 +8,9 @@ using System.Threading.Tasks;
 
 namespace TarkovPriceViewer
 {
-    // Fetches item data from the tarkov.dev GraphQL API using several small
-    // queries instead of one huge one.
-    //
-    // Why: api.tarkov.dev answers HTTP 503 {"errors":["GraphQL server
-    // unavailable. Try again later."]} whenever its origin server cannot finish
-    // a request within the worker's timeout. The single giant "everything at
-    // once" query the app used before is very slow to execute and is rarely
-    // cached, so under load it fails practically every time. Small queries are
-    // much faster, get cached server-side (~15 min), and each part is retried
-    // independently, so a full update succeeds far more often.
+    // GraphQL client kept as a fallback; uses several small queries instead
+    // of one giant one so parts get cached server-side and retried
+    // independently.
     public static class TarkovApiClient
     {
         public const string ApiUrl = "https://api.tarkov.dev/graphql";
@@ -77,10 +70,7 @@ namespace TarkovPriceViewer
 
         public static async Task<TarkovAPI.Data> FetchAll(string language, string gameMode)
         {
-            // The GraphQL API has been down since 2026-07-21 (issue #474),
-            // so json.tarkov.dev (which powers the tarkov.dev website) is the
-            // primary source now. GraphQL is kept as a fallback in case the
-            // JSON API is unavailable and GraphQL has been revived.
+            // json.tarkov.dev is the primary source; GraphQL is a fallback.
             try
             {
                 Debug.WriteLine("--> Fetching data from json.tarkov.dev...");
@@ -131,7 +121,6 @@ namespace TarkovPriceViewer
                     string responseContent = await response.Content.ReadAsStringAsync();
                     if (!response.IsSuccessStatusCode)
                     {
-                        // e.g. HTTP 503 {"errors":["GraphQL server unavailable. Try again later."]}
                         throw new Exception("tarkov.dev API returned HTTP "
                             + (int)response.StatusCode + " " + response.StatusCode
                             + ExtractServerErrors(responseContent));
@@ -150,7 +139,6 @@ namespace TarkovPriceViewer
                     Debug.WriteLine("--> API part attempt " + attempt + "/" + maxAttempts + " failed: " + ex.Message);
                     if (attempt < maxAttempts)
                     {
-                        // short pause before retrying this part
                         await Task.Delay(TimeSpan.FromSeconds(5 * attempt));
                     }
                 }
@@ -158,8 +146,7 @@ namespace TarkovPriceViewer
             throw lastError;
         }
 
-        // Combines partial responses (base info, prices, barters, crafts,
-        // tasks, hideout) into one TarkovAPI.Data, matching items by id.
+        // Combines partial responses into one TarkovAPI.Data, matching items by id.
         public static TarkovAPI.Data Merge(List<TarkovAPI.Data> parts)
         {
             TarkovAPI.Data result = new TarkovAPI.Data();
