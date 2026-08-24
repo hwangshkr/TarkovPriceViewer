@@ -1,4 +1,5 @@
 ﻿using Newtonsoft.Json;
+using Newtonsoft.Json.Linq;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -11,6 +12,7 @@ namespace TarkovPriceViewer
 
         public TarkovAPI.Data data { get; set; }
 
+        [JsonConverter(typeof(GQLErrorConverter))]
         public class GQLError
         {
             public string message { get; set; }
@@ -21,6 +23,37 @@ namespace TarkovPriceViewer
                 public int column { get; set; }
             }
             public List<Object> path;
+        }
+
+        // Accepts errors both as objects ({"message":"..."}) and as plain strings.
+        public class GQLErrorConverter : JsonConverter
+        {
+            public override bool CanConvert(Type objectType)
+            {
+                return objectType == typeof(GQLError);
+            }
+
+            public override bool CanWrite
+            {
+                get { return false; }
+            }
+
+            public override object ReadJson(JsonReader reader, Type objectType, object existingValue, JsonSerializer serializer)
+            {
+                JToken token = JToken.Load(reader);
+                if (token.Type == JTokenType.String)
+                {
+                    return new GQLError { message = token.ToString() };
+                }
+                GQLError error = new GQLError();
+                serializer.Populate(token.CreateReader(), error);
+                return error;
+            }
+
+            public override void WriteJson(JsonWriter writer, object value, JsonSerializer serializer)
+            {
+                throw new NotSupportedException();
+            }
         }
     }
 

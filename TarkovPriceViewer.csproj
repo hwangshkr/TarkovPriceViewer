@@ -374,6 +374,8 @@
   </ItemGroup>
   <ItemGroup>
     <Compile Include="Ballistic.cs" />
+    <Compile Include="TarkovApiClient.cs" />
+    <Compile Include="TarkovJsonApiClient.cs" />
     <Compile Include="KeyPressCheck.cs">
       <SubType>Form</SubType>
     </Compile>
