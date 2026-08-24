@@ -16,7 +16,7 @@ namespace TarkovPriceViewer
 {
     static class Program
     {
-        private static readonly string version = "v1.38";
+        private static readonly string version = "v1.39";
         private static MainForm main = null;
         public static Dictionary<String, String> settings = new Dictionary<String, String>();
         public static readonly Dictionary<String, Ballistic> blist = new Dictionary<String, Ballistic>();
